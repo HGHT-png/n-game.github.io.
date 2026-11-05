@@ -3,112 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Отключаем кэш -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Эволюция Нарзана</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+  
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: radial-gradient(circle at top, #1b1c3e 0%, #0a0b1a 60%, #05050a 100%);
-    color: #fff; display: flex; justify-content: center; height: 100vh; overflow: hidden;
-    touch-action: manipulation; /* Убирает задержку кликов в WebView */
-  }
-  .app {
-    width: 100%; max-width: 480px; display: flex; flex-direction: column;
-    height: 100%; padding: 15px 20px 20px 20px; position: relative;
+    color: #fff; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden;
+    touch-action: manipulation;
   }
   
-  header { text-align: center; margin-top: 5px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .app {
+    width: 100%; max-width: 480px; display: flex; flex-direction: column;
+    height: 100%; padding: 8px 12px 10px 12px; position: relative;
+  }
+  
+  header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
   .menu-btn {
     position: absolute; top: 0; right: 0; background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1); color: #a0b0d0; font-size: 20px;
-    width: 44px; height: 44px; border-radius: 12px; cursor: pointer; transition: 0.2s;
-    display: flex; align-items: center; justify-content: center;
-    touch-action: manipulation; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.1); color: #a0b0d0; font-size: 18px;
+    width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; justify-content: center; touch-action: manipulation;
   }
   .menu-btn:active { transform: scale(0.9); }
-  .aura-display { font-size: 34px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.1; }
-  .aura-icon { color: #ffd700; font-size: 28px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-  .stage-name { font-size: 15px; color: #8a9bbd; margin-top: 5px; font-weight: 500; }
-  .income-text { font-size: 14px; color: #5eead4; margin-top: 4px; font-weight: 600;}
-  .prestige-text { font-size: 12px; color: #fbbf24; margin-top: 2px; font-weight: bold; }
+  .aura-display { font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; line-height: 1.1; }
+  .aura-icon { color: #ffd700; font-size: 24px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+  .stage-name { font-size: 13px; color: #8a9bbd; margin-top: 2px; font-weight: 500; }
+  .income-text { font-size: 12px; color: #5eead4; margin-top: 2px; font-weight: 600;}
+  .prestige-text { font-size: 11px; color: #fbbf24; margin-top: 2px; font-weight: bold; }
 
-  /* ДОБАВЛЕНО: cursor:pointer и touch-action для распознавания кликов */
   .click-zone {
     flex: 1; display: flex; justify-content: center; align-items: center;
-    position: relative; min-height: 130px;
-    cursor: pointer; touch-action: manipulation; -webkit-user-drag: none;
+    position: relative; min-height: 80px; cursor: pointer; touch-action: manipulation; -webkit-user-drag: none;
   }
   .click-zone::before {
-    content: ''; position: absolute; width: 220px; height: 220px; border-radius: 50%;
+    content: ''; position: absolute; width: 160px; height: 160px; border-radius: 50%;
     background: radial-gradient(circle, rgba(110,200,255,0.15) 0%, transparent 70%);
-    animation: pulse 3s infinite; pointer-events: none; /* Пропускает клики сквозь себя */
+    animation: pulse 3s infinite; pointer-events: none;
   }
   @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
   
-  #charImg { max-width: 140px; max-height: 160px; object-fit: contain; z-index: 2; filter: drop-shadow(0 0 25px rgba(110,200,255,0.4)); transition: transform 0.1s; border-radius: 12px; pointer-events: none; }
-  #charEmoji { font-size: 100px; z-index: 2; filter: drop-shadow(0 0 25px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
+  #charImg { max-width: 100px; max-height: 120px; object-fit: contain; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; border-radius: 10px; pointer-events: none; }
+  #charEmoji { font-size: 70px; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
   .click-zone.pop #charImg, .click-zone.pop #charEmoji { transform: scale(1.1); }
 
-  .bottom-panel { display: flex; flex-direction: column; gap: 8px; margin-bottom: 5px; }
+  .bottom-panel { display: flex; flex-direction: column; gap: 5px; }
 
-  .final-box { display: none; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 14px; border: 1px solid rgba(255,200,60,0.3); }
+  .final-box { display: none; padding: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,200,60,0.3); }
   .final-box.show { display: block; }
-  .final-text { font-size: 12px; color: #ffd66b; text-align: center; margin-bottom: 5px; font-weight: bold; }
-  .progress-bar { height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; }
+  .final-text { font-size: 11px; color: #ffd66b; text-align: center; margin-bottom: 4px; font-weight: bold; }
+  .progress-bar { height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #fbbf24, #ef4444); transition: width 0.3s; }
 
-  .buttons { display: flex; flex-direction: column; gap: 8px; }
+  .buttons { display: flex; flex-direction: column; gap: 5px; }
   .btn {
-    width: 100%; border-radius: 16px; padding: 10px; font-size: 15px; font-weight: 700;
+    width: 100%; border-radius: 12px; padding: 6px 8px; font-size: 13px; font-weight: 700;
     border: none; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    transition: 0.15s; background: linear-gradient(135deg, #6a4cff, #8a6cff); color: #fff; box-shadow: 0 4px 15px rgba(106,76,255,0.3);
+    transition: 0.15s; background: linear-gradient(135deg, #6a4cff, #8a6cff); color: #fff; box-shadow: 0 3px 8px rgba(106,76,255,0.3);
     cursor: pointer; touch-action: manipulation;
   }
   .btn:active { transform: scale(0.97); }
   .btn.disabled { opacity: 0.5; pointer-events: none; box-shadow: none; }
-  .btn-sub { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.8); margin-top: 2px; }
+  .btn-sub { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.8); margin-top: 1px; }
   
-  .btn-prestige { background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 4px 15px rgba(239,68,68,0.3); margin-top: 5px;}
+  .btn-prestige { background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 3px 8px rgba(239,68,68,0.3);}
   .btn-prestige.hidden { display: none; }
 
-  .codes { display: flex; gap: 8px; }
-  .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 12px; border-radius: 12px; outline: none; font-size: 14px; text-transform: uppercase;}
+  .codes { display: flex; gap: 5px; }
+  .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 10px; outline: none; font-size: 12px; text-transform: uppercase;}
   .codes input::placeholder { color: #555; }
-  .codes button { background: #6a4cff; border: none; color: #fff; padding: 0 15px; border-radius: 12px; font-weight: bold; cursor: pointer; touch-action: manipulation;}
+  .codes button { background: #6a4cff; border: none; color: #fff; padding: 0 10px; border-radius: 10px; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 12px;}
 
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 15px; }
   .overlay.show { display: flex; }
   .menu { width: 100%; max-width: 400px; max-height: 85vh; background: #14152b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; display: flex; flex-direction: column; }
-  .menu-header { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
-  .menu-header h2 { font-size: 18px; color: #fff; }
-  .close-btn { background: none; border: none; color: #8a9bbd; font-size: 24px; cursor: pointer; touch-action: manipulation;}
-  .tabs { display: flex; padding: 10px; gap: 5px; overflow-x: auto; }
-  .tab { background: none; border: 1px solid rgba(255,255,255,0.1); color: #8a9bbd; padding: 6px 10px; border-radius: 10px; font-size: 12px; cursor: pointer; white-space: nowrap; touch-action: manipulation;}
+  .menu-header { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+  .menu-header h2 { font-size: 16px; color: #fff; }
+  .close-btn { background: none; border: none; color: #8a9bbd; font-size: 20px; cursor: pointer; touch-action: manipulation;}
+  .tabs { display: flex; padding: 8px; gap: 4px; overflow-x: auto; }
+  .tab { background: none; border: 1px solid rgba(255,255,255,0.1); color: #8a9bbd; padding: 5px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; white-space: nowrap; touch-action: manipulation;}
   .tab.active { background: rgba(106,76,255,0.2); color: #fff; border-color: #6a4cff; }
-  .tab-content { padding: 15px; overflow-y: auto; flex: 1; color: #ccc; font-size: 14px; }
+  .tab-content { padding: 12px; overflow-y: auto; flex: 1; color: #ccc; font-size: 13px; }
   
-  .ach-item { display: flex; gap: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; opacity: 0.5; }
+  .ach-item { display: flex; gap: 8px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; opacity: 0.5; }
   .ach-item.unlocked { opacity: 1; background: rgba(94,234,212,0.1); border: 1px solid rgba(94,234,212,0.3); }
-  .ach-icon { font-size: 18px; }
-  .ach-name { font-weight: bold; color: #fff; font-size: 13px;}
-  .ach-desc { font-size: 11px; color: #8a9bbd; }
+  .ach-icon { font-size: 16px; }
+  .ach-name { font-weight: bold; color: #fff; font-size: 12px;}
+  .ach-desc { font-size: 10px; color: #8a9bbd; }
 
   .floating-bonus {
-    position: absolute; font-size: 40px; cursor: pointer; z-index: 50; touch-action: manipulation;
-    animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #fbbf24);
+    position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation;
+    animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24);
   }
 
-  #toasts { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; pointer-events: none; }
-  .toast { background: rgba(20,21,43,0.95); border: 1px solid #6a4cff; color: #fff; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; animation: slideDown 0.3s ease; text-align:center;}
+  #toasts { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; pointer-events: none; }
+  .toast { background: rgba(20,21,43,0.95); border: 1px solid #6a4cff; color: #fff; padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; animation: slideDown 0.3s ease; text-align:center;}
   .toast.gold { border-color: #fbbf24; color: #fde68a; }
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
   
-  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 20px; color: #5eead4; text-shadow: 0 0 10px #5eead4; z-index: 10; animation: floatUp 0.8s ease-out forwards; }
-  .float-text.crit-text { color: #ef4444; text-shadow: 0 0 15px #ef4444; font-size: 28px; }
-  @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(1.5); } }
+  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 16px; color: #5eead4; text-shadow: 0 0 10px #5eead4; z-index: 10; animation: floatUp 0.8s ease-out forwards; }
+  .float-text.crit-text { color: #ef4444; text-shadow: 0 0 15px #ef4444; font-size: 20px; }
+  @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -60px) scale(1.5); } }
 
-  .cheat-panel { background: #000; border: 1px solid #0f0; color: #0f0; padding: 15px; border-radius: 10px; font-family: monospace; width: 100%; max-width: 350px; }
-  .cheat-btn { background: #0f0; color: #000; border: none; padding: 8px; margin: 5px 0; width: 100%; font-weight: bold; cursor: pointer; border-radius: 5px; text-align:left; touch-action: manipulation;}
+  .cheat-panel { background: #000; border: 1px solid #0f0; color: #0f0; padding: 12px; border-radius: 8px; font-family: monospace; width: 100%; max-width: 320px; }
+  .cheat-btn { background: #0f0; color: #000; border: none; padding: 6px; margin: 4px 0; width: 100%; font-weight: bold; cursor: pointer; border-radius: 4px; text-align:left; touch-action: manipulation; font-size: 12px;}
 </style>
 </head>
 <body>
@@ -179,21 +182,18 @@
 
 <div class="overlay" id="cheatOverlay">
   <div class="cheat-panel">
-    <h3 style="margin-bottom:10px;">SYSTEM HACK MENU</h3>
-    <button class="cheat-btn" id="cheatMax">> Активировать MAXSCORE559</button>
-    <button class="cheat-btn" id="cheatCrit">> Активировать CRIT100 (100% крит)</button>
-    <button class="cheat-btn" id="cheatBoost">> Активировать BOOSTME (Вечный бустер)</button>
-    <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:15px;" id="cheatClose">> ЗАКРЫТЬ МЕНЮ</button>
+    <h3 style="margin-bottom:8px;">SYSTEM HACK MENU</h3>
+    <button class="cheat-btn" id="cheatMax">> MAXSCORE559</button>
+    <button class="cheat-btn" id="cheatCrit">> CRIT100</button>
+    <button class="cheat-btn" id="cheatBoost">> BOOSTME</button>
+    <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:10px;" id="cheatClose">> CLOSE</button>
   </div>
 </div>
 
 <div id="toasts"></div>
 
 <script>
-const IMAGES = {
-  soap: '', water: '', brush: '', narzan: '', chekushka: '', cosmic: ''
-};
-
+const IMAGES = { soap: '', water: '', brush: '', narzan: '', chekushka: '', cosmic: '' };
 const CFG = {
   emoji: { soap:'🧼', water:'💧', brush:'🪥', narzan:'🥤', chekushka:'🍾', cosmic:'🌌' },
   names: { soap:'Мыло «Аура»', water:'Бутылка воды', brush:'Чёрная зубная щётка', narzan:'Нарзан', chekushka:'Чекушка', cosmic:'Космический Нарзан' },
@@ -201,9 +201,7 @@ const CFG = {
   stageReq: [0, 10, 25, 50, 100, 150],
   clickBaseCost: 10, auraBaseCost: 50, costGrowth: 1.15, boosterCost: 200, boosterDuration: 30000 
 };
-
 const CODES = { 'HGHT': 5000, '0765': 1500, '27': 2700, 'E04': 404 };
-
 const ACHIEVEMENTS = [
   { id:'click1', icon:'👆', name:'Первый клик', desc:'Кликни 1 раз', check:s=>s.clicks>=1 },
   { id:'click100', icon:'💪', name:'Сто кликов', desc:'Кликни 100 раз', check:s=>s.clicks>=100 },
@@ -216,12 +214,7 @@ const ACHIEVEMENTS = [
   { id:'cosmic', icon:'🌌', name:'Бесконечность', desc:'Открой Космос', check:s=>s.stage>=5 },
   { id:'prestige', icon:'🔄', name:'Новая жизнь', desc:'Сделай престиж', check:s=>s.prestigePoints>0 },
 ];
-
-let state = {
-  aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0,
-  usedCodes: [], achievements: [], boosterEnd: 0, startedAt: Date.now(), lastSaved: Date.now(),
-  critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false
-};
+let state = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, usedCodes: [], achievements: [], boosterEnd: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false };
 
 const $ = id => document.getElementById(id);
 const el = {
@@ -305,13 +298,10 @@ function updateUI() {
   el.auraVal.textContent = fmt(state.aura);
   el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' ауры/сек' + (isBoosterActive() ? ' (x2!)' : '');
   el.prestigeVal.textContent = state.prestigePoints > 0 ? `Очки престижа: ${state.prestigePoints} (+${state.prestigePoints * 10}%)` : '';
-
   el.costClick.textContent = 'Стоимость: ' + fmt(getClickCost());
   el.btnClick.classList.toggle('disabled', state.aura < getClickCost());
-
   el.costAura.textContent = 'Стоимость: ' + fmt(getAuraCost()) + ' · есть: ' + state.auraLevel;
   el.btnAura.classList.toggle('disabled', state.aura < getAuraCost());
-
   el.costBooster.textContent = isBoosterActive() ? 'Активен!' : 'Стоимость: ' + fmt(CFG.boosterCost);
   el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < CFG.boosterCost);
 
@@ -332,28 +322,16 @@ function doClick(e) {
   let gain = getClickPower(), isCrit = false;
   if (Math.random() < state.critChance) { gain *= 5; state.crits++; isCrit = true; }
   state.aura += gain; state.totalAura += gain; state.clicks++;
-  
   el.clickZone.classList.add('pop'); setTimeout(() => el.clickZone.classList.remove('pop'), 100);
   const x = e.clientX || (e.touches && e.touches[0].clientX) || (window.innerWidth / 2);
   const y = e.clientY || (e.touches && e.touches[0].clientY) || (window.innerHeight / 2);
   floatText(x, y, '+' + Math.floor(gain), isCrit);
-  
   checkAch(); updateUI();
 }
 
-function buyClick() {
-  const cost = getClickCost();
-  if (state.aura >= cost) { state.aura -= cost; state.clickLevel++; updateUI(); checkAch(); saveGame(); }
-}
-function buyAura() {
-  const cost = getAuraCost();
-  if (state.aura >= cost) { state.aura -= cost; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); }
-}
-function buyBooster() {
-  if (isBoosterActive() || state.aura < CFG.boosterCost) return;
-  state.aura -= CFG.boosterCost; state.boosterEnd = Date.now() + CFG.boosterDuration;
-  showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame();
-}
+function buyClick() { const cost = getClickCost(); if (state.aura >= cost) { state.aura -= cost; state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
+function buyAura() { const cost = getAuraCost(); if (state.aura >= cost) { state.aura -= cost; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
+function buyBooster() { if (isBoosterActive() || state.aura < CFG.boosterCost) return; state.aura -= CFG.boosterCost; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); }
 function doPrestige() {
   if (state.stage < 4) return;
   const pts = Math.max(1, Math.floor(state.totalAura / 1000000));
@@ -370,45 +348,24 @@ function spawnFloatingBonus() {
   const bonus = document.createElement('div'); bonus.className = 'floating-bonus'; bonus.textContent = '🌟';
   bonus.style.top = Math.floor(Math.random() * 60 + 10) + '%';
   bonus.style.left = Math.floor(Math.random() * 80 + 10) + '%';
-  
   bonus.onclick = (e) => {
     e.stopPropagation();
-    if (Math.random() < 0.5) {
-      const reward = getAuraIncome() * 300; state.aura += reward; state.totalAura += reward;
-      showToast(`🌟 Звезда: +${fmt(reward)} ауры!`, 'gold');
-    } else {
-      state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold');
-    }
+    if (Math.random() < 0.5) { const reward = getAuraIncome() * 300; state.aura += reward; state.totalAura += reward; showToast(`🌟 Звезда: +${fmt(reward)} ауры!`, 'gold'); }
+    else { state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); }
     bonus.remove(); updateUI(); saveGame(); scheduleNextBonus();
   };
   el.clickZone.appendChild(bonus);
   bonusTimeout = setTimeout(() => { if (bonus.parentNode) bonus.remove(); scheduleNextBonus(); }, 8000);
 }
-function scheduleNextBonus() {
-  clearTimeout(bonusTimeout);
-  bonusTimeout = setTimeout(spawnFloatingBonus, Math.floor(Math.random() * 150000) + 90000); 
-}
+function scheduleNextBonus() { clearTimeout(bonusTimeout); bonusTimeout = setTimeout(spawnFloatingBonus, Math.floor(Math.random() * 150000) + 90000); }
 
-function useCode() {
-  const raw = el.codeInput.value.trim().toUpperCase();
-  el.codeInput.value = '';
-  el.codeInput.blur(); 
-  if (!raw) return;
-  applyCode(raw);
-}
-
+function useCode() { const raw = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!raw) return; applyCode(raw); }
 function applyCode(raw) {
-  if (raw === 'MAXSCORE559') {
-    state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50);
-    checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 ЧИТ-МЕНЮ!');
-    return;
-  }
+  if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 ЧИТ-МЕНЮ!'); return; }
   if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; }
   if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; }
-  
   if (!(raw in CODES)) return showToast('❌ Неверный код');
   if (state.usedCodes.includes(raw)) return showToast('Код уже использован');
-  
   const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus;
   showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame();
 }
@@ -416,9 +373,7 @@ function applyCode(raw) {
 let lastTick = performance.now(), autoSaveTimer = 0;
 function gameLoop(now) {
   const dt = Math.min((now - lastTick) / 1000, 1); lastTick = now;
-  if (state.auraLevel > 0) {
-    const gain = getAuraIncome() * dt; state.aura += gain; state.totalAura += gain;
-  }
+  if (state.auraLevel > 0) { const gain = getAuraIncome() * dt; state.aura += gain; state.totalAura += gain; }
   if (state.boosterEnd > 0 && Date.now() > state.boosterEnd && !state.isBoosterPermanent) state.boosterEnd = 0;
   updateUI();
   autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); }
@@ -429,27 +384,16 @@ let activeTab = 'ach';
 function renderMenu() {
   let html = '';
   if (activeTab === 'ach') {
-    ACHIEVEMENTS.forEach(a => {
-      const on = state.achievements.includes(a.id);
-      html += `<div class="ach-item ${on?'unlocked':''}"><div class="ach-icon">${on?a.icon:'🔒'}</div><div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div></div>`;
-    });
+    ACHIEVEMENTS.forEach(a => { const on = state.achievements.includes(a.id); html += `<div class="ach-item ${on?'unlocked':''}"><div class="ach-icon">${on?a.icon:'🔒'}</div><div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div></div>`; });
   } else if (activeTab === 'evo') {
-    CFG.order.forEach((id, i) => {
-      const cur = state.stage === i, done = state.stage > i;
-      html += `<div class="ach-item ${done||cur?'unlocked':''}" style="${cur?'border-color:#ffd700':''}"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]} ${cur?'(Текущая)':''}</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`;
-    });
+    CFG.order.forEach((id, i) => { const cur = state.stage === i, done = state.stage > i; html += `<div class="ach-item ${done||cur?'unlocked':''}" style="${cur?'border-color:#ffd700':''}"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]} ${cur?'(Текущая)':''}</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; });
   } else if (activeTab === 'stats') {
     const mins = Math.floor((Date.now() - state.startedAt) / 60000);
-    html = `<div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Всего ауры:</span> <b>${fmt(state.totalAura)}</b></div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>В игре:</span> <b>${mins} мин</b></div>`;
+    html = `<div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Всего ауры:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>В игре:</span> <b>${mins} мин</b></div>`;
   }
   el.tabContent.innerHTML = html;
 }
 
-// ИСПОЛЬЗУЕМ pointerdown вместо click (лучше работает в WebView)
 el.clickZone.addEventListener('pointerdown', doClick);
 el.btnClick.addEventListener('pointerdown', buyClick);
 el.btnAura.addEventListener('pointerdown', buyAura);
@@ -457,23 +401,14 @@ el.btnBooster.addEventListener('pointerdown', buyBooster);
 el.btnPrestige.addEventListener('pointerdown', doPrestige);
 el.codeBtn.addEventListener('click', useCode);
 el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); });
-
 el.menuBtn.addEventListener('pointerdown', () => { renderMenu(); el.menuOverlay.classList.add('show'); });
 el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show'));
 el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
-
-// Обработчики для чит-меню
 $('cheatMax').addEventListener('pointerdown', () => applyCode('MAXSCORE559'));
 $('cheatCrit').addEventListener('pointerdown', () => applyCode('CRIT100'));
 $('cheatBoost').addEventListener('pointerdown', () => applyCode('BOOSTME'));
 $('cheatClose').addEventListener('pointerdown', () => el.cheatOverlay.classList.remove('show'));
-
-document.querySelectorAll('.tab').forEach(t => {
-  t.addEventListener('pointerdown', () => {
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-    t.classList.add('active'); activeTab = t.dataset.tab; renderMenu();
-  });
-});
+document.querySelectorAll('.tab').forEach(t => { t.addEventListener('pointerdown', () => { document.querySelectorAll('.tab').forEach(x => x.classList.remove('active')); t.classList.add('active'); activeTab = t.dataset.tab; renderMenu(); }); });
 
 loadGame(); renderCharacter(); updateUI(); requestAnimationFrame(gameLoop); setInterval(checkAch, 1000); scheduleNextBonus();
 </script>
