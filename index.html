@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<!-- Отключаем кэш -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -127,14 +126,25 @@
 </head>
 <body>
 
+<!-- СКРИПТ АВТООБНОВЛЕНИЯ -->
+<script>
+  // Проверяем, когда игра была открыта в последний раз
+  const lastOpen = sessionStorage.getItem('lastOpenTime');
+  const now = Date.now();
+  
+  // Если прошло больше 5 минут (300000 мс) с момента последнего открытия
+  if (lastOpen && (now - lastOpen > 300000)) {
+    // Принудительно перезагружаем страницу в обход кэша
+    window.location.reload(true);
+  }
+  // Запоминаем время текущего открытия
+  sessionStorage.setItem('lastOpenTime', now);
+</script>
+
 <div class="app">
   <header>
-    <!-- КНОПКА ПРЕСТИЖА (СЛЕВА) -->
     <button class="prestige-btn-small hidden" id="btnPrestige" title="Престиж">🔄</button>
-    
-    <!-- КНОПКА МЕНЮ (СПРАВА) -->
     <button class="menu-btn" id="menuBtn">☰</button>
-    
     <div class="aura-display"><span class="aura-icon">✨</span> <span id="auraVal">0</span></div>
     <div class="stage-name" id="stageName">Мыло «Аура»</div>
     <div class="income-text" id="incomeVal">+0 ауры/сек</div>
@@ -204,6 +214,7 @@
 <div id="toasts"></div>
 
 <script>
+// Весь остальной скрипт игры
 const IMAGES = { soap: '', water: '', brush: '', narzan: '', chekushka: '', cosmic: '' };
 const CFG = {
   emoji: { soap:'🧼', water:'💧', brush:'🪥', narzan:'🥤', chekushka:'🍾', cosmic:'🌌' },
@@ -326,10 +337,7 @@ function updateUI() {
     el.finalText.textContent = `До след. формы: ${state.auraLevel} / ${target} ур. ауры`;
   } else { el.finalBox.classList.remove('show'); }
 
-  // ПОКАЗЫВАЕМ КНОПКУ ПРЕСТИЖА СЛЕВА, ЕСЛИ ДОСТИГЛИ 4 СТАДИИ
-  if (state.stage >= 4) {
-    el.btnPrestige.classList.remove('hidden');
-  }
+  if (state.stage >= 4) { el.btnPrestige.classList.remove('hidden'); }
 }
 
 function doClick(e) {
@@ -354,7 +362,7 @@ function doPrestige() {
     state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0;
     state.boosterEnd = 0; state.isBoosterPermanent = false; state.prestigePoints += pts;
     renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold');
-    el.btnPrestige.classList.add('hidden'); // Прячем кнопку до следующего финала
+    el.btnPrestige.classList.add('hidden');
   }
 }
 
@@ -410,12 +418,11 @@ function renderMenu() {
   el.tabContent.innerHTML = html;
 }
 
-// --- ОБРАБОТЧИКИ ---
 el.clickZone.addEventListener('pointerdown', doClick);
 el.btnClick.addEventListener('pointerdown', buyClick);
 el.btnAura.addEventListener('pointerdown', buyAura);
 el.btnBooster.addEventListener('pointerdown', buyBooster);
-el.btnPrestige.addEventListener('pointerdown', doPrestige); // Новая маленькая кнопка престижа
+el.btnPrestige.addEventListener('pointerdown', doPrestige);
 
 el.codeBtn.addEventListener('click', useCode);
 el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); });
