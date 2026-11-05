@@ -24,6 +24,8 @@
   }
   
   header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
+  
+  /* МЕНЮ (справа) */
   .menu-btn {
     position: absolute; top: 0; right: 0; background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1); color: #a0b0d0; font-size: 18px;
@@ -31,6 +33,18 @@
     display: flex; align-items: center; justify-content: center; touch-action: manipulation;
   }
   .menu-btn:active { transform: scale(0.9); }
+
+  /* КНОПКА ПРЕСТИЖА (слева) */
+  .prestige-btn-small {
+    position: absolute; top: 0; left: 0; background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 16px;
+    width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; justify-content: center; touch-action: manipulation;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+  }
+  .prestige-btn-small:active { transform: scale(0.9); background: rgba(245, 158, 11, 0.3); }
+  .prestige-btn-small.hidden { display: none; }
+
   .aura-display { font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; line-height: 1.1; }
   .aura-icon { color: #ffd700; font-size: 24px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
   .stage-name { font-size: 13px; color: #8a9bbd; margin-top: 2px; font-weight: 500; }
@@ -70,9 +84,6 @@
   .btn:active { transform: scale(0.97); }
   .btn.disabled { opacity: 0.5; pointer-events: none; box-shadow: none; }
   .btn-sub { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.8); margin-top: 1px; }
-  
-  .btn-prestige { background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 3px 8px rgba(239,68,68,0.3);}
-  .btn-prestige.hidden { display: none; }
 
   .codes { display: flex; gap: 5px; }
   .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 10px; outline: none; font-size: 12px; text-transform: uppercase;}
@@ -118,7 +129,12 @@
 
 <div class="app">
   <header>
+    <!-- КНОПКА ПРЕСТИЖА (СЛЕВА) -->
+    <button class="prestige-btn-small hidden" id="btnPrestige" title="Престиж">🔄</button>
+    
+    <!-- КНОПКА МЕНЮ (СПРАВА) -->
     <button class="menu-btn" id="menuBtn">☰</button>
+    
     <div class="aura-display"><span class="aura-icon">✨</span> <span id="auraVal">0</span></div>
     <div class="stage-name" id="stageName">Мыло «Аура»</div>
     <div class="income-text" id="incomeVal">+0 ауры/сек</div>
@@ -155,11 +171,6 @@
       <button class="btn" id="btnBooster">
         <div>Бустер x2 (30с)</div>
         <div class="btn-sub" id="costBooster">Стоимость: 200</div>
-      </button>
-
-      <button class="btn btn-prestige hidden" id="btnPrestige">
-        <div>🔄 Престиж (Сброс)</div>
-        <div class="btn-sub" id="prestigeGain">Получить: 0 очков</div>
       </button>
     </div>
   </div>
@@ -221,7 +232,7 @@ const el = {
   auraVal: $('auraVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'),
   clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'),
   btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'),
-  btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), prestigeGain: $('prestigeGain'),
+  btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'),
   finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'),
   codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'),
   cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts')
@@ -268,7 +279,7 @@ function checkStage() {
   for (let i = 0; i < CFG.stageReq.length; i++) { if (state.auraLevel >= CFG.stageReq[i]) newStage = i; }
   if (newStage > state.stage) {
     state.stage = newStage;
-    if (state.stage === 4) { showToast('🍾 ФИНАЛ! Чекушка получена!'); el.btnPrestige.classList.remove('hidden'); }
+    if (state.stage === 4) { showToast('🍾 ФИНАЛ! Чекушка получена!'); }
     else if (state.stage === 5) showToast('🌌 СЕКРЕТ: Космический Нарзан!', 'gold');
     else showToast('🧬 Эволюция: ' + CFG.names[CFG.order[state.stage]]);
     renderCharacter(); saveGame();
@@ -297,11 +308,14 @@ function renderCharacter() {
 function updateUI() {
   el.auraVal.textContent = fmt(state.aura);
   el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' ауры/сек' + (isBoosterActive() ? ' (x2!)' : '');
-  el.prestigeVal.textContent = state.prestigePoints > 0 ? `Очки престижа: ${state.prestigePoints} (+${state.prestigePoints * 10}%)` : '';
+  el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : '';
+  
   el.costClick.textContent = 'Стоимость: ' + fmt(getClickCost());
   el.btnClick.classList.toggle('disabled', state.aura < getClickCost());
+  
   el.costAura.textContent = 'Стоимость: ' + fmt(getAuraCost()) + ' · есть: ' + state.auraLevel;
   el.btnAura.classList.toggle('disabled', state.aura < getAuraCost());
+  
   el.costBooster.textContent = isBoosterActive() ? 'Активен!' : 'Стоимость: ' + fmt(CFG.boosterCost);
   el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < CFG.boosterCost);
 
@@ -312,9 +326,9 @@ function updateUI() {
     el.finalText.textContent = `До след. формы: ${state.auraLevel} / ${target} ур. ауры`;
   } else { el.finalBox.classList.remove('show'); }
 
+  // ПОКАЗЫВАЕМ КНОПКУ ПРЕСТИЖА СЛЕВА, ЕСЛИ ДОСТИГЛИ 4 СТАДИИ
   if (state.stage >= 4) {
     el.btnPrestige.classList.remove('hidden');
-    el.prestigeGain.textContent = `Получить: ${Math.max(1, Math.floor(state.totalAura / 1000000))} очков`;
   }
 }
 
@@ -332,13 +346,15 @@ function doClick(e) {
 function buyClick() { const cost = getClickCost(); if (state.aura >= cost) { state.aura -= cost; state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
 function buyAura() { const cost = getAuraCost(); if (state.aura >= cost) { state.aura -= cost; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive() || state.aura < CFG.boosterCost) return; state.aura -= CFG.boosterCost; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); }
+
 function doPrestige() {
   if (state.stage < 4) return;
   const pts = Math.max(1, Math.floor(state.totalAura / 1000000));
-  if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?`)) {
+  if (confirm(`Сбросить прогресс и получить ${pts} очков престижа? (Каждое очко дает +10% к доходу навсегда)`)) {
     state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0;
     state.boosterEnd = 0; state.isBoosterPermanent = false; state.prestigePoints += pts;
     renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold');
+    el.btnPrestige.classList.add('hidden'); // Прячем кнопку до следующего финала
   }
 }
 
@@ -394,21 +410,30 @@ function renderMenu() {
   el.tabContent.innerHTML = html;
 }
 
+// --- ОБРАБОТЧИКИ ---
 el.clickZone.addEventListener('pointerdown', doClick);
 el.btnClick.addEventListener('pointerdown', buyClick);
 el.btnAura.addEventListener('pointerdown', buyAura);
 el.btnBooster.addEventListener('pointerdown', buyBooster);
-el.btnPrestige.addEventListener('pointerdown', doPrestige);
+el.btnPrestige.addEventListener('pointerdown', doPrestige); // Новая маленькая кнопка престижа
+
 el.codeBtn.addEventListener('click', useCode);
 el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); });
 el.menuBtn.addEventListener('pointerdown', () => { renderMenu(); el.menuOverlay.classList.add('show'); });
 el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show'));
 el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
+
 $('cheatMax').addEventListener('pointerdown', () => applyCode('MAXSCORE559'));
 $('cheatCrit').addEventListener('pointerdown', () => applyCode('CRIT100'));
 $('cheatBoost').addEventListener('pointerdown', () => applyCode('BOOSTME'));
 $('cheatClose').addEventListener('pointerdown', () => el.cheatOverlay.classList.remove('show'));
-document.querySelectorAll('.tab').forEach(t => { t.addEventListener('pointerdown', () => { document.querySelectorAll('.tab').forEach(x => x.classList.remove('active')); t.classList.add('active'); activeTab = t.dataset.tab; renderMenu(); }); });
+
+document.querySelectorAll('.tab').forEach(t => { 
+  t.addEventListener('pointerdown', () => { 
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active')); 
+    t.classList.add('active'); activeTab = t.dataset.tab; renderMenu(); 
+  }); 
+});
 
 loadGame(); renderCharacter(); updateUI(); requestAnimationFrame(gameLoop); setInterval(checkAch, 1000); scheduleNextBonus();
 </script>
