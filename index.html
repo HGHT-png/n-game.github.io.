@@ -10,6 +10,9 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
   
+  /* Убираем дефолтные обводки у всех кнопок и инпутов */
+  button, input { outline: none; border: none; -webkit-appearance: none; }
+  
   body, html {
     overscroll-behavior: none; 
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -59,81 +62,123 @@
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #fbbf24, #ef4444); transition: width 0.3s; }
 
   .buttons { display: flex; flex-direction: column; gap: 5px; }
-  .btn { width: 100%; border-radius: 12px; padding: 6px 8px; font-size: 13px; font-weight: 700; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.15s; background: linear-gradient(135deg, #6a4cff, #8a6cff); color: #fff; box-shadow: 0 3px 8px rgba(106,76,255,0.3); cursor: pointer; touch-action: manipulation; }
+  .btn { width: 100%; border-radius: 12px; padding: 6px 8px; font-size: 13px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.15s; background: linear-gradient(135deg, #6a4cff, #8a6cff); color: #fff; box-shadow: 0 3px 8px rgba(106,76,255,0.3); cursor: pointer; touch-action: manipulation; }
   .btn:active { transform: scale(0.97); }
   .btn.disabled { opacity: 0.5; pointer-events: none; box-shadow: none; }
   .btn-sub { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.8); margin-top: 1px; }
 
   .codes { display: flex; gap: 5px; }
-  .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 10px; outline: none; font-size: 12px; text-transform: uppercase;}
+  .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 10px; font-size: 12px; text-transform: uppercase;}
   .codes input::placeholder { color: #555; }
-  .codes button { background: #6a4cff; border: none; color: #fff; padding: 0 10px; border-radius: 10px; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 12px;}
+  .codes button { background: #6a4cff; color: #fff; padding: 0 10px; border-radius: 10px; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 12px;}
 
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 15px; }
   .overlay.show { display: flex; }
-  .menu { width: 100%; max-width: 400px; max-height: 85vh; background: #14152b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
-  .menu-header { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
-  .menu-header h2 { font-size: 16px; color: #fff; }
-  .close-btn { background: none; border: none; color: #8a9bbd; font-size: 20px; cursor: pointer; touch-action: manipulation;}
-  .tabs { display: flex; padding: 8px; gap: 4px; overflow-x: auto; }
-  .tab { background: none; border: 1px solid rgba(255,255,255,0.1); color: #8a9bbd; padding: 5px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; white-space: nowrap; touch-action: manipulation;}
-  .tab.active { background: rgba(106,76,255,0.2); color: #fff; border-color: #6a4cff; }
-  .tab-content { padding: 12px; overflow-y: auto; flex: 1; color: #ccc; font-size: 13px; }
   
+  .menu { 
+    width: 100%; max-width: 400px; height: 85vh; 
+    background: #14152b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; 
+    display: flex; flex-direction: column; overflow: hidden; position: relative; 
+  }
+  
+  .menu-header { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .menu-header h2 { font-size: 16px; color: #fff; }
+  .close-btn { background: none; color: #8a9bbd; font-size: 20px; cursor: pointer; touch-action: manipulation;}
+  
+  .tabs { 
+    display: flex; padding: 8px; gap: 4px; 
+    overflow-x: auto; flex-shrink: 0; 
+    scrollbar-width: none; 
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  
+  .tab { background: none; border: 1px solid rgba(255,255,255,0.1); color: #8a9bbd; padding: 5px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; white-space: nowrap; touch-action: manipulation; transition: 0.2s; }
+  .tab.active { background: rgba(106,76,255,0.2); color: #fff; border-color: #6a4cff; }
+  
+  .tab-content { 
+    padding: 12px; overflow-y: auto; flex: 1; min-height: 0;
+    color: #ccc; font-size: 13px; scroll-behavior: smooth;
+  }
+  
+  .tab-content.slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.17, 0.67, 0.12, 0.99) forwards; }
+  .tab-content.slide-in-left { animation: slideInLeft 0.3s cubic-bezier(0.17, 0.67, 0.12, 0.99) forwards; }
+  @keyframes slideInRight { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } }
+  @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
+
   .ach-item { display: flex; gap: 8px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; opacity: 0.5; }
   .ach-item.unlocked { opacity: 1; background: rgba(94,234,212,0.1); border: 1px solid rgba(94,234,212,0.3); }
   .ach-icon { font-size: 16px; }
   .ach-name { font-weight: bold; color: #fff; font-size: 12px;}
   .ach-desc { font-size: 10px; color: #8a9bbd; }
 
-  .pet-card { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 6px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.1); }
+  .pet-card { 
+    background: rgba(255,255,255,0.03); border-radius: 12px; padding: 6px; margin-bottom: 5px; 
+    display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.1); transition: 0.1s; 
+  }
   .pet-card.owned { border-color: #5eead4; background: rgba(94,234,212,0.05); }
   .pet-card.active-pet { border-color: #fbbf24; background: rgba(245,158,11,0.1); box-shadow: 0 0 10px rgba(245,158,11,0.2); }
-  .pet-icon { font-size: 22px; width: 30px; text-align: center; }
-  .pet-info { flex: 1; }
-  .pet-title { font-weight: 700; font-size: 12px; }
+  .pet-icon { font-size: 22px; width: 30px; text-align: center; flex-shrink: 0; }
+  .pet-info { flex: 1; min-width: 0; }
+  .pet-title { font-weight: 700; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
   .pet-rarity-rare { color: #60a5fa; }
   .pet-rarity-epic { color: #c084fc; }
   .pet-rarity-legendary { color: #fbbf24; }
   .pet-bonus { font-size: 9px; color: #5eead4; margin-top: 2px; }
-  .pet-actions { display: flex; gap: 4px; flex-direction: column;}
-  .pet-btn { padding: 4px 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; border: none; touch-action: manipulation; width: 65px;}
+  .pet-actions { display: flex; gap: 4px; flex-direction: column; flex-shrink: 0;}
+  .pet-btn { padding: 4px 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; touch-action: manipulation; width: 65px;}
   .pet-btn.buy { background: #6a4cff; color: white; }
   .pet-btn.equip { background: #fbbf24; color: black; }
   .pet-btn.equipped { background: #2a2a3a; color: #888; }
   .pet-btn.sell { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
 
-  .case-box { background: rgba(96,165,250,0.1); border: 1px solid #60a5fa; border-radius: 12px; padding: 10px; text-align: center; margin-bottom: 10px; }
-  .case-title { font-weight: 800; color: #60a5fa; font-size: 14px; margin-bottom: 5px; }
-  .case-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 8px; border-radius: 10px; font-weight: bold; font-size: 13px; margin-top: 5px; width: 100%; cursor: pointer; touch-action: manipulation; }
+  /* СТИЛЬ КЕЙСА (Убрана кривая обводка, добавлен аккуратный бордер и тень) */
+  .case-box { 
+    background: rgba(96,165,250,0.08); 
+    border: 1px solid #3b82f6; /* Четкая, красивая рамка */
+    border-radius: 14px; 
+    padding: 12px; 
+    text-align: center; 
+    margin-bottom: 12px; 
+    box-shadow: inset 0 0 20px rgba(59,130,246,0.15);
+  }
+  .case-title { font-weight: 800; color: #60a5fa; font-size: 15px; margin-bottom: 6px; }
+  .case-btn { 
+    background: linear-gradient(135deg, #3b82f6, #2563eb); 
+    color: white; 
+    padding: 10px; 
+    border-radius: 10px; 
+    font-weight: bold; 
+    font-size: 14px; 
+    margin-top: 8px; 
+    width: 100%; 
+    cursor: pointer; 
+    touch-action: manipulation; 
+    box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+  }
   .case-btn:active { transform: scale(0.97); }
-  .case-btn:disabled { opacity: 0.5; pointer-events: none; }
-  .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; }
+  .case-btn:disabled { opacity: 0.4; pointer-events: none; box-shadow: none; }
+  .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; box-shadow: 0 4px 12px rgba(245,158,11,0.4);}
 
   .casino-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
   .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
   .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-  .wheel-label { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; width: 80px; margin-left: -40px; margin-top: -6px; pointer-events: none; }
-
-  .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
+  .wheel-label { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; width: 80px; margin-left: -40px; margin-top: -6px; pointer-events: none; display: flex; justify-content: center; align-items: center;}
+  .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
   .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
 
-  /* УЛУЧШЕННАЯ МОДАЛКА КЕЙСА */
   .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
   .case-modal.show { display: flex; }
   .case-anim-box { font-size: 80px; animation: shake 0.5s infinite; }
   @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
-  
   .case-result { display: none; flex-direction: column; align-items: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; }
   @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
   .case-result-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
   .case-result-icon { font-size: 100px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .case-result-name { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
-  
-  .case-close-btn { background: #3b82f6; color: white; padding: 12px 40px; border-radius: 12px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
+  .case-close-btn { background: #3b82f6; color: white; padding: 12px 40px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
   .case-close-btn:active { transform: scale(0.95); }
-  .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   .close-case-x:active { background: rgba(255,255,255,0.2); }
 
   .floating-bonus { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24); }
@@ -151,7 +196,7 @@
   @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -60px) scale(1.5); } }
 
   .cheat-panel { background: #000; border: 1px solid #0f0; color: #0f0; padding: 12px; border-radius: 8px; font-family: monospace; width: 100%; max-width: 320px; max-height: 80vh; overflow-y: auto;}
-  .cheat-btn { background: #0f0; color: #000; border: none; padding: 6px; margin: 4px 0; width: 100%; font-weight: bold; cursor: pointer; border-radius: 4px; text-align:left; touch-action: manipulation; font-size: 12px;}
+  .cheat-btn { background: #0f0; color: #000; padding: 6px; margin: 4px 0; width: 100%; font-weight: bold; cursor: pointer; border-radius: 4px; text-align:left; touch-action: manipulation; font-size: 12px;}
 </style>
 </head>
 <body>
@@ -215,7 +260,7 @@
       <h2>Меню</h2>
       <button class="close-btn" id="closeMenu">✕</button>
     </div>
-    <div class="tabs">
+    <div class="tabs" id="tabsContainer">
       <button class="tab active" data-tab="ach">🏆 Ачивки</button>
       <button class="tab" data-tab="evo">🧬 Эволюция</button>
       <button class="tab" data-tab="pets">🐾 Питомцы</button>
@@ -233,7 +278,7 @@
     <div class="case-result-title" id="caseResultTitle">Вы выбили:</div>
     <div class="case-result-icon" id="caseResultIcon">🐉</div>
     <div class="case-result-name" id="caseResultName">Дракон</div>
-    <button class="case-close-btn" onclick="document.getElementById('caseModal').classList.remove('show')">Забрать</button>
+    <button class="case-close-btn" id="caseCloseBtn">Забрать</button>
   </div>
 </div>
 
@@ -320,7 +365,8 @@ const el = {
   finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'),
   codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'),
   cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'),
-  caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName')
+  caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'),
+  caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX')
 };
 
 function saveGame() { state.lastSaved = Date.now(); localStorage.setItem('narzan_save_data', JSON.stringify(state)); }
@@ -574,7 +620,9 @@ function buyPet(petId) {
   state.pets.push(petId);
   if (state.activePets.length < 5) state.activePets.push(petId); 
   showToast(`Вы купили ${pet.name}!`, 'gold');
-  renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); renderMenu();
+  renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); 
+  
+  renderMenu(true); 
 }
 
 function togglePet(petId) {
@@ -589,7 +637,9 @@ function togglePet(petId) {
     state.activePets.push(petId);
     showToast(`Экипирован: ${PETS.find(p=>p.id===petId).name}`);
   }
-  renderPetsOnScreen(); updateUI(); saveGame(); renderMenu();
+  renderPetsOnScreen(); updateUI(); saveGame(); 
+  
+  renderMenu(true); 
 }
 
 function sellPet(petId) {
@@ -603,11 +653,12 @@ function sellPet(petId) {
     state.pets = state.pets.filter(id => id !== petId);
     state.activePets = state.activePets.filter(id => id !== petId); 
     showToast(`Продано: ${pet.name} (+${price} 💎)`, 'crystal');
-    renderPetsOnScreen(); updateUI(); saveGame(); renderMenu();
+    renderPetsOnScreen(); updateUI(); saveGame(); 
+    
+    renderMenu(true); 
   }
 }
 
-// --- ИСПРАВЛЕННАЯ ЛОГИКА ОТКРЫТИЯ КЕЙСА ---
 let isCaseAnimating = false;
 function openCase(isFree = false) {
   if (isCaseAnimating) return;
@@ -617,14 +668,12 @@ function openCase(isFree = false) {
 
   isCaseAnimating = true;
   
-  // 1. СРАЗУ ОПРЕДЕЛЯЕМ ПРИЗ
   const rand = Math.random() * 100;
   let droppedPet = null;
   if (rand < 5) droppedPet = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)];
   else if (rand < 30) droppedPet = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)];
   else droppedPet = PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)];
 
-  // 2. СРАЗУ ВЫДАЕМ ЕГО ИГРОКУ И СОХРАНЯЕМ (чтобы не потерялся при вылете)
   let isDuplicate = state.pets.includes(droppedPet.id);
   if (isDuplicate) {
     state.crystals += 5;
@@ -633,17 +682,15 @@ function openCase(isFree = false) {
     if (state.activePets.length < 5) state.activePets.push(droppedPet.id);
   }
   
-  saveGame(); // Сохраняем в память немедленно!
-  renderPetsOnScreen(); updateUI(); renderMenu();
+  saveGame();
+  renderPetsOnScreen(); updateUI(); renderMenu(true);
 
-  // 3. ПОКАЗЫВАЕМ АНИМАЦИЮ
   el.caseModal.classList.add('show');
   el.caseAnimBox.style.display = 'block';
   el.caseResult.style.display = 'none';
-  el.caseModal.querySelector('.case-close-btn').style.display = 'none';
-  document.getElementById('closeCaseX').style.display = 'block';
+  el.caseCloseBtn.style.display = 'none';
+  el.closeCaseX.style.display = 'block';
 
-  // 4. ЧЕРЕЗ 2 СЕКУНДЫ ПОКАЗЫВАЕМ РЕЗУЛЬТАТ
   setTimeout(() => {
     el.caseAnimBox.style.display = 'none';
     el.caseResult.style.display = 'flex';
@@ -662,11 +709,20 @@ function openCase(isFree = false) {
       el.caseResultIcon.innerHTML = droppedPet.emoji;
     }
     
-    el.caseModal.querySelector('.case-close-btn').style.display = 'inline-block';
+    el.caseCloseBtn.style.display = 'inline-block';
     isCaseAnimating = false;
     checkAch();
   }, 2000);
 }
+
+// Функция для закрытия кейса (убирает баг с зависанием кнопки)
+function closeCase() {
+  el.caseModal.classList.remove('show');
+  isCaseAnimating = false; // Важно! Снимаем блокировку
+  renderMenu(true); // Обновляем интерфейс, чтобы кнопка стала активной
+}
+el.caseCloseBtn.addEventListener('click', closeCase);
+el.closeCaseX.addEventListener('click', closeCase);
 
 let isSpinning = false;
 let currentRotation = 0;
@@ -687,9 +743,9 @@ function renderCasino() {
   
   let labelsHtml = '';
   WHEEL_PRIZES.forEach((prize, i) => {
-    const angle = i * deg + (deg / 2); 
+    const angle = (i * deg) + (deg / 2); 
     const flip = (angle > 90 && angle < 270) ? 180 : 0;
-    labelsHtml += `<div class="wheel-label" style="transform: rotate(${angle}deg) translateY(-80px) rotate(${-angle + flip}deg);">${prize.text}</div>`;
+    labelsHtml += `<div class="wheel-label" style="transform: rotate(${angle}deg) translateY(-85px) rotate(${-angle + flip}deg);">${prize.text}</div>`;
   });
 
   return `<div class="casino-wrap">
@@ -718,6 +774,8 @@ function spinWheel() {
   const targetBaseAngle = -centerOfSector;
   
   let currentAngleMod = currentRotation % 360;
+  if (currentAngleMod < 0) currentAngleMod += 360;
+  
   let angleDiff = (targetBaseAngle - currentAngleMod + 360) % 360;
   
   currentRotation += 1800 + angleDiff;
@@ -727,7 +785,7 @@ function spinWheel() {
     WHEEL_PRIZES[prizeIndex].action();
     showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[prizeIndex].text}!`, 'gold');
     isSpinning = false;
-    updateUI(); saveGame(); renderMenu();
+    updateUI(); saveGame(); renderMenu(true);
   }, 4200); 
 }
 
@@ -772,7 +830,12 @@ function gameLoop(now) {
 }
 
 let activeTab = 'ach';
-function renderMenu() {
+const tabsOrder = ['ach', 'evo', 'pets', 'casino', 'stats'];
+
+function renderMenu(keepScroll = false) {
+  let scrollPos = 0;
+  if (keepScroll) scrollPos = el.tabContent.scrollTop;
+
   let html = '';
   
   if (activeTab === 'ach') {
@@ -830,7 +893,38 @@ function renderMenu() {
     const mins = Math.floor((Date.now() - state.startedAt) / 60000);
     html = `<div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Всего ауры:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Питомцев:</span> <b>${state.pets.length} / 15</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>В игре:</span> <b>${mins} мин</b></div>`;
   }
+  
   el.tabContent.innerHTML = html;
+  
+  if (keepScroll) {
+    el.tabContent.scrollTop = scrollPos;
+  }
+}
+
+function switchTab(tabId, isSwipe = false, swipeDirection = '') {
+  if (activeTab === tabId) return;
+  
+  const newIndex = tabsOrder.indexOf(tabId);
+  const oldIndex = tabsOrder.indexOf(activeTab);
+  
+  activeTab = tabId;
+  document.querySelectorAll('.tab').forEach(x => {
+    x.classList.remove('active');
+    if(x.dataset.tab === activeTab) x.classList.add('active');
+  });
+
+  if (isSwipe) {
+    el.tabContent.classList.remove('slide-in-left', 'slide-in-right');
+    void el.tabContent.offsetWidth; 
+    
+    if (swipeDirection === 'left') { 
+      el.tabContent.classList.add('slide-in-right');
+    } else { 
+      el.tabContent.classList.add('slide-in-left');
+    }
+  }
+  
+  renderMenu(false); 
 }
 
 el.clickZone.addEventListener('pointerdown', doClick);
@@ -841,22 +935,17 @@ el.btnPrestige.addEventListener('pointerdown', doPrestige);
 
 el.codeBtn.addEventListener('click', useCode);
 el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); });
-el.menuBtn.addEventListener('pointerdown', () => { renderMenu(); el.menuOverlay.classList.add('show'); });
+el.menuBtn.addEventListener('pointerdown', () => { renderMenu(false); el.menuOverlay.classList.add('show'); });
 el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show'));
 el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
 
-document.getElementById('closeCaseX').addEventListener('pointerdown', () => {
-  document.getElementById('caseModal').classList.remove('show');
-  el.caseModal.querySelector('.case-close-btn').style.display = 'none'; // Прячем кнопку "Забрать" до следующего открытия
-});
-
 document.querySelectorAll('.tab').forEach(t => { 
-  t.addEventListener('pointerdown', () => { 
-    switchTab(t.dataset.tab);
+  t.addEventListener('pointerdown', (e) => { 
+    e.preventDefault();
+    switchTab(t.dataset.tab, false);
   }); 
 });
 
-const tabsOrder = ['ach', 'evo', 'pets', 'casino', 'stats'];
 let touchStartX = 0;
 let touchStartY = 0;
 const menuContainer = document.querySelector('.menu');
@@ -872,24 +961,16 @@ menuContainer.addEventListener('touchend', e => {
   let deltaX = touchEndX - touchStartX;
   let deltaY = touchEndY - touchStartY;
 
-  if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+  if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
     let currentIndex = tabsOrder.indexOf(activeTab);
+    
     if (deltaX > 0 && currentIndex > 0) {
-      switchTab(tabsOrder[currentIndex - 1]);
+      switchTab(tabsOrder[currentIndex - 1], true, 'right');
     } else if (deltaX < 0 && currentIndex < tabsOrder.length - 1) {
-      switchTab(tabsOrder[currentIndex + 1]);
+      switchTab(tabsOrder[currentIndex + 1], true, 'left');
     }
   }
 });
-
-function switchTab(tabId) {
-  activeTab = tabId;
-  document.querySelectorAll('.tab').forEach(x => {
-    x.classList.remove('active');
-    if(x.dataset.tab === activeTab) x.classList.add('active');
-  });
-  renderMenu();
-}
 
 loadGame(); 
 renderCharacter(); 
