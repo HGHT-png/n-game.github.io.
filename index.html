@@ -10,7 +10,8 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
   
-  body {
+  body, html {
+    overscroll-behavior: none; 
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: radial-gradient(circle at top, #1b1c3e 0%, #0a0b1a 60%, #05050a 100%);
     color: #fff; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden;
@@ -43,17 +44,10 @@
   #charEmoji { font-size: 70px; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
   .click-zone.pop #charImg, .click-zone.pop #charEmoji { transform: scale(1.1); }
 
-  .active-pet-display {
-    position: absolute; right: 15%; bottom: 20%; font-size: 40px; z-index: 3; pointer-events: none;
-    animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
-  }
+  .pets-container { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+  .active-pet-display { position: absolute; font-size: 35px; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
-
-  .drone-active {
-    filter: drop-shadow(0 0 20px #00ffff) !important;
-    animation: droneHover 1s infinite alternate ease-in-out !important;
-    font-size: 50px !important;
-  }
+  .drone-active { position: absolute; right: 15%; bottom: 20%; font-size: 50px; z-index: 4; filter: drop-shadow(0 0 20px #00ffff) !important; animation: droneHover 1s infinite alternate ease-in-out !important; }
   @keyframes droneHover { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-20px) scale(1.1); } }
 
   .bottom-panel { display: flex; flex-direction: column; gap: 5px; }
@@ -115,32 +109,16 @@
   .case-btn:disabled { opacity: 0.5; pointer-events: none; }
   .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; }
 
-  /* КАЗИНО */
   .casino-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
   .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
   .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
   
-  .wheel-label {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform-origin: 0 0;
-    font-size: 11px;
-    font-weight: bold;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-    text-align: center;
-    width: 80px;
-    margin-left: -40px;
-    margin-top: -6px;
-    pointer-events: none;
-  }
+  .wheel-label { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; width: 80px; margin-left: -40px; margin-top: -6px; pointer-events: none; }
 
   .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
   .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
 
-  /* МОДАЛКА КЕЙСА */
   .case-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
   .case-modal.show { display: flex; }
   .case-anim-box { font-size: 80px; animation: shake 0.5s infinite; }
@@ -191,7 +169,7 @@
   <div class="click-zone" id="clickZone">
     <img id="charImg" src="" alt="" style="display:none;">
     <span id="charEmoji">🧼</span>
-    <div class="active-pet-display" id="activePetDisplay" style="display:none;">🐾</div>
+    <div class="pets-container" id="petsContainer"></div>
   </div>
 
   <div class="bottom-panel">
@@ -320,7 +298,7 @@ const ACHIEVEMENTS = [
 
 let state = { 
   aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, 
-  crystals: 0, pets: [], activePet: null, freeCases: 0, codeUses: {}, hasDrone: false,
+  crystals: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false,
   usedCodes: [], achievements: [], boosterEnd: 0, startedAt: Date.now(), lastSaved: Date.now(), 
   critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false 
 };
@@ -328,7 +306,7 @@ let state = {
 const $ = id => document.getElementById(id);
 const el = {
   auraVal: $('auraVal'), crystalVal: $('crystalVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'),
-  clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), activePetDisplay: $('activePetDisplay'),
+  clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'),
   btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'),
   btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'),
   finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'),
@@ -347,6 +325,13 @@ function loadGame() {
       if (!state.codeUses) state.codeUses = {}; 
       if (!state.freeCases) state.freeCases = 0;
       if (state.hasDrone === undefined) state.hasDrone = false;
+      
+      if (state.activePet) {
+        if (!state.activePets) state.activePets = [];
+        if (!state.activePets.includes(state.activePet)) state.activePets.push(state.activePet);
+        delete state.activePet;
+      }
+      if (!state.activePets) state.activePets = [];
       
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
       if (diffSec > 60 && state.auraLevel > 0) {
@@ -370,19 +355,22 @@ function floatText(x, y, text, isCrit) {
   setTimeout(() => d.remove(), 800);
 }
 
+const getPetsMultiplier = (type) => {
+  const equipped = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean);
+  if (equipped.length === 0) return 1;
+  const interference = Math.max(0.3, 1 - (equipped.length - 1) * 0.1); 
+  let totalBonus = 0;
+  equipped.forEach(p => {
+    if (p.bonus.type === type || p.bonus.type === 'global') {
+      totalBonus += (p.bonus.val - 1) * interference;
+    }
+  });
+  return 1 + totalBonus;
+};
+
+const getPetClickMultiplier = () => getPetsMultiplier('click');
+const getPetIncomeMultiplier = () => getPetsMultiplier('income');
 const getDroneMultiplier = () => state.hasDrone ? 10 : 1;
-const getPetClickMultiplier = () => {
-  const p = PETS.find(x => x.id === state.activePet);
-  if (!p) return 1;
-  if (p.bonus.type === 'click' || p.bonus.type === 'global') return p.bonus.val;
-  return 1;
-};
-const getPetIncomeMultiplier = () => {
-  const p = PETS.find(x => x.id === state.activePet);
-  if (!p) return 1;
-  if (p.bonus.type === 'income' || p.bonus.type === 'global') return p.bonus.val;
-  return 1;
-};
 
 const getPrestigeMultiplier = () => 1 + ((state.prestigePoints || 0) * 0.1);
 const getClickCost = () => Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, state.clickLevel - 1));
@@ -447,20 +435,29 @@ function updateUI() {
 
   if (state.stage >= 4) { el.btnPrestige.classList.remove('hidden'); }
 
+  el.petsContainer.innerHTML = ''; 
+  
   if (state.hasDrone) {
-    el.activePetDisplay.textContent = '🛸';
-    el.activePetDisplay.style.display = 'block';
-    el.activePetDisplay.className = 'active-pet-display drone-active';
-  } else {
-    const p = PETS.find(x => x.id === state.activePet);
-    if (p) {
-      el.activePetDisplay.textContent = p.emoji;
-      el.activePetDisplay.style.display = 'block';
-      el.activePetDisplay.className = 'active-pet-display';
-    } else {
-      el.activePetDisplay.style.display = 'none';
-    }
+    const d = document.createElement('div');
+    d.className = 'drone-active';
+    d.textContent = '🛸';
+    el.petsContainer.appendChild(d);
   }
+  
+  state.activePets.forEach((id, index) => {
+    const p = PETS.find(x => x.id === id);
+    if (p) {
+      const petDiv = document.createElement('div');
+      petDiv.className = 'active-pet-display';
+      petDiv.textContent = p.emoji;
+      const offsetX = Math.sin(index * 2) * 40;
+      const offsetY = Math.cos(index * 2) * 30;
+      petDiv.style.left = `calc(50% + ${offsetX}px)`;
+      petDiv.style.top = `calc(50% + ${offsetY}px)`;
+      petDiv.style.animationDelay = `${index * 0.2}s`;
+      el.petsContainer.appendChild(petDiv);
+    }
+  });
 }
 
 function doClick(e) {
@@ -478,10 +475,16 @@ function buyClick() { const cost = getClickCost(); if (state.aura >= cost) { sta
 function buyAura() { const cost = getAuraCost(); if (state.aura >= cost) { state.aura -= cost; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive() || state.aura < CFG.boosterCost) return; state.aura -= CFG.boosterCost; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); }
 
+// --- ИСПРАВЛЕННЫЙ ПРЕСТИЖ ---
 function doPrestige() {
   if (state.stage < 4) return;
-  const pts = Math.max(1, Math.floor(state.totalAura / 1000000));
-  if (confirm(`Сбросить прогресс и получить ${pts} очков престижа? (Каждое очко дает +10% к доходу навсегда)`)) {
+  
+  // НОВАЯ ФОРМУЛА: Квадратный корень из (totalAura / 1млн)
+  // Это делает рост очков нелинейным (сложнее получить каждое следующее очко)
+  const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000)));
+  const newTotalMultiplier = (state.prestigePoints + pts) * 10;
+
+  if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой постоянный бонус к доходу станет: +${newTotalMultiplier}%`)) {
     state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0;
     state.boosterEnd = 0; state.isBoosterPermanent = false; state.prestigePoints += pts;
     renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold');
@@ -526,15 +529,20 @@ function buyPet(petId) {
   if (!pet || state.pets.includes(petId) || state.aura < pet.cost) return;
   state.aura -= pet.cost;
   state.pets.push(petId);
-  if (!state.activePet) state.activePet = petId;
+  if (state.activePets.length < 3) state.activePets.push(petId); 
   showToast(`Вы купили ${pet.name}!`, 'gold');
   updateUI(); checkAch(); saveGame(); renderMenu();
 }
 
-function equipPet(petId) {
+function togglePet(petId) {
   if (!state.pets.includes(petId)) return;
-  state.activePet = petId;
-  showToast(`Экипирован: ${PETS.find(p=>p.id===petId).name}`);
+  if (state.activePets.includes(petId)) {
+    state.activePets = state.activePets.filter(id => id !== petId);
+    showToast(`Снят: ${PETS.find(p=>p.id===petId).name}`);
+  } else {
+    state.activePets.push(petId);
+    showToast(`Экипирован: ${PETS.find(p=>p.id===petId).name}`);
+  }
   updateUI(); saveGame(); renderMenu();
 }
 
@@ -544,11 +552,10 @@ function sellPet(petId) {
   let price = CFG.sellRare;
   if (pet.rarity === 'epic') price = CFG.sellEpic;
   if (pet.rarity === 'legendary') price = CFG.sellLegendary;
-
   if (confirm(`Продать ${pet.name} за ${price} 💎?`)) {
     state.crystals += price;
     state.pets = state.pets.filter(id => id !== petId);
-    if (state.activePet === petId) state.activePet = null;
+    state.activePets = state.activePets.filter(id => id !== petId); 
     showToast(`Продано: ${pet.name} (+${price} 💎)`, 'crystal');
     updateUI(); saveGame(); renderMenu();
   }
@@ -585,7 +592,7 @@ function openCase(isFree = false) {
       el.caseResultTitle.textContent = 'Дубликат! Возврат 5 💎';
     } else {
       state.pets.push(droppedPet.id);
-      if (!state.activePet) state.activePet = droppedPet.id;
+      if (state.activePets.length < 3) state.activePets.push(droppedPet.id);
       el.caseResultTitle.textContent = 'Поздравляем!';
     }
     
@@ -595,7 +602,6 @@ function openCase(isFree = false) {
   }, 2000);
 }
 
-// --- НОВОЕ КАЗИНО С ПРАВИЛЬНЫМИ НАДПИСЯМИ ---
 let isSpinning = false;
 let currentRotation = 0;
 const WHEEL_PRIZES = [
@@ -611,26 +617,19 @@ const WHEEL_PRIZES = [
 
 function renderCasino() {
   const deg = 360 / WHEEL_PRIZES.length;
-  // Создаем фон с помощью conic-gradient
   let gradientStops = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', ');
   
   let labelsHtml = '';
   WHEEL_PRIZES.forEach((prize, i) => {
-    const angle = i * deg + (deg / 2); // Центр сектора
-    // Переворачиваем текст, если он находится в нижней половине колеса (от 90 до 270 градусов)
+    const angle = i * deg + (deg / 2); 
     const flip = (angle > 90 && angle < 270) ? 180 : 0;
-    
-    labelsHtml += `<div class="wheel-label" style="transform: rotate(${angle}deg) translateY(-80px) rotate(${-angle + flip}deg);">
-      ${prize.text}
-    </div>`;
+    labelsHtml += `<div class="wheel-label" style="transform: rotate(${angle}deg) translateY(-80px) rotate(${-angle + flip}deg);">${prize.text}</div>`;
   });
 
   return `<div class="casino-wrap">
     <div class="wheel-container">
       <div class="wheel-pointer">▼</div>
-      <div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gradientStops});">
-        ${labelsHtml}
-      </div>
+      <div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gradientStops});">${labelsHtml}</div>
     </div>
     <button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button>
   </div>`;
@@ -649,17 +648,12 @@ function spinWheel() {
   const prizeIndex = Math.floor(Math.random() * WHEEL_PRIZES.length);
   const degPerSector = 360 / WHEEL_PRIZES.length;
   
-  // Стрелка указывает на 12 часов (0 градусов).
-  // Сектор 0 начинается с 0 градусов и идет по часовой стрелке.
-  // Центр сектора 0 находится на 22.5 градусах.
-  // Чтобы центр сектора 0 оказался на 0 градусах, нужно повернуть колесо на -22.5 градусов.
   const centerOfSector = (prizeIndex * degPerSector) + (degPerSector / 2);
   const targetBaseAngle = -centerOfSector;
   
   let currentAngleMod = currentRotation % 360;
   let angleDiff = (targetBaseAngle - currentAngleMod + 360) % 360;
   
-  // Крутим на 5 полных оборотов + нужный угол
   currentRotation += 1800 + angleDiff;
   wheel.style.transform = `rotate(${currentRotation}deg)`;
 
@@ -734,16 +728,21 @@ function renderMenu() {
       <div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>
       ${caseBtnHTML}
     </div>`;
+    
+    if (state.activePets.length > 1) {
+      const eff = Math.round(Math.max(0.3, 1 - (state.activePets.length - 1) * 0.1) * 100);
+      html += `<div style="font-size:11px; text-align:center; color:#fbbf24; margin-bottom:8px;">Надето ${state.activePets.length} питомца. Эффективность каждого: ${eff}%</div>`;
+    }
 
     PETS.forEach(p => {
       const owned = state.pets.includes(p.id);
-      const active = state.activePet === p.id;
+      const active = state.activePets.includes(p.id);
       let btnsHtml = '';
       
       if (active) {
-        btnsHtml = `<button class="pet-btn equipped">Надет</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>`;
+        btnsHtml = `<button class="pet-btn equipped" onclick="togglePet('${p.id}')">Снять</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>`;
       } else if (owned) {
-        btnsHtml = `<button class="pet-btn equip" onclick="equipPet('${p.id}')">Надеть</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>`;
+        btnsHtml = `<button class="pet-btn equip" onclick="togglePet('${p.id}')">Надеть</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>`;
       } else {
         btnsHtml = `<button class="pet-btn buy" onclick="buyPet('${p.id}')">Купить<br><span style="font-size:10px;">${fmt(p.cost)}✨</span></button>`;
       }
