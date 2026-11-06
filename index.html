@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Отключаем кэш -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -19,7 +20,10 @@
   
   .app {
     width: 100%; max-width: 480px; display: flex; flex-direction: column;
-    height: 100%; padding: 8px 12px 10px 12px; position: relative;
+    height: 100%; 
+    /* Увеличили нижний отступ, чтобы поднять кнопки */
+    padding: 8px 12px 45px 12px; 
+    position: relative;
   }
   
   header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
@@ -167,7 +171,7 @@
       
       <button class="btn" id="btnAura">
         <div>Улучшить ауру (+1/сек)</div>
-        <div class="btn-sub" id="costAura">Стоимость: 25</div>
+        <div class="btn-sub" id="costAura">Стоимость: 15</div>
       </button>
       
       <button class="btn" id="btnBooster">
@@ -213,10 +217,10 @@ const CFG = {
   order: ['soap','water','brush','narzan','chekushka','cosmic'],
   stageReq: [0, 10, 25, 50, 100, 150],
   
-  // БАЛАНС ИЗМЕНЕН ЗДЕСЬ:
+  // БАЛАНС СНИЖЕН ЕЩЕ СИЛЬНЕЕ:
   clickBaseCost: 10, 
-  auraBaseCost: 25,  // Было 50, стало 25
-  costGrowth: 1.10,  // Было 1.15, стало 1.10 (рост цен на 10%)
+  auraBaseCost: 15,  // Было 25, стало 15
+  costGrowth: 1.08,  // Было 1.10, стало 1.08 (рост цен на 8%)
   
   boosterCost: 200, boosterDuration: 30000 
 };
