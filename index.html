@@ -125,6 +125,7 @@
   .case-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; margin-top: 8px; width: 100%; cursor: pointer; touch-action: manipulation; }
   .case-btn:active { transform: scale(0.97); }
   .case-btn:disabled { opacity: 0.5; pointer-events: none; }
+  .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; }
 
   .floating-bonus { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24); }
   .floating-crystal { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #60a5fa); }
@@ -216,11 +217,19 @@
 <div class="overlay" id="cheatOverlay">
   <div class="cheat-panel">
     <h3 style="margin-bottom:8px;">SYSTEM HACK MENU</h3>
-    <button class="cheat-btn" id="cheatMax">> MAXSCORE559</button>
-    <button class="cheat-btn" id="cheatCrit">> CRIT100</button>
-    <button class="cheat-btn" id="cheatBoost">> BOOSTME</button>
-    <button class="cheat-btn" style="background:#0ff;color:#000;" onclick="state.crystals += 100; updateUI(); saveGame(); showToast('+100 Кристаллов!', 'crystal');">> ДОБАВИТЬ 100 КРИСТАЛЛОВ</button>
-    <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:10px;" id="cheatClose">> CLOSE</button>
+    <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
+    <button class="cheat-btn" onclick="applyCode('CRIT100')">> CRIT100</button>
+    <button class="cheat-btn" onclick="applyCode('BOOSTME')">> BOOSTME</button>
+    
+    <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px;">КОДЫ НА КЕЙСЫ:</div>
+    <button class="cheat-btn" style="background:#fbbf24;" onclick="applyCode('CASE1')">> CASE1 (1 раз)</button>
+    <button class="cheat-btn" style="background:#fbbf24;" onclick="applyCode('CASEMAX')">> CASEMAX (бесконечно)</button>
+
+    <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px;">КОДЫ НА ГЕМЫ:</div>
+    <button class="cheat-btn" style="background:#0ff;" onclick="applyCode('GEMS2')">> GEMS2 (макс. 2 раза)</button>
+    <button class="cheat-btn" style="background:#0ff;" onclick="applyCode('GEMSMAX')">> GEMSMAX (бесконечно)</button>
+
+    <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:15px;" onclick="document.getElementById('cheatOverlay').classList.remove('show')">> CLOSE</button>
   </div>
 </div>
 
@@ -229,7 +238,6 @@
 <script>
 const IMAGES = { soap: '', water: '', brush: '', narzan: '', chekushka: '', cosmic: '' };
 
-// ЦЕНЫ СНИЖЕНЫ: Кот - 5кк, Дракон - 25кк
 const PETS = [
   { id: 'mouse', name: 'Мышь-кликер', emoji: '🐁', rarity: 'rare', cost: 1000000, bonus: 1.2, desc: '+20% к силе клика', chance: 70 },
   { id: 'cat', name: 'Кот-инвестор', emoji: '🐈', rarity: 'epic', cost: 5000000, bonus: 1.25, desc: '+25% к пассивному доходу', chance: 25 },
@@ -262,7 +270,7 @@ const ACHIEVEMENTS = [
 
 let state = { 
   aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, 
-  crystals: 0, pets: [], activePet: null,
+  crystals: 0, pets: [], activePet: null, freeCases: 0, codeUses: {},
   usedCodes: [], achievements: [], boosterEnd: 0, startedAt: Date.now(), lastSaved: Date.now(), 
   critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false 
 };
@@ -285,6 +293,9 @@ function loadGame() {
     try {
       Object.assign(state, JSON.parse(saved));
       if (!state.pets) state.pets = []; 
+      if (!state.codeUses) state.codeUses = {}; 
+      if (!state.freeCases) state.freeCases = 0;
+      
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
       if (diffSec > 60 && state.auraLevel > 0) {
         const offlineEarnings = getAuraIncome() * Math.min(diffSec, 28800) * 0.5;
@@ -460,9 +471,14 @@ function equipPet(petId) {
   updateUI(); saveGame(); renderMenu();
 }
 
-function openCase() {
-  if (state.crystals < CFG.caseCost) return;
-  state.crystals -= CFG.caseCost;
+function openCase(isFree = false) {
+  if (isFree && state.freeCases > 0) {
+    state.freeCases--;
+  } else if (!isFree && state.crystals >= CFG.caseCost) {
+    state.crystals -= CFG.caseCost;
+  } else {
+    return; // Не хватает ресурсов
+  }
   
   const rand = Math.random() * 100;
   let droppedPet = null;
@@ -484,14 +500,56 @@ function openCase() {
 }
 
 function useCode() { const raw = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!raw) return; applyCode(raw); }
+
 function applyCode(raw) {
+  // Читы
   if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 ЧИТ-МЕНЮ!'); return; }
   if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; }
   if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; }
-  if (!(raw in CODES)) return showToast('❌ Неверный код');
-  if (state.usedCodes.includes(raw)) return showToast('Код уже использован');
-  const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus;
-  showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame();
+  
+  // Одноразовый кейс
+  if (raw === 'CASE1') {
+    if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err');
+    state.usedCodes.push(raw);
+    state.freeCases++;
+    showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold');
+    updateUI(); saveGame(); return;
+  }
+  
+  // Многоразовый кейс
+  if (raw === 'CASEMAX') {
+    state.freeCases++;
+    showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold');
+    updateUI(); saveGame(); return;
+  }
+
+  // Одноразовые гемы (максимум 2 раза)
+  if (raw === 'GEMS2') {
+    if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err');
+    state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1;
+    state.crystals += 50;
+    showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal');
+    updateUI(); saveGame(); return;
+  }
+
+  // Многоразовые гемы
+  if (raw === 'GEMSMAX') {
+    state.crystals += 50;
+    showToast('💎 +50 Кристаллов!', 'crystal');
+    updateUI(); saveGame(); return;
+  }
+
+  // Обычные коды
+  if (!(raw in CODES)) return showToast('❌ Неверный код', 'err');
+  if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err');
+  
+  const bonus = CODES[raw]; 
+  state.usedCodes.push(raw); 
+  state.aura += bonus; 
+  state.totalAura += bonus;
+  
+  showToast('✅ Код активирован: +' + fmt(bonus)); 
+  checkAch(); updateUI(); saveGame();
 }
 
 let lastTick = performance.now(), autoSaveTimer = 0;
@@ -515,10 +573,17 @@ function renderMenu() {
     CFG.order.forEach((id, i) => { const cur = state.stage === i, done = state.stage > i; html += `<div class="ach-item ${done||cur?'unlocked':''}" style="${cur?'border-color:#ffd700':''}"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]} ${cur?'(Текущая)':''}</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; });
   } 
   else if (activeTab === 'pets') {
+    let caseBtnHTML = '';
+    if (state.freeCases > 0) {
+      caseBtnHTML = `<button class="case-btn free-case" onclick="openCase(true)">Открыть БЕСПЛАТНО (${state.freeCases} шт)</button>`;
+    } else {
+      caseBtnHTML = `<button class="case-btn" onclick="openCase(false)" ${state.crystals < CFG.caseCost ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`;
+    }
+
     html += `<div class="case-box">
       <div class="case-title">🎁 Таинственный кейс</div>
       <div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>
-      <button class="case-btn" onclick="openCase()" ${state.crystals < CFG.caseCost ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>
+      ${caseBtnHTML}
     </div>`;
 
     PETS.forEach(p => {
@@ -558,11 +623,6 @@ el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); }
 el.menuBtn.addEventListener('pointerdown', () => { renderMenu(); el.menuOverlay.classList.add('show'); });
 el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show'));
 el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
-
-$('cheatMax').addEventListener('pointerdown', () => applyCode('MAXSCORE559'));
-$('cheatCrit').addEventListener('pointerdown', () => applyCode('CRIT100'));
-$('cheatBoost').addEventListener('pointerdown', () => applyCode('BOOSTME'));
-$('cheatClose').addEventListener('pointerdown', () => el.cheatOverlay.classList.remove('show'));
 
 document.querySelectorAll('.tab').forEach(t => { 
   t.addEventListener('pointerdown', () => { 
