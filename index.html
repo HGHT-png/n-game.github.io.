@@ -35,7 +35,6 @@
   .income-text { font-size: 12px; color: #5eead4; margin-top: 2px; font-weight: 600;}
   .prestige-text { font-size: 11px; color: #fbbf24; margin-top: 2px; font-weight: bold; }
 
-  /* ЗОНА КЛИКА И ПИТОМЕЦ */
   .click-zone { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; min-height: 80px; cursor: pointer; touch-action: manipulation; }
   .click-zone::before { content: ''; position: absolute; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(110,200,255,0.15) 0%, transparent 70%); animation: pulse 3s infinite; pointer-events: none; }
   @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
@@ -44,12 +43,18 @@
   #charEmoji { font-size: 70px; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
   .click-zone.pop #charImg, .click-zone.pop #charEmoji { transform: scale(1.1); }
 
-  /* АКТИВНЫЙ ПИТОМЕЦ НА ЭКРАНЕ */
   .active-pet-display {
     position: absolute; right: 15%; bottom: 20%; font-size: 40px; z-index: 3; pointer-events: none;
     animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
   }
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
+
+  .drone-active {
+    filter: drop-shadow(0 0 20px #00ffff) !important;
+    animation: droneHover 1s infinite alternate ease-in-out !important;
+    font-size: 50px !important;
+  }
+  @keyframes droneHover { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-20px) scale(1.1); } }
 
   .bottom-panel { display: flex; flex-direction: column; gap: 5px; }
   .final-box { display: none; padding: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,200,60,0.3); }
@@ -86,7 +91,6 @@
   .ach-name { font-weight: bold; color: #fff; font-size: 12px;}
   .ach-desc { font-size: 10px; color: #8a9bbd; }
 
-  /* ПИТОМЦЫ */
   .pet-card { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 6px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.1); }
   .pet-card.owned { border-color: #5eead4; background: rgba(94,234,212,0.05); }
   .pet-card.active-pet { border-color: #fbbf24; background: rgba(245,158,11,0.1); box-shadow: 0 0 10px rgba(245,158,11,0.2); }
@@ -113,10 +117,26 @@
 
   /* КАЗИНО */
   .casino-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
-  .wheel-container { position: relative; width: 220px; height: 220px; margin-bottom: 15px; }
-  .wheel-pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 35px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+  .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
+  .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
   .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-  .wheel-sector { position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #fff; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+  
+  .wheel-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: 0 0;
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    text-align: center;
+    width: 80px;
+    margin-left: -40px;
+    margin-top: -6px;
+    pointer-events: none;
+  }
+
   .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
   .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
 
@@ -204,7 +224,6 @@
   </div>
 </div>
 
-<!-- МЕНЮ -->
 <div class="overlay" id="menuOverlay">
   <div class="menu">
     <div class="menu-header">
@@ -222,7 +241,6 @@
   </div>
 </div>
 
-<!-- МОДАЛКА КЕЙСА -->
 <div class="case-modal" id="caseModal">
   <div class="case-anim-box" id="caseAnimBox">🎁</div>
   <div class="case-result" id="caseResult">
@@ -233,11 +251,11 @@
   </div>
 </div>
 
-<!-- ЧИТ-МЕНЮ -->
 <div class="overlay" id="cheatOverlay">
   <div class="cheat-panel">
     <h3 style="margin-bottom:8px;">SYSTEM HACK MENU</h3>
     <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
+    <button class="cheat-btn" onclick="applyCode('DRONE')">> ДРОН-ПЕРЕХВАТЧИК (x10)</button>
     <button class="cheat-btn" onclick="applyCode('CRIT100')">> CRIT100</button>
     <button class="cheat-btn" onclick="applyCode('BOOSTME')">> BOOSTME</button>
     
@@ -259,19 +277,16 @@
 const IMAGES = { soap: '', water: '', brush: '', narzan: '', chekushka: '', cosmic: '' };
 
 const PETS = [
-  // РЕДКИЕ
   { id: 'p1', name: 'Мышь', emoji: '🐁', rarity: 'rare', cost: 500000, bonus: {type:'click', val:1.2}, desc: '+20% к клику' },
   { id: 'p2', name: 'Енот', emoji: '🦝', rarity: 'rare', cost: 1500000, bonus: {type:'income', val:1.2}, desc: '+20% к доходу' },
   { id: 'p3', name: 'Попугай', emoji: '🦜', rarity: 'rare', cost: 3000000, bonus: {type:'click', val:1.3}, desc: '+30% к клику' },
   { id: 'p4', name: 'Заяц', emoji: '🐇', rarity: 'rare', cost: 6000000, bonus: {type:'income', val:1.3}, desc: '+30% к доходу' },
   { id: 'p5', name: 'Волк', emoji: '🐺', rarity: 'rare', cost: 10000000, bonus: {type:'click', val:1.5}, desc: '+50% к клику' },
-  // ЭПИЧЕСКИЕ
   { id: 'p6', name: 'Собака', emoji: '🐕', rarity: 'epic', cost: 30000000, bonus: {type:'income', val:1.5}, desc: '+50% к доходу' },
   { id: 'p7', name: 'Кошка', emoji: '🐈', rarity: 'epic', cost: 50000000, bonus: {type:'global', val:1.5}, desc: 'x1.5 ко всему' },
   { id: 'p8', name: 'Крокодил', emoji: '🐊', rarity: 'epic', cost: 80000000, bonus: {type:'click', val:1.8}, desc: '+80% к клику' },
   { id: 'p9', name: 'Змея', emoji: '🐍', rarity: 'epic', cost: 120000000, bonus: {type:'income', val:1.8}, desc: '+80% к доходу' },
   { id: 'p10', name: 'Рыба', emoji: '🐟', rarity: 'epic', cost: 180000000, bonus: {type:'global', val:1.8}, desc: 'x1.8 ко всему' },
-  // ЛЕГЕНДАРНЫЕ
   { id: 'p11', name: 'Попугай Кеша', emoji: '🦜', rarity: 'legendary', cost: 400000000, bonus: {type:'click', val:3.0}, desc: 'x3 к клику' },
   { id: 'p12', name: 'Перри Утконос', emoji: '🦆', rarity: 'legendary', cost: 600000000, bonus: {type:'income', val:3.0}, desc: 'x3 к доходу' },
   { id: 'p13', name: 'Лев', emoji: '🦁', rarity: 'legendary', cost: 900000000, bonus: {type:'global', val:2.5}, desc: 'x2.5 ко всему' },
@@ -305,7 +320,7 @@ const ACHIEVEMENTS = [
 
 let state = { 
   aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, 
-  crystals: 0, pets: [], activePet: null, freeCases: 0, codeUses: {},
+  crystals: 0, pets: [], activePet: null, freeCases: 0, codeUses: {}, hasDrone: false,
   usedCodes: [], achievements: [], boosterEnd: 0, startedAt: Date.now(), lastSaved: Date.now(), 
   critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false 
 };
@@ -331,6 +346,7 @@ function loadGame() {
       if (!state.pets) state.pets = []; 
       if (!state.codeUses) state.codeUses = {}; 
       if (!state.freeCases) state.freeCases = 0;
+      if (state.hasDrone === undefined) state.hasDrone = false;
       
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
       if (diffSec > 60 && state.auraLevel > 0) {
@@ -354,7 +370,7 @@ function floatText(x, y, text, isCrit) {
   setTimeout(() => d.remove(), 800);
 }
 
-// БОНУСЫ ПИТОМЦЕВ
+const getDroneMultiplier = () => state.hasDrone ? 10 : 1;
 const getPetClickMultiplier = () => {
   const p = PETS.find(x => x.id === state.activePet);
   if (!p) return 1;
@@ -373,8 +389,8 @@ const getClickCost = () => Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowt
 const getAuraCost = () => Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, state.auraLevel));
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
-const getClickPower = () => state.clickLevel * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier();
-const getAuraIncome = () => state.auraLevel * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier();
+const getClickPower = () => state.clickLevel * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
+const getAuraIncome = () => state.auraLevel * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier();
 
 function checkStage() {
   let newStage = 0;
@@ -431,13 +447,19 @@ function updateUI() {
 
   if (state.stage >= 4) { el.btnPrestige.classList.remove('hidden'); }
 
-  // ОТОБРАЖЕНИЕ АКТИВНОГО ПИТОМЦА
-  const p = PETS.find(x => x.id === state.activePet);
-  if (p) {
-    el.activePetDisplay.textContent = p.emoji;
+  if (state.hasDrone) {
+    el.activePetDisplay.textContent = '🛸';
     el.activePetDisplay.style.display = 'block';
+    el.activePetDisplay.className = 'active-pet-display drone-active';
   } else {
-    el.activePetDisplay.style.display = 'none';
+    const p = PETS.find(x => x.id === state.activePet);
+    if (p) {
+      el.activePetDisplay.textContent = p.emoji;
+      el.activePetDisplay.style.display = 'block';
+      el.activePetDisplay.className = 'active-pet-display';
+    } else {
+      el.activePetDisplay.style.display = 'none';
+    }
   }
 }
 
@@ -499,7 +521,6 @@ function spawnFloatingCrystal() {
 }
 function scheduleNextCrystal() { clearTimeout(crystalTimeout); crystalTimeout = setTimeout(spawnFloatingCrystal, Math.floor(Math.random() * 180000) + 120000); }
 
-// --- ПИТОМЦЫ ---
 function buyPet(petId) {
   const pet = PETS.find(p => p.id === petId);
   if (!pet || state.pets.includes(petId) || state.aura < pet.cost) return;
@@ -533,7 +554,6 @@ function sellPet(petId) {
   }
 }
 
-// --- АНИМАЦИЯ КЕЙСА ---
 let isCaseAnimating = false;
 function openCase(isFree = false) {
   if (isCaseAnimating) return;
@@ -547,7 +567,6 @@ function openCase(isFree = false) {
   el.caseResult.style.display = 'none';
   el.caseModal.querySelector('.case-close-btn').style.display = 'none';
 
-  // Определяем приз
   const rand = Math.random() * 100;
   let droppedPet = null;
   if (rand < 5) droppedPet = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)];
@@ -576,8 +595,9 @@ function openCase(isFree = false) {
   }, 2000);
 }
 
-// --- КАЗИНО ---
+// --- НОВОЕ КАЗИНО С ПРАВИЛЬНЫМИ НАДПИСЯМИ ---
 let isSpinning = false;
+let currentRotation = 0;
 const WHEEL_PRIZES = [
   { text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } },
   { text: 'Аура x1000', color: '#ef4444', action: () => { let r = getAuraIncome() * 1000; state.aura += r; state.totalAura += r; } },
@@ -590,24 +610,32 @@ const WHEEL_PRIZES = [
 ];
 
 function renderCasino() {
-  let sectorsHtml = '';
   const deg = 360 / WHEEL_PRIZES.length;
+  // Создаем фон с помощью conic-gradient
+  let gradientStops = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', ');
+  
+  let labelsHtml = '';
   WHEEL_PRIZES.forEach((prize, i) => {
-    sectorsHtml += `<div class="wheel-sector" style="transform: rotate(${i * deg}deg); background: ${prize.color};">
-      <span style="transform: rotate(${deg/2}deg); display:inline-block; margin-left:15px;">${prize.text}</span>
+    const angle = i * deg + (deg / 2); // Центр сектора
+    // Переворачиваем текст, если он находится в нижней половине колеса (от 90 до 270 градусов)
+    const flip = (angle > 90 && angle < 270) ? 180 : 0;
+    
+    labelsHtml += `<div class="wheel-label" style="transform: rotate(${angle}deg) translateY(-80px) rotate(${-angle + flip}deg);">
+      ${prize.text}
     </div>`;
   });
 
   return `<div class="casino-wrap">
     <div class="wheel-container">
       <div class="wheel-pointer">▼</div>
-      <div class="wheel" id="fortuneWheel">${sectorsHtml}</div>
+      <div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gradientStops});">
+        ${labelsHtml}
+      </div>
     </div>
     <button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button>
   </div>`;
 }
 
-let currentRotation = 0;
 function spinWheel() {
   if (isSpinning || state.crystals < 10) return;
   isSpinning = true;
@@ -618,16 +646,21 @@ function spinWheel() {
   const btn = document.querySelector('.spin-btn');
   if (btn) btn.disabled = true;
 
-  // Выбираем случайный приз (например, 0-7)
   const prizeIndex = Math.floor(Math.random() * WHEEL_PRIZES.length);
   const degPerSector = 360 / WHEEL_PRIZES.length;
   
-  // Вычисляем угол, чтобы стрелка (сверху) попала на нужный сектор.
-  // Сектор 0 находится справа (0 градусов), поэтому нужно крутить против часовой.
-  // Добавляем 5 полных оборотов (1800 градусов).
-  const targetAngle = 3600 + (360 - (prizeIndex * degPerSector)) - (degPerSector / 2);
+  // Стрелка указывает на 12 часов (0 градусов).
+  // Сектор 0 начинается с 0 градусов и идет по часовой стрелке.
+  // Центр сектора 0 находится на 22.5 градусах.
+  // Чтобы центр сектора 0 оказался на 0 градусах, нужно повернуть колесо на -22.5 градусов.
+  const centerOfSector = (prizeIndex * degPerSector) + (degPerSector / 2);
+  const targetBaseAngle = -centerOfSector;
   
-  currentRotation += targetAngle;
+  let currentAngleMod = currentRotation % 360;
+  let angleDiff = (targetBaseAngle - currentAngleMod + 360) % 360;
+  
+  // Крутим на 5 полных оборотов + нужный угол
+  currentRotation += 1800 + angleDiff;
   wheel.style.transform = `rotate(${currentRotation}deg)`;
 
   setTimeout(() => {
@@ -635,12 +668,13 @@ function spinWheel() {
     showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[prizeIndex].text}!`, 'gold');
     isSpinning = false;
     updateUI(); saveGame(); renderMenu();
-  }, 4200); // Ждем окончания анимации (4с)
+  }, 4200); 
 }
 
 function useCode() { const raw = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!raw) return; applyCode(raw); }
 function applyCode(raw) {
   if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 ЧИТ-МЕНЮ!'); return; }
+  if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x10 ко всему)', 'gold'); updateUI(); saveGame(); return; }
   if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; }
   if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; }
   
