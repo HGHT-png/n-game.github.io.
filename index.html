@@ -44,19 +44,10 @@
   #charEmoji { font-size: 70px; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
   .click-zone.pop #charImg, .click-zone.pop #charEmoji { transform: scale(1.1); }
 
-  /* КОНТЕЙНЕР ДЛЯ ПИТОМЦЕВ */
   .pets-container { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: visible; }
-  
-  /* ОБЕРТКА ДЛЯ ИДЕАЛЬНОГО ЦЕНТРИРОВАНИЯ */
-  .pet-wrapper { 
-    position: absolute; width: 50px; height: 50px; 
-    display: flex; justify-content: center; align-items: center; 
-    pointer-events: none; z-index: 4; transform: translate(-50%, -50%); 
-  }
-
+  .pet-wrapper { position: absolute; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 4; transform: translate(-50%, -50%); }
   .active-pet-display { font-size: 35px; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
-  
   .drone-active { font-size: 50px; filter: drop-shadow(0 0 20px #00ffff) !important; animation: droneHover 1s infinite alternate ease-in-out !important; }
   @keyframes droneHover { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-20px) scale(1.1); } }
 
@@ -123,23 +114,27 @@
   .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
   .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-  
   .wheel-label { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; width: 80px; margin-left: -40px; margin-top: -6px; pointer-events: none; }
 
   .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
   .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
 
-  .case-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
+  /* УЛУЧШЕННАЯ МОДАЛКА КЕЙСА */
+  .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
   .case-modal.show { display: flex; }
   .case-anim-box { font-size: 80px; animation: shake 0.5s infinite; }
   @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
-  .case-result { display: none; flex-direction: column; align-items: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  
+  .case-result { display: none; flex-direction: column; align-items: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; }
   @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-  .case-result-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-  .case-result-icon { font-size: 100px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); margin-bottom: 10px; text-align: center; }
-  .case-close-btn { background: #3b82f6; color: white; padding: 10px 30px; border-radius: 10px; border: none; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; touch-action: manipulation;}
-
-  .close-case-x { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #fff; font-size: 30px; cursor: pointer; z-index: 210; padding: 10px; }
+  .case-result-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+  .case-result-icon { font-size: 100px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .case-result-name { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+  
+  .case-close-btn { background: #3b82f6; color: white; padding: 12px 40px; border-radius: 12px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
+  .case-close-btn:active { transform: scale(0.95); }
+  .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .close-case-x:active { background: rgba(255,255,255,0.2); }
 
   .floating-bonus { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24); }
   .floating-crystal { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #60a5fa); }
@@ -237,7 +232,7 @@
   <div class="case-result" id="caseResult">
     <div class="case-result-title" id="caseResultTitle">Вы выбили:</div>
     <div class="case-result-icon" id="caseResultIcon">🐉</div>
-    <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;" id="caseResultName">Дракон</div>
+    <div class="case-result-name" id="caseResultName">Дракон</div>
     <button class="case-close-btn" onclick="document.getElementById('caseModal').classList.remove('show')">Забрать</button>
   </div>
 </div>
@@ -384,7 +379,7 @@ const getPetsMultiplier = (type) => {
 
 const getPetClickMultiplier = () => getPetsMultiplier('click');
 const getPetIncomeMultiplier = () => getPetsMultiplier('income');
-const getDroneMultiplier = () => state.hasDrone ? 5 : 1; // ИЗМЕНЕНО НА 5
+const getDroneMultiplier = () => state.hasDrone ? 5 : 1;
 
 const getPrestigeMultiplier = () => 1 + ((state.prestigePoints || 0) * 0.1);
 const getClickCost = () => Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, state.clickLevel - 1));
@@ -431,7 +426,6 @@ function renderPetsOnScreen() {
   if (state.hasDrone) {
     const dWrapper = document.createElement('div');
     dWrapper.className = 'pet-wrapper';
-    // Дрон летает отдельно (справа снизу)
     dWrapper.style.left = 'calc(50% + 80px)';
     dWrapper.style.top = 'calc(50% + 80px)';
     const d = document.createElement('div');
@@ -443,7 +437,7 @@ function renderPetsOnScreen() {
   
   if (state.activePets && state.activePets.length > 0) {
     const total = state.activePets.length;
-    const radius = 80; // Радиус круга
+    const radius = 80; 
     
     state.activePets.forEach((id, index) => {
       const p = PETS.find(x => x.id === id);
@@ -451,8 +445,7 @@ function renderPetsOnScreen() {
         const wrapper = document.createElement('div');
         wrapper.className = 'pet-wrapper';
         
-        // Распределяем питомцев равномерно по кругу
-        const angle = (index / total) * Math.PI * 2 - (Math.PI / 2); // Начинаем с верхней точки
+        const angle = (index / total) * Math.PI * 2 - (Math.PI / 2); 
         const offsetX = Math.cos(angle) * radius;
         const offsetY = Math.sin(angle) * radius;
         
@@ -534,12 +527,9 @@ function doPrestige() {
   if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой постоянный бонус к доходу станет: +${newTotalMultiplier}%`)) {
     state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0;
     state.boosterEnd = 0; state.isBoosterPermanent = false; state.prestigePoints += pts;
-    
-    // СБРОС ПИТОМЦЕВ
     state.pets = [];
     state.activePets = [];
-    renderPetsOnScreen(); // Обновляем визуал
-    
+    renderPetsOnScreen();
     renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold');
     el.btnPrestige.classList.add('hidden');
   }
@@ -582,7 +572,7 @@ function buyPet(petId) {
   if (!pet || state.pets.includes(petId) || state.aura < pet.cost) return;
   state.aura -= pet.cost;
   state.pets.push(petId);
-  if (state.activePets.length < 3) state.activePets.push(petId); 
+  if (state.activePets.length < 5) state.activePets.push(petId); 
   showToast(`Вы купили ${pet.name}!`, 'gold');
   renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); renderMenu();
 }
@@ -593,6 +583,9 @@ function togglePet(petId) {
     state.activePets = state.activePets.filter(id => id !== petId);
     showToast(`Снят: ${PETS.find(p=>p.id===petId).name}`);
   } else {
+    if (state.activePets.length >= 5) {
+      return showToast('Максимум 5 питомцев одновременно!', 'err');
+    }
     state.activePets.push(petId);
     showToast(`Экипирован: ${PETS.find(p=>p.id===petId).name}`);
   }
@@ -614,6 +607,7 @@ function sellPet(petId) {
   }
 }
 
+// --- ИСПРАВЛЕННАЯ ЛОГИКА ОТКРЫТИЯ КЕЙСА ---
 let isCaseAnimating = false;
 function openCase(isFree = false) {
   if (isCaseAnimating) return;
@@ -622,43 +616,55 @@ function openCase(isFree = false) {
   else { return; }
 
   isCaseAnimating = true;
-  el.caseModal.classList.add('show');
-  el.caseAnimBox.style.display = 'block';
-  el.caseResult.style.display = 'none';
-  el.caseModal.querySelector('.case-close-btn').style.display = 'none';
-  document.getElementById('closeCaseX').style.display = 'block';
-
+  
+  // 1. СРАЗУ ОПРЕДЕЛЯЕМ ПРИЗ
   const rand = Math.random() * 100;
   let droppedPet = null;
   if (rand < 5) droppedPet = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)];
   else if (rand < 30) droppedPet = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)];
   else droppedPet = PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)];
 
+  // 2. СРАЗУ ВЫДАЕМ ЕГО ИГРОКУ И СОХРАНЯЕМ (чтобы не потерялся при вылете)
+  let isDuplicate = state.pets.includes(droppedPet.id);
+  if (isDuplicate) {
+    state.crystals += 5;
+  } else {
+    state.pets.push(droppedPet.id);
+    if (state.activePets.length < 5) state.activePets.push(droppedPet.id);
+  }
+  
+  saveGame(); // Сохраняем в память немедленно!
+  renderPetsOnScreen(); updateUI(); renderMenu();
+
+  // 3. ПОКАЗЫВАЕМ АНИМАЦИЮ
+  el.caseModal.classList.add('show');
+  el.caseAnimBox.style.display = 'block';
+  el.caseResult.style.display = 'none';
+  el.caseModal.querySelector('.case-close-btn').style.display = 'none';
+  document.getElementById('closeCaseX').style.display = 'block';
+
+  // 4. ЧЕРЕЗ 2 СЕКУНДЫ ПОКАЗЫВАЕМ РЕЗУЛЬТАТ
   setTimeout(() => {
     el.caseAnimBox.style.display = 'none';
     el.caseResult.style.display = 'flex';
-    el.caseResultIcon.textContent = droppedPet.emoji;
     
-    if (state.pets.includes(droppedPet.id)) {
-      state.crystals += 5;
+    el.caseResultIcon.textContent = droppedPet.emoji;
+    el.caseResultName.textContent = droppedPet.name;
+    el.caseResultName.className = `pet-rarity-${droppedPet.rarity}`;
+    
+    if (isDuplicate) {
       el.caseResultTitle.textContent = 'Уже есть!';
       el.caseResultTitle.style.color = '#fbbf24';
-      el.caseResultName.textContent = `${droppedPet.name}`;
-      el.caseResultName.className = `pet-rarity-${droppedPet.rarity}`;
-      el.caseResultIcon.innerHTML = `${droppedPet.emoji}<br><span style="font-size:20px; color:#60a5fa; font-weight:bold;">+5 💎</span>`;
+      el.caseResultIcon.innerHTML = `${droppedPet.emoji}<br><span style="font-size:24px; color:#60a5fa; font-weight:bold; margin-top:10px; display:inline-block;">+5 💎</span>`;
     } else {
-      state.pets.push(droppedPet.id);
-      if (state.activePets.length < 3) state.activePets.push(droppedPet.id);
       el.caseResultTitle.textContent = 'Поздравляем!';
       el.caseResultTitle.style.color = '#fff';
-      el.caseResultName.textContent = droppedPet.name;
-      el.caseResultName.className = `pet-rarity-${droppedPet.rarity}`;
       el.caseResultIcon.innerHTML = droppedPet.emoji;
     }
     
     el.caseModal.querySelector('.case-close-btn').style.display = 'inline-block';
     isCaseAnimating = false;
-    renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); renderMenu();
+    checkAch();
   }, 2000);
 }
 
@@ -791,7 +797,7 @@ function renderMenu() {
     
     if (state.activePets.length > 1) {
       const eff = Math.round(Math.max(0.3, 1 - (state.activePets.length - 1) * 0.1) * 100);
-      html += `<div style="font-size:11px; text-align:center; color:#fbbf24; margin-bottom:8px;">Надето ${state.activePets.length} питомца. Эффективность каждого: ${eff}%</div>`;
+      html += `<div style="font-size:11px; text-align:center; color:#fbbf24; margin-bottom:8px;">Надето ${state.activePets.length} питомцев. Эффективность каждого: ${eff}%</div>`;
     }
 
     PETS.forEach(p => {
@@ -841,6 +847,7 @@ el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOve
 
 document.getElementById('closeCaseX').addEventListener('pointerdown', () => {
   document.getElementById('caseModal').classList.remove('show');
+  el.caseModal.querySelector('.case-close-btn').style.display = 'none'; // Прячем кнопку "Забрать" до следующего открытия
 });
 
 document.querySelectorAll('.tab').forEach(t => { 
