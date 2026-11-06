@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Эволюция Нарзана</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+  button, input { outline: none; border: none; -webkit-appearance: none; }
+  
+  body, html {
+    overscroll-behavior: none; 
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at top, #1b1c3e 0%, #0a0b1a 60%, #05050a 100%);
+    color: #fff; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden;
+    touch-action: manipulation;
+  }
+  
+  .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: 100%; padding: 8px 12px 45px 12px; position: relative; }
+  header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
+  
+  .menu-btn { position: absolute; top: 0; right: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #a0b0d0; font-size: 18px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+  .menu-btn:active { transform: scale(0.9); }
+
+  .prestige-btn-small { position: absolute; top: 0; left: 0; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+  .prestige-btn-small:active { transform: scale(0.9); background: rgba(245, 158, 11, 0.3); }
+  .prestige-btn-small.hidden { display: none; }
+
+  .aura-display { font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; line-height: 1.1; }
+  .crystal-display { font-size: 14px; color: #60a5fa; margin-top: 2px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px;}
+  .aura-icon { color: #ffd700; font-size: 22px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+  .crystal-icon { color: #60a5fa; font-size: 16px; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+  .stage-name { font-size: 13px; color: #8a9bbd; margin-top: 2px; font-weight: 500; }
+  .income-text { font-size: 12px; color: #5eead4; margin-top: 2px; font-weight: 600;}
+  .prestige-text { font-size: 11px; color: #fbbf24; margin-top: 2px; font-weight: bold; }
+
+  .click-zone { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; min-height: 80px; cursor: pointer; touch-action: manipulation; }
+  .click-zone::before { content: ''; position: absolute; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(110,200,255,0.15) 0%, transparent 70%); animation: pulse 3s infinite; pointer-events: none; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
+  
+  #charImg { max-width: 100px; max-height: 120px; object-fit: contain; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; border-radius: 10px; pointer-events: none; }
+  #charEmoji { font-size: 70px; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
+  .click-zone.pop #charImg, .click-zone.pop #charEmoji { transform: scale(1.1); }
+
+  .pets-container { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: visible; }
+  .pet-wrapper { position: absolute; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 4; transform: translate(-50%, -50%); }
+  .active-pet-display { font-size: 35px; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+  @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
+  .drone-active { font-size: 50px; filter: drop-shadow(0 0 20px #00ffff) !important; animation: droneHover 1s infinite alternate ease-in-out !important; }
+  @keyframes droneHover { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-20px) scale(1.1); } }
+
+  .bottom-panel { display: flex; flex-direction: column; gap: 5px; }
+  .final-box { display: none; padding: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,200,60,0.3); }
+  .final-box.show { display: block; }
+  .final-text { font-size: 11px; color: #ffd66b; text-align: center; margin-bottom: 4px; font-weight: bold; }
+  .progress-bar { height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #fbbf24, #ef4444); transition: width 0.3s; }
+
+  .buttons { display: flex; flex-direction: column; gap: 5px; }
+  .btn { width: 100%; border-radius: 12px; padding: 6px 8px; font-size: 13px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.15s; background: linear-gradient(135deg, #6a4cff, #8a6cff); color: #fff; box-shadow: 0 3px 8px rgba(106,76,255,0.3); cursor: pointer; touch-action: manipulation; }
+  .btn:active { transform: scale(0.97); }
+  .btn.disabled { opacity: 0.5; pointer-events: none; box-shadow: none; }
+  .btn-sub { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.8); margin-top: 1px; }
+
+  .codes { display: flex; gap: 5px; }
+  .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 10px; font-size: 12px; text-transform: uppercase;}
+  .codes input::placeholder { color: #555; }
+  .codes button { background: #6a4cff; color: #fff; padding: 0 10px; border-radius: 10px; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 12px;}
+
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 15px; }
+  .overlay.show { display: flex; }
+  
+  .menu { width: 100%; max-width: 400px; height: 85vh; background: #14152b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  .menu-header { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .menu-header h2 { font-size: 16px; color: #fff; }
+  .close-btn { background: none; color: #8a9bbd; font-size: 20px; cursor: pointer; touch-action: manipulation;}
+  
+  .tabs { display: flex; padding: 8px; gap: 4px; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { background: none; border: 1px solid rgba(255,255,255,0.1); color: #8a9bbd; padding: 5px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; white-space: nowrap; touch-action: manipulation; transition: 0.2s; }
+  .tab.active { background: rgba(106,76,255,0.2); color: #fff; border-color: #6a4cff; }
+  
+  .tab-content { padding: 12px; overflow-y: auto; flex: 1; min-height: 0; color: #ccc; font-size: 13px; scroll-behavior: smooth; }
+  .tab-content.slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.17, 0.67, 0.12, 0.99) forwards; }
+  .tab-content.slide-in-left { animation: slideInLeft 0.3s cubic-bezier(0.17, 0.67, 0.12, 0.99) forwards; }
+  @keyframes slideInRight { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } }
+  @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
+
+  .ach-item { display: flex; gap: 8px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; opacity: 0.5; }
+  .ach-item.unlocked { opacity: 1; background: rgba(94,234,212,0.1); border: 1px solid rgba(94,234,212,0.3); }
+  .ach-item.hidden-ach { opacity: 0.3; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); }
+  .ach-icon { font-size: 16px; }
+  .ach-name { font-weight: bold; color: #fff; font-size: 12px;}
+  .ach-desc { font-size: 10px; color: #8a9bbd; }
+
+  .pet-card { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 6px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.1); transition: 0.1s; }
+  .pet-card.owned { border-color: #5eead4; background: rgba(94,234,212,0.05); }
+  .pet-card.active-pet { border-color: #fbbf24; background: rgba(245,158,11,0.1); box-shadow: 0 0 10px rgba(245,158,11,0.2); }
+  .pet-icon { font-size: 22px; width: 30px; text-align: center; flex-shrink: 0; }
+  .pet-info { flex: 1; min-width: 0; }
+  .pet-title { font-weight: 700; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+  .pet-rarity-rare { color: #60a5fa; }
+  .pet-rarity-epic { color: #c084fc; }
+  .pet-rarity-legendary { color: #fbbf24; }
+  .pet-bonus { font-size: 9px; color: #5eead4; margin-top: 2px; }
+  .pet-actions { display: flex; gap: 4px; flex-direction: column; flex-shrink: 0;}
+  .pet-btn { padding: 4px 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; touch-action: manipulation; width: 65px;}
+  .pet-btn.buy { background: #6a4cff; color: white; }
+  .pet-btn.equip { background: #fbbf24; color: black; }
+  .pet-btn.equipped { background: #2a2a3a; color: #888; }
+  .pet-btn.sell { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
+
+  .case-box { background: rgba(96,165,250,0.08); border: 1px solid #3b82f6; border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 12px; box-shadow: inset 0 0 20px rgba(59,130,246,0.15); }
+  .case-title { font-weight: 800; color: #60a5fa; font-size: 15px; margin-bottom: 6px; }
+  .case-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; margin-top: 8px; width: 100%; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+  .case-btn:active { transform: scale(0.97); }
+  .case-btn:disabled { opacity: 0.4; pointer-events: none; box-shadow: none; }
+  .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; box-shadow: 0 4px 12px rgba(245,158,11,0.4);}
+
+  .casino-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
+  .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
+  .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+  .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+  .wheel-label { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; width: 80px; margin-left: -40px; margin-top: -6px; pointer-events: none; display: flex; justify-content: center; align-items: center;}
+  .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
+  .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
+
+  .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
+  .case-modal.show { display: flex; }
+  .case-anim-box { font-size: 80px; animation: shake 0.5s infinite; }
+  @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+  .case-result { display: none; flex-direction: column; align-items: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; }
+  @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+  .case-result-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+  .case-result-icon { font-size: 100px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .case-result-name { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+  .case-close-btn { background: #3b82f6; color: white; padding: 12px 40px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
+  .case-close-btn:active { transform: scale(0.95); }
+  .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .close-case-x:active { background: rgba(255,255,255,0.2); }
+
+  .floating-bonus { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24); }
+  .floating-crystal { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #60a5fa); }
+
+  #toasts { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; pointer-events: none; }
+  .toast { background: rgba(20,21,43,0.95); border: 1px solid #6a4cff; color: #fff; padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; animation: slideDown 0.3s ease; text-align:center;}
+  .toast.gold { border-color: #fbbf24; color: #fde68a; }
+  .toast.crystal { border-color: #60a5fa; color: #bfdbfe; }
+  .toast.err { border-color: #ef4444; color: #fca5a5; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+  
+  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 16px; color: #5eead4; text-shadow: 0 0 10px #5eead4; z-index: 1000; animation: floatUp 0.8s ease-out forwards; }
+  .float-text.crit-text { color: #ef4444; text-shadow: 0 0 15px #ef4444; font-size: 20px; }
+  @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -60px) scale(1.5); } }
+
+  .cheat-panel { background: #000; border: 1px solid #0f0; color: #0f0; padding: 12px; border-radius: 8px; font-family: monospace; width: 100%; max-width: 320px; max-height: 80vh; overflow-y: auto;}
+  .cheat-btn { background: #0f0; color: #000; padding: 6px; margin: 4px 0; width: 100%; font-weight: bold; cursor: pointer; border-radius: 4px; text-align:left; touch-action: manipulation; font-size: 12px;}
+</style>
+</head>
+<body>
+
+<script>
+  const lastOpen = sessionStorage.getItem('lastOpenTime');
+  if (lastOpen && (Date.now() - lastOpen > 300000)) { window.location.reload(true); }
+  sessionStorage.setItem('lastOpenTime', Date.now());
+</script>
+
+<div class="app">
+  <header>
+    <button class="prestige-btn-small hidden" id="btnPrestige" title="Престиж">🔄</button>
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="aura-display"><span class="aura-icon">✨</span> <span id="auraVal">0</span></div>
+    <div class="crystal-display"><span class="crystal-icon">💎</span> <span id="crystalVal">0</span></div>
+    <div class="stage-name" id="stageName">Мыло «Аура»</div>
+    <div class="income-text" id="incomeVal">+0 ауры/сек</div>
+    <div class="prestige-text" id="prestigeVal"></div>
+  </header>
+
+  <div class="click-zone" id="clickZone">
+    <img id="charImg" src="" alt="" style="display:none;">
+    <span id="charEmoji">🧼</span>
+    <div class="pets-container" id="petsContainer"></div>
+  </div>
+
+  <div class="bottom-panel">
+    <div class="final-box" id="finalBox">
+      <div class="final-text" id="finalText">До Чекушки: улучшить ауру до 100</div>
+      <div class="progress-bar"><div class="progress-fill" id="finalFill"></div></div>
+    </div>
+
+    <div class="codes">
+      <input id="codeInput" placeholder="Бонус-код..." autocomplete="off">
+      <button id="codeBtn">Ввести</button>
+    </div>
+
+    <div class="buttons">
+      <button class="btn" id="btnClick">
+        <div>Улучшить клик (+1)</div>
+        <div class="btn-sub" id="costClick">Стоимость: 10</div>
+      </button>
+      
+      <button class="btn" id="btnAura">
+        <div>Улучшить ауру (+1/сек)</div>
+        <div class="btn-sub" id="costAura">Стоимость: 15</div>
+      </button>
+      
+      <button class="btn" id="btnBooster">
+        <div>Бустер x2 (30с)</div>
+        <div class="btn-sub" id="costBooster">Стоимость: 200</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="menuOverlay">
+  <div class="menu">
+    <div class="menu-header">
+      <h2>Меню</h2>
+      <button class="close-btn" id="closeMenu">✕</button>
+    </div>
+    <div class="tabs" id="tabsContainer">
+      <button class="tab active" data-tab="ach">🏆 Ачивки</button>
+      <button class="tab" data-tab="evo">🧬 Эволюция</button>
+      <button class="tab" data-tab="pets">🐾 Питомцы</button>
+      <button class="tab" data-tab="casino">🎰 Казино</button>
+      <button class="tab" data-tab="stats">📊 Статы</button>
+    </div>
+    <div class="tab-content" id="tabContent"></div>
+  </div>
+</div>
+
+<div class="case-modal" id="caseModal">
+  <button class="close-case-x" id="closeCaseX">✕</button>
+  <div class="case-anim-box" id="caseAnimBox">🎁</div>
+  <div class="case-result" id="caseResult">
+    <div class="case-result-title" id="caseResultTitle">Вы выбили:</div>
+    <div class="case-result-icon" id="caseResultIcon">🐉</div>
+    <div class="case-result-name" id="caseResultName">Дракон</div>
+    <button class="case-close-btn" id="caseCloseBtn">Забрать</button>
+  </div>
+</div>
+
+<div class="overlay" id="cheatOverlay">
+  <div class="cheat-panel">
+    <h3 style="margin-bottom:8px;">SYSTEM HACK MENU</h3>
+    <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
+    <button class="cheat-btn" onclick="applyCode('DRONE')">> ДРОН-ПЕРЕХВАТЧИК (x5)</button>
+    <button class="cheat-btn" onclick="applyCode('CRIT100')">> CRIT100</button>
+    <button class="cheat-btn" onclick="applyCode('BOOSTME')">> BOOSTME</button>
+    
+    <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px;">КОДЫ НА КЕЙСЫ:</div>
+    <button class="cheat-btn" style="background:#fbbf24;" onclick="applyCode('CASE1')">> CASE1 (1 раз)</button>
+    <button class="cheat-btn" style="background:#fbbf24
