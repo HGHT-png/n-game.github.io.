@@ -44,10 +44,20 @@
   #charEmoji { font-size: 70px; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
   .click-zone.pop #charImg, .click-zone.pop #charEmoji { transform: scale(1.1); }
 
-  .pets-container { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
-  .active-pet-display { position: absolute; font-size: 35px; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+  /* КОНТЕЙНЕР ДЛЯ ПИТОМЦЕВ */
+  .pets-container { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: visible; }
+  
+  /* ОБЕРТКА ДЛЯ ИДЕАЛЬНОГО ЦЕНТРИРОВАНИЯ */
+  .pet-wrapper { 
+    position: absolute; width: 50px; height: 50px; 
+    display: flex; justify-content: center; align-items: center; 
+    pointer-events: none; z-index: 4; transform: translate(-50%, -50%); 
+  }
+
+  .active-pet-display { font-size: 35px; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
-  .drone-active { position: absolute; right: 15%; bottom: 20%; font-size: 50px; z-index: 4; filter: drop-shadow(0 0 20px #00ffff) !important; animation: droneHover 1s infinite alternate ease-in-out !important; }
+  
+  .drone-active { font-size: 50px; filter: drop-shadow(0 0 20px #00ffff) !important; animation: droneHover 1s infinite alternate ease-in-out !important; }
   @keyframes droneHover { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-20px) scale(1.1); } }
 
   .bottom-panel { display: flex; flex-direction: column; gap: 5px; }
@@ -70,7 +80,7 @@
 
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 15px; }
   .overlay.show { display: flex; }
-  .menu { width: 100%; max-width: 400px; max-height: 85vh; background: #14152b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; display: flex; flex-direction: column; }
+  .menu { width: 100%; max-width: 400px; max-height: 85vh; background: #14152b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
   .menu-header { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
   .menu-header h2 { font-size: 16px; color: #fff; }
   .close-btn { background: none; border: none; color: #8a9bbd; font-size: 20px; cursor: pointer; touch-action: manipulation;}
@@ -126,8 +136,10 @@
   .case-result { display: none; flex-direction: column; align-items: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
   .case-result-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-  .case-result-icon { font-size: 100px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); margin-bottom: 10px; }
+  .case-result-icon { font-size: 100px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); margin-bottom: 10px; text-align: center; }
   .case-close-btn { background: #3b82f6; color: white; padding: 10px 30px; border-radius: 10px; border: none; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; touch-action: manipulation;}
+
+  .close-case-x { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #fff; font-size: 30px; cursor: pointer; z-index: 210; padding: 10px; }
 
   .floating-bonus { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24); }
   .floating-crystal { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #60a5fa); }
@@ -139,7 +151,7 @@
   .toast.err { border-color: #ef4444; color: #fca5a5; }
   @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
   
-  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 16px; color: #5eead4; text-shadow: 0 0 10px #5eead4; z-index: 10; animation: floatUp 0.8s ease-out forwards; }
+  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 16px; color: #5eead4; text-shadow: 0 0 10px #5eead4; z-index: 1000; animation: floatUp 0.8s ease-out forwards; }
   .float-text.crit-text { color: #ef4444; text-shadow: 0 0 15px #ef4444; font-size: 20px; }
   @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -60px) scale(1.5); } }
 
@@ -220,6 +232,7 @@
 </div>
 
 <div class="case-modal" id="caseModal">
+  <button class="close-case-x" id="closeCaseX">✕</button>
   <div class="case-anim-box" id="caseAnimBox">🎁</div>
   <div class="case-result" id="caseResult">
     <div class="case-result-title" id="caseResultTitle">Вы выбили:</div>
@@ -233,7 +246,7 @@
   <div class="cheat-panel">
     <h3 style="margin-bottom:8px;">SYSTEM HACK MENU</h3>
     <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
-    <button class="cheat-btn" onclick="applyCode('DRONE')">> ДРОН-ПЕРЕХВАТЧИК (x10)</button>
+    <button class="cheat-btn" onclick="applyCode('DRONE')">> ДРОН-ПЕРЕХВАТЧИК (x5)</button>
     <button class="cheat-btn" onclick="applyCode('CRIT100')">> CRIT100</button>
     <button class="cheat-btn" onclick="applyCode('BOOSTME')">> BOOSTME</button>
     
@@ -339,7 +352,7 @@ function loadGame() {
         state.aura += offlineEarnings; state.totalAura += offlineEarnings;
         setTimeout(() => showToast(`💤 Оффлайн-доход: +${fmt(offlineEarnings)} ауры!`, 'gold'), 1000);
       }
-    } catch(e) {}
+    } catch(e) { console.error("Ошибка загрузки:", e); }
   } else { state.lastDaily = Date.now(); }
 }
 
@@ -356,6 +369,7 @@ function floatText(x, y, text, isCrit) {
 }
 
 const getPetsMultiplier = (type) => {
+  if (!state.activePets) return 1;
   const equipped = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean);
   if (equipped.length === 0) return 1;
   const interference = Math.max(0.3, 1 - (equipped.length - 1) * 0.1); 
@@ -370,7 +384,7 @@ const getPetsMultiplier = (type) => {
 
 const getPetClickMultiplier = () => getPetsMultiplier('click');
 const getPetIncomeMultiplier = () => getPetsMultiplier('income');
-const getDroneMultiplier = () => state.hasDrone ? 10 : 1;
+const getDroneMultiplier = () => state.hasDrone ? 5 : 1; // ИЗМЕНЕНО НА 5
 
 const getPrestigeMultiplier = () => 1 + ((state.prestigePoints || 0) * 0.1);
 const getClickCost = () => Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, state.clickLevel - 1));
@@ -411,6 +425,52 @@ function renderCharacter() {
   el.stageName.textContent = CFG.names[stageId];
 }
 
+function renderPetsOnScreen() {
+  el.petsContainer.innerHTML = ''; 
+  
+  if (state.hasDrone) {
+    const dWrapper = document.createElement('div');
+    dWrapper.className = 'pet-wrapper';
+    // Дрон летает отдельно (справа снизу)
+    dWrapper.style.left = 'calc(50% + 80px)';
+    dWrapper.style.top = 'calc(50% + 80px)';
+    const d = document.createElement('div');
+    d.className = 'drone-active';
+    d.textContent = '🛸';
+    dWrapper.appendChild(d);
+    el.petsContainer.appendChild(dWrapper);
+  }
+  
+  if (state.activePets && state.activePets.length > 0) {
+    const total = state.activePets.length;
+    const radius = 80; // Радиус круга
+    
+    state.activePets.forEach((id, index) => {
+      const p = PETS.find(x => x.id === id);
+      if (p) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pet-wrapper';
+        
+        // Распределяем питомцев равномерно по кругу
+        const angle = (index / total) * Math.PI * 2 - (Math.PI / 2); // Начинаем с верхней точки
+        const offsetX = Math.cos(angle) * radius;
+        const offsetY = Math.sin(angle) * radius;
+        
+        wrapper.style.left = `calc(50% + ${offsetX}px)`;
+        wrapper.style.top = `calc(50% + ${offsetY}px)`;
+        
+        const petDiv = document.createElement('div');
+        petDiv.className = 'active-pet-display';
+        petDiv.textContent = p.emoji;
+        petDiv.style.animationDelay = `${index * 0.3}s`;
+        
+        wrapper.appendChild(petDiv);
+        el.petsContainer.appendChild(wrapper);
+      }
+    });
+  }
+}
+
 function updateUI() {
   el.auraVal.textContent = fmt(state.aura);
   el.crystalVal.textContent = fmt(state.crystals);
@@ -434,59 +494,52 @@ function updateUI() {
   } else { el.finalBox.classList.remove('show'); }
 
   if (state.stage >= 4) { el.btnPrestige.classList.remove('hidden'); }
-
-  el.petsContainer.innerHTML = ''; 
-  
-  if (state.hasDrone) {
-    const d = document.createElement('div');
-    d.className = 'drone-active';
-    d.textContent = '🛸';
-    el.petsContainer.appendChild(d);
-  }
-  
-  state.activePets.forEach((id, index) => {
-    const p = PETS.find(x => x.id === id);
-    if (p) {
-      const petDiv = document.createElement('div');
-      petDiv.className = 'active-pet-display';
-      petDiv.textContent = p.emoji;
-      const offsetX = Math.sin(index * 2) * 40;
-      const offsetY = Math.cos(index * 2) * 30;
-      petDiv.style.left = `calc(50% + ${offsetX}px)`;
-      petDiv.style.top = `calc(50% + ${offsetY}px)`;
-      petDiv.style.animationDelay = `${index * 0.2}s`;
-      el.petsContainer.appendChild(petDiv);
-    }
-  });
 }
 
 function doClick(e) {
-  let gain = getClickPower(), isCrit = false;
-  if (Math.random() < state.critChance) { gain *= 5; state.crits++; isCrit = true; }
-  state.aura += gain; state.totalAura += gain; state.clicks++;
-  el.clickZone.classList.add('pop'); setTimeout(() => el.clickZone.classList.remove('pop'), 100);
-  const x = e.clientX || (e.touches && e.touches[0].clientX) || (window.innerWidth / 2);
-  const y = e.clientY || (e.touches && e.touches[0].clientY) || (window.innerHeight / 2);
+  let gain = getClickPower();
+  let isCrit = false;
+  if (Math.random() < state.critChance) {
+    gain *= 5;
+    state.crits++;
+    isCrit = true;
+  }
+  state.aura += gain;
+  state.totalAura += gain;
+  state.clicks++;
+  
+  el.clickZone.classList.add('pop');
+  setTimeout(() => el.clickZone.classList.remove('pop'), 100);
+  
+  let x = window.innerWidth / 2;
+  let y = window.innerHeight / 2;
+  if (e && e.clientX !== undefined) { x = e.clientX; y = e.clientY; }
+  else if (e && e.touches && e.touches[0]) { x = e.touches[0].clientX; y = e.touches[0].clientY; }
+  
   floatText(x, y, '+' + Math.floor(gain), isCrit);
-  checkAch(); updateUI();
+  
+  checkAch(); 
+  updateUI();
 }
 
 function buyClick() { const cost = getClickCost(); if (state.aura >= cost) { state.aura -= cost; state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
 function buyAura() { const cost = getAuraCost(); if (state.aura >= cost) { state.aura -= cost; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive() || state.aura < CFG.boosterCost) return; state.aura -= CFG.boosterCost; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); }
 
-// --- ИСПРАВЛЕННЫЙ ПРЕСТИЖ ---
 function doPrestige() {
   if (state.stage < 4) return;
-  
-  // НОВАЯ ФОРМУЛА: Квадратный корень из (totalAura / 1млн)
-  // Это делает рост очков нелинейным (сложнее получить каждое следующее очко)
   const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000)));
   const newTotalMultiplier = (state.prestigePoints + pts) * 10;
 
   if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой постоянный бонус к доходу станет: +${newTotalMultiplier}%`)) {
     state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0;
     state.boosterEnd = 0; state.isBoosterPermanent = false; state.prestigePoints += pts;
+    
+    // СБРОС ПИТОМЦЕВ
+    state.pets = [];
+    state.activePets = [];
+    renderPetsOnScreen(); // Обновляем визуал
+    
     renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold');
     el.btnPrestige.classList.add('hidden');
   }
@@ -531,7 +584,7 @@ function buyPet(petId) {
   state.pets.push(petId);
   if (state.activePets.length < 3) state.activePets.push(petId); 
   showToast(`Вы купили ${pet.name}!`, 'gold');
-  updateUI(); checkAch(); saveGame(); renderMenu();
+  renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); renderMenu();
 }
 
 function togglePet(petId) {
@@ -543,7 +596,7 @@ function togglePet(petId) {
     state.activePets.push(petId);
     showToast(`Экипирован: ${PETS.find(p=>p.id===petId).name}`);
   }
-  updateUI(); saveGame(); renderMenu();
+  renderPetsOnScreen(); updateUI(); saveGame(); renderMenu();
 }
 
 function sellPet(petId) {
@@ -557,7 +610,7 @@ function sellPet(petId) {
     state.pets = state.pets.filter(id => id !== petId);
     state.activePets = state.activePets.filter(id => id !== petId); 
     showToast(`Продано: ${pet.name} (+${price} 💎)`, 'crystal');
-    updateUI(); saveGame(); renderMenu();
+    renderPetsOnScreen(); updateUI(); saveGame(); renderMenu();
   }
 }
 
@@ -573,6 +626,7 @@ function openCase(isFree = false) {
   el.caseAnimBox.style.display = 'block';
   el.caseResult.style.display = 'none';
   el.caseModal.querySelector('.case-close-btn').style.display = 'none';
+  document.getElementById('closeCaseX').style.display = 'block';
 
   const rand = Math.random() * 100;
   let droppedPet = null;
@@ -584,21 +638,27 @@ function openCase(isFree = false) {
     el.caseAnimBox.style.display = 'none';
     el.caseResult.style.display = 'flex';
     el.caseResultIcon.textContent = droppedPet.emoji;
-    el.caseResultName.textContent = droppedPet.name;
-    el.caseResultName.className = `pet-rarity-${droppedPet.rarity}`;
     
     if (state.pets.includes(droppedPet.id)) {
       state.crystals += 5;
-      el.caseResultTitle.textContent = 'Дубликат! Возврат 5 💎';
+      el.caseResultTitle.textContent = 'Уже есть!';
+      el.caseResultTitle.style.color = '#fbbf24';
+      el.caseResultName.textContent = `${droppedPet.name}`;
+      el.caseResultName.className = `pet-rarity-${droppedPet.rarity}`;
+      el.caseResultIcon.innerHTML = `${droppedPet.emoji}<br><span style="font-size:20px; color:#60a5fa; font-weight:bold;">+5 💎</span>`;
     } else {
       state.pets.push(droppedPet.id);
       if (state.activePets.length < 3) state.activePets.push(droppedPet.id);
       el.caseResultTitle.textContent = 'Поздравляем!';
+      el.caseResultTitle.style.color = '#fff';
+      el.caseResultName.textContent = droppedPet.name;
+      el.caseResultName.className = `pet-rarity-${droppedPet.rarity}`;
+      el.caseResultIcon.innerHTML = droppedPet.emoji;
     }
     
     el.caseModal.querySelector('.case-close-btn').style.display = 'inline-block';
     isCaseAnimating = false;
-    updateUI(); checkAch(); saveGame(); renderMenu();
+    renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); renderMenu();
   }, 2000);
 }
 
@@ -668,7 +728,7 @@ function spinWheel() {
 function useCode() { const raw = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!raw) return; applyCode(raw); }
 function applyCode(raw) {
   if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 ЧИТ-МЕНЮ!'); return; }
-  if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x10 ко всему)', 'gold'); updateUI(); saveGame(); return; }
+  if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x5 ко всему)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); return; }
   if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; }
   if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; }
   
@@ -779,14 +839,57 @@ el.menuBtn.addEventListener('pointerdown', () => { renderMenu(); el.menuOverlay.
 el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show'));
 el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
 
+document.getElementById('closeCaseX').addEventListener('pointerdown', () => {
+  document.getElementById('caseModal').classList.remove('show');
+});
+
 document.querySelectorAll('.tab').forEach(t => { 
   t.addEventListener('pointerdown', () => { 
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active')); 
-    t.classList.add('active'); activeTab = t.dataset.tab; renderMenu(); 
+    switchTab(t.dataset.tab);
   }); 
 });
 
-loadGame(); renderCharacter(); updateUI(); requestAnimationFrame(gameLoop); setInterval(checkAch, 1000); 
+const tabsOrder = ['ach', 'evo', 'pets', 'casino', 'stats'];
+let touchStartX = 0;
+let touchStartY = 0;
+const menuContainer = document.querySelector('.menu');
+
+menuContainer.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+menuContainer.addEventListener('touchend', e => {
+  let touchEndX = e.changedTouches[0].clientX;
+  let touchEndY = e.changedTouches[0].clientY;
+  let deltaX = touchEndX - touchStartX;
+  let deltaY = touchEndY - touchStartY;
+
+  if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+    let currentIndex = tabsOrder.indexOf(activeTab);
+    if (deltaX > 0 && currentIndex > 0) {
+      switchTab(tabsOrder[currentIndex - 1]);
+    } else if (deltaX < 0 && currentIndex < tabsOrder.length - 1) {
+      switchTab(tabsOrder[currentIndex + 1]);
+    }
+  }
+});
+
+function switchTab(tabId) {
+  activeTab = tabId;
+  document.querySelectorAll('.tab').forEach(x => {
+    x.classList.remove('active');
+    if(x.dataset.tab === activeTab) x.classList.add('active');
+  });
+  renderMenu();
+}
+
+loadGame(); 
+renderCharacter(); 
+renderPetsOnScreen(); 
+updateUI(); 
+requestAnimationFrame(gameLoop); 
+setInterval(checkAch, 1000); 
 scheduleNextBonus();
 scheduleNextCrystal();
 </script>
