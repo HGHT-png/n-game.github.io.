@@ -9,13 +9,17 @@
   button, input { outline: none; border: none; -webkit-appearance: none; }
   body, html { overscroll-behavior: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: radial-gradient(circle at top, #1b1c3e 0%, #0a0b1a 60%, #05050a 100%); color: #fff; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; touch-action: manipulation; }
   .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: 100%; padding: 8px 12px 45px 12px; position: relative; }
-  header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; }
-  .menu-btn { position: absolute; top: 0; right: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #a0b0d0; font-size: 18px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+  
+  /* ФИКС ЦИФР (чтобы не перекрывали меню) */
+  header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0 45px; }
+  .aura-display { font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; line-height: 1.1; width: 100%; }
+  #auraVal { font-size: clamp(16px, 6vw, 26px); white-space: nowrap; }
+  
+  .menu-btn { position: absolute; top: 0; right: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #a0b0d0; font-size: 18px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; touch-action: manipulation; z-index: 10;}
   .menu-btn:active { transform: scale(0.9); }
-  .prestige-btn-small { position: absolute; top: 0; left: 0; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+  .prestige-btn-small { position: absolute; top: 0; left: 0; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; touch-action: manipulation; z-index: 10;}
   .prestige-btn-small:active { transform: scale(0.9); background: rgba(245, 158, 11, 0.3); }
   .prestige-btn-small.hidden { display: none; }
-  .aura-display { font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; line-height: 1.1; }
   .crystal-display { font-size: 14px; color: #60a5fa; margin-top: 2px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px;}
   .aura-icon { color: #ffd700; font-size: 22px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
   .crystal-icon { color: #60a5fa; font-size: 16px; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
@@ -129,8 +133,7 @@
 </style>
 </head>
 <body>
-
-<script>
+ <script>
   const lastOpen = sessionStorage.getItem('lastOpenTime');
   if (lastOpen && (Date.now() - lastOpen > 300000)) { window.location.reload(true); }
   sessionStorage.setItem('lastOpenTime', Date.now());
@@ -166,12 +169,12 @@
 
     <div class="buttons">
       <button class="btn" id="btnClick">
-        <div>Улучшить клик (+1)</div>
+        <div>Улучшить клик</div>
         <div class="btn-sub" id="costClick">Стоимость: 10</div>
       </button>
       
       <button class="btn" id="btnAura">
-        <div>Улучшить ауру (+1/сек)</div>
+        <div>Улучшить ауру</div>
         <div class="btn-sub" id="costAura">Стоимость: 15</div>
       </button>
       
@@ -233,10 +236,8 @@
 </div>
 
 <div id="toasts"></div>
-
 <script>
 const IMAGES = { soap: '', water: '', brush: '', narzan: '', chekushka: '', cosmic: '' };
-
 const PETS = [
   { id: 'p1', name: 'Мышь', emoji: '🐁', rarity: 'rare', cost: 500000, bonus: {type:'click', val:1.2}, desc: '+20% к клику' },
   { id: 'p2', name: 'Енот', emoji: '🦝', rarity: 'rare', cost: 1500000, bonus: {type:'income', val:1.2}, desc: '+20% к доходу' },
@@ -256,35 +257,11 @@ const PETS = [
 ];
 
 const CFG = {
-  emoji: { 
-    soap:'🧼', liquid_soap:'🧴', solid_soap:'🧼',
-    water:'💧', mineral_water:'💧', sparkling_water:'💧',
-    brush:'🪥', electric_brush:'🪥', sonic_brush:'🪥',
-    narzan:'🥤', kvass:'🥤', juice:'🥤', mors:'🥤', compote:'🥤', lemonade:'🥤', tea:'🥤', coffee:'🥤', cocoa:'🥤', energy:'🥤',
-    beer:'🍺', wine:'🍷', champagne:'🍾', cognac:'🥃', chekushka:'🍾', cosmic:'🌌'
-  },
-  names: { 
-    soap:'Мыло «Аура»', liquid_soap:'Жидкое мыло', solid_soap:'Твёрдое мыло',
-    water:'Бутылка воды', mineral_water:'Минеральная вода', sparkling_water:'Газированная вода',
-    brush:'Чёрная зубная щётка', electric_brush:'Электрическая щётка', sonic_brush:'Ультразвуковая щётка',
-    narzan:'Нарзан', kvass:'Квас', juice:'Сок', mors:'Морс', compote:'Компот', lemonade:'Лимонад', tea:'Чай', coffee:'Кофе', cocoa:'Какао', energy:'Энергетик',
-    beer:'Пиво', wine:'Вино', champagne:'Шампанское', cognac:'Коньяк', chekushka:'Чекушка', cosmic:'Космический Нарзан'
-  },
-  order: [
-    'soap','liquid_soap','solid_soap', 'water','mineral_water','sparkling_water',
-    'brush','electric_brush','sonic_brush', 'narzan','kvass','juice','mors','compote','lemonade','tea','coffee','cocoa','energy',
-    'beer','wine','champagne','cognac','chekushka','cosmic'
-  ],
-  // ЦЕНЫ ПОНИЖЕНЫ (после кваса)
-  stageReq: [
-    0, 5, 15, 
-    25, 40, 60, 
-    80, 100, 120, 
-    140, 160, 180, 200, 225, 250, 280, 310, 340, 370,
-    400, 430, 460, 490, 530, 600
-  ],
-  clickBaseCost: 10, auraBaseCost: 15, costGrowth: 1.04, boosterCost: 200, boosterDuration: 30000,
-  caseCost: 10, sellRare: 15, sellEpic: 50, sellLegendary: 250
+  emoji: { soap:'🧼', liquid_soap:'🧴', solid_soap:'🧼', water:'💧', mineral_water:'💧', sparkling_water:'💧', brush:'🪥', electric_brush:'🪥', sonic_brush:'🪥', narzan:'🥤', kvass:'🥤', juice:'🥤', mors:'🥤', compote:'🥤', lemonade:'🥤', tea:'🥤', coffee:'🥤', cocoa:'🥤', energy:'🥤', beer:'🍺', wine:'🍷', champagne:'🍾', cognac:'🥃', chekushka:'🍾', cosmic:'🌌' },
+  names: { soap:'Мыло «Аура»', liquid_soap:'Жидкое мыло', solid_soap:'Твёрдое мыло', water:'Бутылка воды', mineral_water:'Минеральная вода', sparkling_water:'Газированная вода', brush:'Чёрная зубная щётка', electric_brush:'Электрическая щётка', sonic_brush:'Ультразвуковая щётка', narzan:'Нарзан', kvass:'Квас', juice:'Сок', mors:'Морс', compote:'Компот', lemonade:'Лимонад', tea:'Чай', coffee:'Кофе', cocoa:'Какао', energy:'Энергетик', beer:'Пиво', wine:'Вино', champagne:'Шампанское', cognac:'Коньяк', chekushka:'Чекушка', cosmic:'Космический Нарзан' },
+  order: ['soap','liquid_soap','solid_soap','water','mineral_water','sparkling_water','brush','electric_brush','sonic_brush','narzan','kvass','juice','mors','compote','lemonade','tea','coffee','cocoa','energy','beer','wine','champagne','cognac','chekushka','cosmic'],
+  stageReq: [0, 5, 10, 15, 20, 30, 40, 50, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 260, 280, 300, 350],
+  clickBaseCost: 10, auraBaseCost: 15, costGrowth: 1.03, boosterCost: 200, boosterDuration: 30000, caseCost: 10, sellRare: 15, sellEpic: 50, sellLegendary: 250
 };
 
 const CODES = { 'HGHT': 5000, '0765': 1500, '27': 2700, 'E04': 404 };
@@ -297,101 +274,39 @@ const ACHIEVEMENTS = [
   { id:'petAll', icon:'🐉', name:'Зоопарк', desc:'Собери 5 питомцев', check:s=>s.pets.length>=5 },
 ];
 
-let state = { 
-  aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, 
-  crystals: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false,
-  usedCodes: [], achievements: [], boosterEnd: 0, startedAt: Date.now(), lastSaved: Date.now(), 
-  critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false 
-};
-
+let state = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false };
 let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
 let currentSaveKey = currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser;
 
 const $ = id => document.getElementById(id);
-const el = {
-  auraVal: $('auraVal'), crystalVal: $('crystalVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'),
-  clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'),
-  btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'),
-  btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'),
-  finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'),
-  codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'),
-  cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'),
-  caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'),
-  caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX')
-};
+const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'), caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX') };
+
 function saveGame() { state.lastSaved = Date.now(); localStorage.setItem(currentSaveKey, JSON.stringify(state)); }
 function loadGame() {
   const saved = localStorage.getItem(currentSaveKey);
   if (saved) {
     try {
       Object.assign(state, JSON.parse(saved));
-      if (!state.pets) state.pets = []; 
-      if (!state.codeUses) state.codeUses = {}; 
-      if (!state.freeCases) state.freeCases = 0;
-      if (state.hasDrone === undefined) state.hasDrone = false;
-      if (state.activePet) {
-        if (!state.activePets) state.activePets = [];
-        if (!state.activePets.includes(state.activePet)) state.activePets.push(state.activePet);
-        delete state.activePet;
-      }
+      if (!state.pets) state.pets = []; if (!state.codeUses) state.codeUses = {}; if (!state.freeCases) state.freeCases = 0; if (state.hasDrone === undefined) state.hasDrone = false;
+      if (state.activePet) { if (!state.activePets) state.activePets = []; if (!state.activePets.includes(state.activePet)) state.activePets.push(state.activePet); delete state.activePet; }
       if (!state.activePets) state.activePets = [];
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
-      if (diffSec > 60 && state.auraLevel > 0) {
-        const offlineEarnings = getAuraIncome() * Math.min(diffSec, 28800) * 0.5;
-        state.aura += offlineEarnings; state.totalAura += offlineEarnings;
-        setTimeout(() => showToast(`💤 Оффлайн-доход: +${fmt(offlineEarnings)} ауры!`, 'gold'), 1000);
+      if (diffSec > 10 && state.auraLevel > 0) {
+        const baseIncome = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)) * (1 + ((state.prestigePoints || 0) * 0.1));
+        const totalIncome = baseIncome * (state.hasDrone ? 5 : 1);
+        const offlineEarnings = totalIncome * Math.min(diffSec, 28800) * 0.5;
+        if (offlineEarnings > 0) { state.aura += offlineEarnings; state.totalAura += offlineEarnings; setTimeout(() => showToast(`💤 Оффлайн-доход: +${fmt(offlineEarnings)} ауры!`, 'gold'), 1000); }
       }
-    } catch(e) { console.error("Ошибка загрузки:", e); }
+    } catch(e) { console.error(e); }
   } else { state.lastDaily = Date.now(); }
 }
 
 const fmt = n => Math.floor(n).toLocaleString('ru-RU');
-function showToast(text, type = '') {
-  const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = text;
-  el.toasts.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
-}
-function floatText(x, y, text, isCrit) {
-  const d = document.createElement('div'); d.className = 'float-text' + (isCrit ? ' crit-text' : ''); d.textContent = text;
-  d.style.left = x + 'px'; d.style.top = y + 'px'; document.body.appendChild(d);
-  setTimeout(() => d.remove(), 800);
-}
+function showToast(text, type = '') { const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = text; el.toasts.appendChild(t); setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500); }
+function floatText(x, y, text, isCrit) { const d = document.createElement('div'); d.className = 'float-text' + (isCrit ? ' crit-text' : ''); d.textContent = text; d.style.left = x + 'px'; d.style.top = y + 'px'; document.body.appendChild(d); setTimeout(() => d.remove(), 800); }
+function playLevelUpSound() { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const play = (f, s, d) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(0.3, s + 0.05); g.gain.exponentialRampToValueAtTime(0.01, s + d); o.start(s); o.stop(s + d); }; const n = ctx.currentTime; play(523.25, n, 0.1); play(659.25, n + 0.1, 0.1); play(783.99, n + 0.2, 0.4); } catch(e) {} }
 
-function playLevelUpSound() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const playNote = (freq, startTime, duration) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      osc.connect(gain); gain.connect(ctx.destination);
-      gain.gain.setValueAtTime(0, startTime);
-      gain.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-      osc.start(startTime); osc.stop(startTime + duration);
-    };
-    const now = ctx.currentTime;
-    playNote(523.25, now, 0.1); 
-    playNote(659.25, now + 0.1, 0.1); 
-    playNote(783.99, now + 0.2, 0.4); 
-  } catch(e) { console.log('Аудио не поддерживается'); }
-}
-
-const getPetsMultiplier = (type) => {
-  if (!state.activePets) return 1;
-  const equipped = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean);
-  if (equipped.length === 0) return 1;
-  const interference = Math.max(0.3, 1 - (equipped.length - 1) * 0.1); 
-  let totalBonus = 0;
-  equipped.forEach(p => {
-    if (p.bonus.type === type || p.bonus.type === 'global') {
-      totalBonus += (p.bonus.val - 1) * interference;
-    }
-  });
-  return 1 + totalBonus;
-};
-
+const getPetsMultiplier = (type) => { if (!state.activePets) return 1; const eq = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean); if (eq.length === 0) return 1; const inf = Math.max(0.3, 1 - (eq.length - 1) * 0.1); let tb = 0; eq.forEach(p => { if (p.bonus.type === type || p.bonus.type === 'global') tb += (p.bonus.val - 1) * inf; }); return 1 + tb; };
 const getPetClickMultiplier = () => getPetsMultiplier('click');
 const getPetIncomeMultiplier = () => getPetsMultiplier('income');
 const getDroneMultiplier = () => state.hasDrone ? 5 : 1;
@@ -400,453 +315,66 @@ const getClickCost = () => Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowt
 const getAuraCost = () => Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, state.auraLevel));
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
-// Теперь прокачка дает больше с каждым уровнем!
-const getClickPower = () => state.clickLevel * (1 + Math.floor(state.clickLevel / 10)) * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
-const getAuraIncome = () => state.auraLevel * (1 + Math.floor(state.auraLevel / 10)) * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier();
+const getClickPower = () => state.clickLevel * (1 + Math.floor(state.clickLevel / 5)) * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
+const getAuraIncome = () => state.auraLevel * (1 + Math.floor(state.auraLevel / 5)) * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier();
 
-function checkStage() {
-  let newStage = 0;
-  for (let i = 0; i < CFG.stageReq.length; i++) { if (state.auraLevel >= CFG.stageReq[i]) newStage = i; }
-  if (newStage > state.stage) {
-    state.stage = newStage;
-    const reward = Math.max(100, getAuraIncome() * 300);
-    state.aura += reward; state.totalAura += reward;
-    
-    playLevelUpSound();
-    showToast(`🎉 Новая форма: ${CFG.names[CFG.order[state.stage]]}! Награда: +${fmt(reward)} ауры!`, 'gold');
-    renderCharacter(); saveGame(); renderMenu();
-  }
-}
+function checkStage() { let ns = 0; for (let i = 0; i < CFG.stageReq.length; i++) { if (state.auraLevel >= CFG.stageReq[i]) ns = i; } if (ns > state.stage) { state.stage = ns; const r = Math.max(100, getAuraIncome() * 300); state.aura += r; state.totalAura += r; playLevelUpSound(); showToast(`🎉 Новая форма: ${CFG.names[CFG.order[state.stage]]}! Награда: +${fmt(r)} ауры!`, 'gold'); renderCharacter(); saveGame(); renderMenu(); } }
+function checkAch() { ACHIEVEMENTS.forEach(a => { if (!state.achievements.includes(a.id) && a.check(state)) { state.achievements.push(a.id); showToast('🏆 ' + a.name, 'gold'); saveGame(); } }); }
+function renderCharacter() { const sid = CFG.order[state.stage]; const src = IMAGES[sid]; if (src && src.length > 50) { el.charImg.src = src; el.charImg.style.display = 'block'; el.charEmoji.style.display = 'none'; } else { el.charImg.style.display = 'none'; el.charEmoji.style.display = 'block'; el.charEmoji.textContent = CFG.emoji[sid]; } el.stageName.textContent = CFG.names[sid]; }
+function renderPetsOnScreen() { el.petsContainer.innerHTML = ''; if (state.hasDrone) { const dw = document.createElement('div'); dw.className = 'pet-wrapper'; dw.style.left = 'calc(50% + 80px)'; dw.style.top = 'calc(50% + 80px)'; const d = document.createElement('div'); d.className = 'drone-active'; d.textContent = '🛸'; dw.appendChild(d); el.petsContainer.appendChild(dw); } if (state.activePets && state.activePets.length > 0) { const t = state.activePets.length; const rad = 80; state.activePets.forEach((id, i) => { const p = PETS.find(x => x.id === id); if (p) { const w = document.createElement('div'); w.className = 'pet-wrapper'; const a = (i / t) * Math.PI * 2 - (Math.PI / 2); w.style.left = `calc(50% + ${Math.cos(a) * rad}px)`; w.style.top = `calc(50% + ${Math.sin(a) * rad}px)`; const pd = document.createElement('div'); pd.className = 'active-pet-display'; pd.textContent = p.emoji; pd.style.animationDelay = `${i * 0.3}s`; w.appendChild(pd); el.petsContainer.appendChild(w); } }); } }
+function updateUI() { el.auraVal.textContent = fmt(state.aura); el.crystalVal.textContent = fmt(state.crystals); el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' ауры/сек' + (isBoosterActive() ? ' (x2!)' : ''); el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; el.costClick.textContent = 'Стоимость: ' + fmt(getClickCost()); el.btnClick.classList.toggle('disabled', state.aura < getClickCost()); el.costAura.textContent = 'Стоимость: ' + fmt(getAuraCost()) + ' · есть: ' + state.auraLevel; el.btnAura.classList.toggle('disabled', state.aura < getAuraCost()); el.costBooster.textContent = isBoosterActive() ? 'Активен!' : 'Стоимость: ' + fmt(CFG.boosterCost); el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < CFG.boosterCost); if (state.stage < CFG.order.length - 1) { el.finalBox.classList.add('show'); const cr = CFG.stageReq[state.stage], nr = CFG.stageReq[state.stage + 1], pr = Math.max(0, state.auraLevel - cr), tn = nr - cr; el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; el.finalText.textContent = `До след. формы: ${state.auraLevel} / ${nr} ур. ауры`; } else { el.finalBox.classList.remove('show'); } if (state.stage >= 3) { el.btnPrestige.classList.remove('hidden'); } }
 
-function checkAch() {
-  ACHIEVEMENTS.forEach(a => {
-    if (!state.achievements.includes(a.id) && a.check(state)) {
-      state.achievements.push(a.id); showToast('🏆 ' + a.name, 'gold'); saveGame();
-    }
-  });
-}
-
-function renderCharacter() {
-  const stageId = CFG.order[state.stage];
-  const src = IMAGES[stageId];
-  if (src && src.length > 50) {
-    el.charImg.src = src; el.charImg.style.display = 'block'; el.charEmoji.style.display = 'none';
-  } else {
-    el.charImg.style.display = 'none'; el.charEmoji.style.display = 'block'; el.charEmoji.textContent = CFG.emoji[stageId];
-  }
-  el.stageName.textContent = CFG.names[stageId];
-}
-function renderPetsOnScreen() {
-  el.petsContainer.innerHTML = ''; 
-  if (state.hasDrone) {
-    const dWrapper = document.createElement('div'); dWrapper.className = 'pet-wrapper';
-    dWrapper.style.left = 'calc(50% + 80px)'; dWrapper.style.top = 'calc(50% + 80px)';
-    const d = document.createElement('div'); d.className = 'drone-active'; d.textContent = '🛸';
-    dWrapper.appendChild(d); el.petsContainer.appendChild(dWrapper);
-  }
-  if (state.activePets && state.activePets.length > 0) {
-    const total = state.activePets.length; const radius = 80; 
-    state.activePets.forEach((id, index) => {
-      const p = PETS.find(x => x.id === id);
-      if (p) {
-        const wrapper = document.createElement('div'); wrapper.className = 'pet-wrapper';
-        const angle = (index / total) * Math.PI * 2 - (Math.PI / 2); 
-        wrapper.style.left = `calc(50% + ${Math.cos(angle) * radius}px)`;
-        wrapper.style.top = `calc(50% + ${Math.sin(angle) * radius}px)`;
-        const petDiv = document.createElement('div'); petDiv.className = 'active-pet-display'; petDiv.textContent = p.emoji;
-        petDiv.style.animationDelay = `${index * 0.3}s`;
-        wrapper.appendChild(petDiv); el.petsContainer.appendChild(wrapper);
-      }
-    });
-  }
-}
-
-function updateUI() {
-  el.auraVal.textContent = fmt(state.aura);
-  el.crystalVal.textContent = fmt(state.crystals);
-  el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' ауры/сек' + (isBoosterActive() ? ' (x2!)' : '');
-  el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : '';
-  el.costClick.textContent = 'Стоимость: ' + fmt(getClickCost());
-  el.btnClick.classList.toggle('disabled', state.aura < getClickCost());
-  el.costAura.textContent = 'Стоимость: ' + fmt(getAuraCost()) + ' · есть: ' + state.auraLevel;
-  el.btnAura.classList.toggle('disabled', state.aura < getAuraCost());
-  el.costBooster.textContent = isBoosterActive() ? 'Активен!' : 'Стоимость: ' + fmt(CFG.boosterCost);
-  el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < CFG.boosterCost);
-
-  if (state.stage < CFG.order.length - 1) {
-    el.finalBox.classList.add('show');
-    const curReq = CFG.stageReq[state.stage];
-    const nextReq = CFG.stageReq[state.stage + 1];
-    const progress = Math.max(0, state.auraLevel - curReq);
-    const totalNeeded = nextReq - curReq;
-    el.finalFill.style.width = Math.min(100, (progress / totalNeeded) * 100) + '%';
-    el.finalText.textContent = `До след. формы: ${state.auraLevel} / ${nextReq} ур. ауры`;
-  } else {
-    el.finalBox.classList.remove('show');
-  }
-
-  if (state.stage >= CFG.order.length - 2) { el.btnPrestige.classList.remove('hidden'); }
-}
-
-function doClick(e) {
-  let gain = getClickPower(); let isCrit = false;
-  if (Math.random() < state.critChance) { gain *= 5; state.crits++; isCrit = true; }
-  state.aura += gain; state.totalAura += gain; state.clicks++;
-  el.clickZone.classList.add('pop'); setTimeout(() => el.clickZone.classList.remove('pop'), 100);
-  let x = window.innerWidth / 2; let y = window.innerHeight / 2;
-  if (e && e.clientX !== undefined) { x = e.clientX; y = e.clientY; }
-  else if (e && e.touches && e.touches[0]) { x = e.touches[0].clientX; y = e.touches[0].clientY; }
-  floatText(x, y, '+' + Math.floor(gain), isCrit);
-  checkAch(); updateUI();
-}
-
-function buyClick() { const cost = getClickCost(); if (state.aura >= cost) { state.aura -= cost; state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
-function buyAura() { const cost = getAuraCost(); if (state.aura >= cost) { state.aura -= cost; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
+function doClick(e) { let g = getClickPower(); let c = false; if (Math.random() < state.critChance) { g *= 5; state.crits++; c = true; } state.aura += g; state.totalAura += g; state.clicks++; el.clickZone.classList.add('pop'); setTimeout(() => el.clickZone.classList.remove('pop'), 100); let x = window.innerWidth / 2, y = window.innerHeight / 2; if (e && e.clientX !== undefined) { x = e.clientX; y = e.clientY; } else if (e && e.touches && e.touches[0]) { x = e.touches[0].clientX; y = e.touches[0].clientY; } floatText(x, y, '+' + Math.floor(g), c); checkAch(); updateUI(); }
+function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aura -= c; state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
+function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive() || state.aura < CFG.boosterCost) return; state.aura -= CFG.boosterCost; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); }
-function doPrestige() {
-  if (state.stage < CFG.order.length - 2) return;
-  const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000)));
-  const newTotalMultiplier = (state.prestigePoints + pts) * 10;
-  if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${newTotalMultiplier}%`)) {
-    state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0;
-    state.boosterEnd = 0; state.isBoosterPermanent = false; state.prestigePoints += pts;
-    state.pets = []; state.activePets = [];
-    renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold');
-    el.btnPrestige.classList.add('hidden');
-  }
-}
+function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000))); const nm = (state.prestigePoints + pts) * 10; if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${nm}%`)) { state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0; state.boosterEnd = 0; state.isBoosterPermanent = false; state.prestigePoints += pts; state.pets = []; state.activePets = []; renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold'); el.btnPrestige.classList.add('hidden'); } }
+function hardReset() { if (confirm("⚠️ ВНИМАНИЕ! Это полностью удалит ВЕСЬ прогресс (включая престиж, питомцев и кристаллы)! Вы уверены?")) { localStorage.removeItem(currentSaveKey); location.reload(); } }
 
 let bonusTimeout, crystalTimeout;
-function spawnFloatingBonus() {
-  if (document.querySelector('.floating-bonus')) return;
-  const bonus = document.createElement('div'); bonus.className = 'floating-bonus'; bonus.textContent = '🌟';
-  bonus.style.top = Math.floor(Math.random() * 60 + 10) + '%'; bonus.style.left = Math.floor(Math.random() * 80 + 10) + '%';
-  bonus.onclick = (e) => {
-    e.stopPropagation();
-    if (Math.random() < 0.5) { const reward = getAuraIncome() * 300; state.aura += reward; state.totalAura += reward; showToast(`🌟 Звезда: +${fmt(reward)} ауры!`, 'gold'); }
-    else { state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); }
-    bonus.remove(); updateUI(); saveGame(); scheduleNextBonus();
-  };
-  el.clickZone.appendChild(bonus);
-  bonusTimeout = setTimeout(() => { if (bonus.parentNode) bonus.remove(); scheduleNextBonus(); }, 8000);
-}
+function spawnFloatingBonus() { if (document.querySelector('.floating-bonus')) return; const b = document.createElement('div'); b.className = 'floating-bonus'; b.textContent = '🌟'; b.style.top = Math.floor(Math.random() * 60 + 10) + '%'; b.style.left = Math.floor(Math.random() * 80 + 10) + '%'; b.onclick = (e) => { e.stopPropagation(); if (Math.random() < 0.5) { const r = getAuraIncome() * 300; state.aura += r; state.totalAura += r; showToast(`🌟 Звезда: +${fmt(r)} ауры!`, 'gold'); } else { state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); } b.remove(); updateUI(); saveGame(); scheduleNextBonus(); }; el.clickZone.appendChild(b); bonusTimeout = setTimeout(() => { if (b.parentNode) b.remove(); scheduleNextBonus(); }, 8000); }
 function scheduleNextBonus() { clearTimeout(bonusTimeout); bonusTimeout = setTimeout(spawnFloatingBonus, Math.floor(Math.random() * 150000) + 90000); }
-
-function spawnFloatingCrystal() {
-  if (document.querySelector('.floating-crystal')) return;
-  const crystal = document.createElement('div'); crystal.className = 'floating-crystal'; crystal.textContent = '💎';
-  crystal.style.top = Math.floor(Math.random() * 60 + 10) + '%'; crystal.style.left = Math.floor(Math.random() * 80 + 10) + '%';
-  crystal.onclick = (e) => {
-    e.stopPropagation();
-    const amount = Math.floor(Math.random() * 3) + 1; 
-    state.crystals += amount;
-    showToast(`💎 Кристалл: +${amount} шт!`, 'crystal');
-    crystal.remove(); updateUI(); saveGame(); scheduleNextCrystal();
-  };
-  el.clickZone.appendChild(crystal);
-  crystalTimeout = setTimeout(() => { if (crystal.parentNode) crystal.remove(); scheduleNextCrystal(); }, 8000);
-}
+function spawnFloatingCrystal() { if (document.querySelector('.floating-crystal')) return; const c = document.createElement('div'); c.className = 'floating-crystal'; c.textContent = '💎'; c.style.top = Math.floor(Math.random() * 60 + 10) + '%'; c.style.left = Math.floor(Math.random() * 80 + 10) + '%'; c.onclick = (e) => { e.stopPropagation(); const a = Math.floor(Math.random() * 3) + 1; state.crystals += a; showToast(`💎 Кристалл: +${a} шт!`, 'crystal'); c.remove(); updateUI(); saveGame(); scheduleNextCrystal(); }; el.clickZone.appendChild(c); crystalTimeout = setTimeout(() => { if (c.parentNode) c.remove(); scheduleNextCrystal(); }, 8000); }
 function scheduleNextCrystal() { clearTimeout(crystalTimeout); crystalTimeout = setTimeout(spawnFloatingCrystal, Math.floor(Math.random() * 180000) + 120000); }
 
-function buyPet(petId) {
-  const pet = PETS.find(p => p.id === petId);
-  if (!pet || state.pets.includes(petId) || state.aura < pet.cost) return;
-  state.aura -= pet.cost; state.pets.push(petId);
-  if (state.activePets.length < 5) state.activePets.push(petId); 
-  showToast(`Вы купили ${pet.name}!`, 'gold');
-  renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); renderMenu(true); 
-}
-
-function togglePet(petId) {
-  if (!state.pets.includes(petId)) return;
-  if (state.activePets.includes(petId)) {
-    state.activePets = state.activePets.filter(id => id !== petId);
-    showToast(`Снят: ${PETS.find(p=>p.id===petId).name}`);
-  } else {
-    if (state.activePets.length >= 5) return showToast('Максимум 5 питомцев!', 'err');
-    state.activePets.push(petId);
-    showToast(`Экипирован: ${PETS.find(p=>p.id===petId).name}`);
-  }
-  renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); 
-}
-function sellPet(petId) {
-  if (!state.pets.includes(petId)) return;
-  const pet = PETS.find(p => p.id === petId);
-  let price = CFG.sellRare;
-  if (pet.rarity === 'epic') price = CFG.sellEpic;
-  if (pet.rarity === 'legendary') price = CFG.sellLegendary;
-  if (confirm(`Продать ${pet.name} за ${price} 💎?`)) {
-    state.crystals += price;
-    state.pets = state.pets.filter(id => id !== petId);
-    state.activePets = state.activePets.filter(id => id !== petId); 
-    showToast(`Продано: ${pet.name} (+${price} 💎)`, 'crystal');
-    renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); 
-  }
-}
+function buyPet(petId) { const p = PETS.find(x => x.id === petId); if (!p || state.pets.includes(petId) || state.aura < p.cost) return; state.aura -= p.cost; state.pets.push(petId); if (state.activePets.length < 5) state.activePets.push(petId); showToast(`Вы купили ${p.name}!`, 'gold'); renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); renderMenu(true); }
+function togglePet(petId) { if (!state.pets.includes(petId)) return; if (state.activePets.includes(petId)) { state.activePets = state.activePets.filter(id => id !== petId); showToast(`Снят: ${PETS.find(p=>p.id===petId).name}`); } else { if (state.activePets.length >= 5) return showToast('Максимум 5 питомцев!', 'err'); state.activePets.push(petId); showToast(`Экипирован: ${PETS.find(p=>p.id===petId).name}`); } renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); }
+function sellPet(petId) { if (!state.pets.includes(petId)) return; const p = PETS.find(x => x.id === petId); let pr = CFG.sellRare; if (p.rarity === 'epic') pr = CFG.sellEpic; if (p.rarity === 'legendary') pr = CFG.sellLegendary; if (confirm(`Продать ${p.name} за ${pr} 💎?`)) { state.crystals += pr; state.pets = state.pets.filter(id => id !== petId); state.activePets = state.activePets.filter(id => id !== petId); showToast(`Продано: ${p.name} (+${pr} 💎)`, 'crystal'); renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); } }
 
 let isCaseAnimating = false;
-function openCase(isFree = false) {
-  if (isCaseAnimating) return;
-  if (isFree && state.freeCases > 0) { state.freeCases--; }
-  else if (!isFree && state.crystals >= CFG.caseCost) { state.crystals -= CFG.caseCost; }
-  else { return; }
+function openCase(isFree = false) { if (isCaseAnimating) return; if (isFree && state.freeCases > 0) { state.freeCases--; } else if (!isFree && state.crystals >= CFG.caseCost) { state.crystals -= CFG.caseCost; } else { return; } isCaseAnimating = true; const rand = Math.random() * 100; let dp = null; if (rand < 5) dp = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]; else if (rand < 30) dp = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)]; else dp = PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)]; let dup = state.pets.includes(dp.id); if (dup) { state.crystals += 5; } else { state.pets.push(dp.id); if (state.activePets.length < 5) state.activePets.push(dp.id); } saveGame(); renderPetsOnScreen(); updateUI(); renderMenu(true); el.caseModal.classList.add('show'); el.caseAnimBox.style.display = 'block'; el.caseResult.style.display = 'none'; el.caseCloseBtn.style.display = 'none'; el.closeCaseX.style.display = 'block'; setTimeout(() => { el.caseAnimBox.style.display = 'none'; el.caseResult.style.display = 'flex'; el.caseResultIcon.textContent = dp.emoji; el.caseResultName.textContent = dp.name; el.caseResultName.className = `pet-rarity-${dp.rarity}`; if (dup) { el.caseResultTitle.textContent = 'Уже есть!'; el.caseResultTitle.style.color = '#fbbf24'; el.caseResultIcon.innerHTML = `${dp.emoji}<br><span style="font-size:24px; color:#60a5fa; font-weight:bold; margin-top:10px; display:inline-block;">+5 💎</span>`; } else { el.caseResultTitle.textContent = 'Поздравляем!'; el.caseResultTitle.style.color = '#fff'; el.caseResultIcon.innerHTML = dp.emoji; } el.caseCloseBtn.style.display = 'inline-block'; isCaseAnimating = false; checkAch(); }, 2000); }
+function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = false; renderMenu(true); }
+el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
-  isCaseAnimating = true;
-  const rand = Math.random() * 100;
-  let droppedPet = null;
-  if (rand < 5) droppedPet = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)];
-  else if (rand < 30) droppedPet = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)];
-  else droppedPet = PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)];
+let isSpinning = false; let currentRotation = 0;
+const WHEEL_PRIZES = [{ text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } }, { text: 'Аура x1000', color: '#ef4444', action: () => { let r = getAuraIncome() * 1000; state.aura += r; state.totalAura += r; } }, { text: 'Кейс', color: '#fbbf24', action: () => { state.freeCases++; } }, { text: 'Пусто', color: '#333', action: () => {} }, { text: '10💎', color: '#10b981', action: () => { state.crystals += 10; } }, { text: 'Бустер x2', color: '#8b5cf6', action: () => { state.boosterEnd = Date.now() + 60000; } }, { text: 'Аура x100', color: '#ef4444', action: () => { let r = getAuraIncome() * 100; state.aura += r; state.totalAura += r; } }, { text: '50💎', color: '#3b82f6', action: () => { state.crystals += 50; } }];
+function renderCasino() { const deg = 360 / WHEEL_PRIZES.length; let gs = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', '); let lh = ''; WHEEL_PRIZES.forEach((prize, i) => { const a = (i * deg) + (deg / 2); const f = (a > 90 && a < 270) ? 180 : 0; lh += `<div class="wheel-label" style="transform: rotate(${a}deg) translateY(-85px) rotate(${-a + f}deg);">${prize.text}</div>`; }); return `<div class="casino-wrap"><div class="wheel-container"><div class="wheel-pointer">▼</div><div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gs});">${lh}</div></div><button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button></div>`; }
+function spinWheel() { if (isSpinning || state.crystals < 10) return; isSpinning = true; state.crystals -= 10; updateUI(); const w = document.getElementById('fortuneWheel'); const b = document.querySelector('.spin-btn'); if (b) b.disabled = true; const pi = Math.floor(Math.random() * WHEEL_PRIZES.length); const dps = 360 / WHEEL_PRIZES.length; const cos = (pi * dps) + (dps / 2); const tba = -cos; let cam = currentRotation % 360; if (cam < 0) cam += 360; let ad = (tba - cam + 360) % 360; currentRotation += 1800 + ad; w.style.transform = `rotate(${currentRotation}deg)`; setTimeout(() => { WHEEL_PRIZES[pi].action(); showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[pi].text}!`, 'gold'); isSpinning = false; updateUI(); saveGame(); renderMenu(true); }, 4200); }
 
-  let isDuplicate = state.pets.includes(droppedPet.id);
-  if (isDuplicate) { state.crystals += 5; } 
-  else {
-    state.pets.push(droppedPet.id);
-    if (state.activePets.length < 5) state.activePets.push(droppedPet.id);
-  }
-  
-  saveGame(); renderPetsOnScreen(); updateUI(); renderMenu(true);
-
-  el.caseModal.classList.add('show');
-  el.caseAnimBox.style.display = 'block';
-  el.caseResult.style.display = 'none';
-  el.caseCloseBtn.style.display = 'none';
-  el.closeCaseX.style.display = 'block';
-
-  setTimeout(() => {
-    el.caseAnimBox.style.display = 'none';
-    el.caseResult.style.display = 'flex';
-    el.caseResultIcon.textContent = droppedPet.emoji;
-    el.caseResultName.textContent = droppedPet.name;
-    el.caseResultName.className = `pet-rarity-${droppedPet.rarity}`;
-    
-    if (isDuplicate) {
-      el.caseResultTitle.textContent = 'Уже есть!';
-      el.caseResultTitle.style.color = '#fbbf24';
-      el.caseResultIcon.innerHTML = `${droppedPet.emoji}<br><span style="font-size:24px; color:#60a5fa; font-weight:bold; margin-top:10px; display:inline-block;">+5 💎</span>`;
-    } else {
-      el.caseResultTitle.textContent = 'Поздравляем!';
-      el.caseResultTitle.style.color = '#fff';
-      el.caseResultIcon.innerHTML = droppedPet.emoji;
-    }
-    el.caseCloseBtn.style.display = 'inline-block';
-    isCaseAnimating = false;
-    checkAch();
-  }, 2000);
-}
-
-function closeCase() {
-  el.caseModal.classList.remove('show');
-  isCaseAnimating = false; 
-  renderMenu(true);
-}
-el.caseCloseBtn.addEventListener('click', closeCase);
-el.closeCaseX.addEventListener('click', closeCase);
-
-let isSpinning = false;
-let currentRotation = 0;
-const WHEEL_PRIZES = [
-  { text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } },
-  { text: 'Аура x1000', color: '#ef4444', action: () => { let r = getAuraIncome() * 1000; state.aura += r; state.totalAura += r; } },
-  { text: 'Кейс', color: '#fbbf24', action: () => { state.freeCases++; } },
-  { text: 'Пусто', color: '#333', action: () => {} },
-  { text: '10💎', color: '#10b981', action: () => { state.crystals += 10; } },
-  { text: 'Бустер x2', color: '#8b5cf6', action: () => { state.boosterEnd = Date.now() + 60000; } },
-  { text: 'Аура x100', color: '#ef4444', action: () => { let r = getAuraIncome() * 100; state.aura += r; state.totalAura += r; } },
-  { text: '50💎', color: '#3b82f6', action: () => { state.crystals += 50; } }
-];
-
-function renderCasino() {
-  const deg = 360 / WHEEL_PRIZES.length;
-  let gradientStops = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', ');
-  let labelsHtml = '';
-  WHEEL_PRIZES.forEach((prize, i) => {
-    const angle = (i * deg) + (deg / 2); 
-    const flip = (angle > 90 && angle < 270) ? 180 : 0;
-    labelsHtml += `<div class="wheel-label" style="transform: rotate(${angle}deg) translateY(-85px) rotate(${-angle + flip}deg);">${prize.text}</div>`;
-  });
-  return `<div class="casino-wrap">
-    <div class="wheel-container">
-      <div class="wheel-pointer">▼</div>
-      <div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gradientStops});">${labelsHtml}</div>
-    </div>
-    <button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button>
-  </div>`;
-}
-function spinWheel() {
-  if (isSpinning || state.crystals < 10) return;
-  isSpinning = true; state.crystals -= 10; updateUI();
-  const wheel = document.getElementById('fortuneWheel');
-  const btn = document.querySelector('.spin-btn'); if (btn) btn.disabled = true;
-  const prizeIndex = Math.floor(Math.random() * WHEEL_PRIZES.length);
-  const degPerSector = 360 / WHEEL_PRIZES.length;
-  const centerOfSector = (prizeIndex * degPerSector) + (degPerSector / 2);
-  const targetBaseAngle = -centerOfSector;
-  let currentAngleMod = currentRotation % 360; if (currentAngleMod < 0) currentAngleMod += 360;
-  let angleDiff = (targetBaseAngle - currentAngleMod + 360) % 360;
-  currentRotation += 1800 + angleDiff;
-  wheel.style.transform = `rotate(${currentRotation}deg)`;
-  setTimeout(() => {
-    WHEEL_PRIZES[prizeIndex].action();
-    showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[prizeIndex].text}!`, 'gold');
-    isSpinning = false; updateUI(); saveGame(); renderMenu(true);
-  }, 4200); 
-}
-
-function useCode() { const raw = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!raw) return; applyCode(raw); }
-function applyCode(raw) {
-  if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 ЧИТ-МЕНЮ!'); return; }
-  if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); return; }
-  if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; }
-  if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; }
-  if (raw === 'CASE1') { if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); state.usedCodes.push(raw); state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; }
-  if (raw === 'CASEMAX') { state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; }
-  if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; }
-  if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; }
-  if (!(raw in CODES)) return showToast('❌ Неверный код', 'err');
-  if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err');
-  const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus;
-  showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame();
-}
+function useCode() { const r = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!r) return; applyCode(r); }
+function applyCode(raw) { if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 ЧИТ-МЕНЮ!'); return; } if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); return; } if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; } if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; } if (raw === 'CASE1') { if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); state.usedCodes.push(raw); state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } if (raw === 'CASEMAX') { state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } if (!(raw in CODES)) return showToast('❌ Неверный код', 'err'); if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus; showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame(); }
 
 let lastTick = performance.now(), autoSaveTimer = 0;
-function gameLoop(now) {
-  const dt = Math.min((now - lastTick) / 1000, 1); lastTick = now;
-  if (state.auraLevel > 0) { const gain = getAuraIncome() * dt; state.aura += gain; state.totalAura += gain; }
-  if (state.boosterEnd > 0 && Date.now() > state.boosterEnd && !state.isBoosterPermanent) state.boosterEnd = 0;
-  updateUI();
-  autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); }
-  requestAnimationFrame(gameLoop);
-}
+function gameLoop(now) { const dt = Math.min((now - lastTick) / 1000, 1); lastTick = now; if (state.auraLevel > 0) { const g = getAuraIncome() * dt; state.aura += g; state.totalAura += g; } if (state.boosterEnd > 0 && Date.now() > state.boosterEnd && !state.isBoosterPermanent) state.boosterEnd = 0; updateUI(); autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); } requestAnimationFrame(gameLoop); }
 
-let activeTab = 'ach';
-const tabsOrder = ['ach', 'evo', 'pets', 'casino', 'stats', 'account'];
+let activeTab = 'ach'; const tabsOrder = ['ach', 'evo', 'pets', 'casino', 'stats', 'account'];
+function renderMenu(keepScroll = false) { let sp = 0; if (keepScroll) sp = el.tabContent.scrollTop; let html = ''; if (activeTab === 'ach') { ACHIEVEMENTS.forEach(a => { const on = state.achievements.includes(a.id); html += `<div class="ach-item ${on?'unlocked':''}"><div class="ach-icon">${on?a.icon:'🔒'}</div><div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div></div>`; }); CFG.order.forEach((id, i) => { if (i === 0) return; const un = state.stage >= i; if (un) { html += `<div class="ach-item unlocked"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]}</div><div class="ach-desc">Эволюция достигнута</div></div></div>`; } else { html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">Секретное достижение</div><div class="ach-desc">Продолжай качать ауру...</div></div></div>`; } }); } else if (activeTab === 'evo') { CFG.order.forEach((id, i) => { const cur = state.stage === i, done = state.stage > i; if (done || cur) { html += `<div class="ach-item ${done||cur?'unlocked':''}" style="${cur?'border-color:#ffd700':''}"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]} ${cur?'(Текущая)':''}</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; } else { html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">???</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; } }); } else if (activeTab === 'pets') { let cb = ''; if (state.freeCases > 0) cb = `<button class="case-btn free-case" onclick="openCase(true)" ${isCaseAnimating?'disabled':''}>Открыть БЕСПЛАТНО (${state.freeCases} шт)</button>`; else cb = `<button class="case-btn" onclick="openCase(false)" ${state.crystals < CFG.caseCost || isCaseAnimating ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`; html += `<div class="case-box"><div class="case-title">🎁 Таинственный кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>${cb}</div>`; if (state.activePets.length > 1) { const e = Math.round(Math.max(0.3, 1 - (state.activePets.length - 1) * 0.1) * 100); html += `<div style="font-size:11px; text-align:center; color:#fbbf24; margin-bottom:8px;">Надето ${state.activePets.length} питомцев. Эффективность каждого: ${e}%</div>`; } PETS.forEach(p => { const o = state.pets.includes(p.id); const a = state.activePets.includes(p.id); let b = a ? `<button class="pet-btn equipped" onclick="togglePet('${p.id}')">Снять</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>` : o ? `<button class="pet-btn equip" onclick="togglePet('${p.id}')">Надеть</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>` : `<button class="pet-btn buy" onclick="buyPet('${p.id}')">Купить<br><span style="font-size:10px;">${fmt(p.cost)}✨</span></button>`; html += `<div class="pet-card ${o?'owned':''} ${a?'active-pet':''}"><div class="pet-icon">${p.emoji}</div><div class="pet-info"><div class="pet-title pet-rarity-${p.rarity}">${p.name}</div><div class="pet-bonus">${p.desc}</div></div><div class="pet-actions">${b}</div></div>`; }); } else if (activeTab === 'casino') { html = renderCasino(); } else if (activeTab === 'stats') { const m = Math.floor((Date.now() - state.startedAt) / 60000); html = `<div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Всего ауры:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Питомцев:</span> <b>${state.pets.length} / 15</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>В игре:</span> <b>${m} мин</b></div>`; } else if (activeTab === 'account') { if (currentUser === 'guest') { html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 10px; color: #fff;">Гостевой режим</div><div style="font-size: 11px; color: #aaa; margin-bottom: 15px;">Вы играете как гость. Прогресс сохраняется только в этом браузере.</div><input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль"><button class="case-btn" style="margin-top:10px;" onclick="registerAccount()">Создать аккаунт</button><button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset()">💥 Полный сброс</button></div>`; } else { html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Прогресс привязан к этому аккаунту</div><button class="case-btn" style="background:#ef4444; margin-top:10px;" onclick="logoutAccount()">Выйти из аккаунта</button><button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset()">💥 Полный сброс</button></div>`; } } el.tabContent.innerHTML = html; if (keepScroll) el.tabContent.scrollTop = sp; }
 
-function renderMenu(keepScroll = false) {
-  let scrollPos = 0;
-  if (keepScroll) scrollPos = el.tabContent.scrollTop;
-  let html = '';
-  
-  if (activeTab === 'ach') {
-    ACHIEVEMENTS.forEach(a => { const on = state.achievements.includes(a.id); html += `<div class="ach-item ${on?'unlocked':''}"><div class="ach-icon">${on?a.icon:'🔒'}</div><div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div></div>`; });
-    CFG.order.forEach((id, i) => {
-      if (i === 0) return;
-      const unlocked = state.stage >= i;
-      if (unlocked) {
-        html += `<div class="ach-item unlocked"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]}</div><div class="ach-desc">Эволюция достигнута</div></div></div>`;
-      } else {
-        html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">Секретное достижение</div><div class="ach-desc">Продолжай качать ауру...</div></div></div>`;
-      }
-    });
-  } 
-  else if (activeTab === 'evo') {
-    CFG.order.forEach((id, i) => { 
-      const cur = state.stage === i, done = state.stage > i;
-      if (done || cur) {
-        html += `<div class="ach-item ${done||cur?'unlocked':''}" style="${cur?'border-color:#ffd700':''}"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]} ${cur?'(Текущая)':''}</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`;
-      } else {
-        html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">???</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`;
-      }
-    });
-  } 
-  else if (activeTab === 'pets') {
-    let caseBtnHTML = '';
-    if (state.freeCases > 0) caseBtnHTML = `<button class="case-btn free-case" onclick="openCase(true)" ${isCaseAnimating?'disabled':''}>Открыть БЕСПЛАТНО (${state.freeCases} шт)</button>`;
-    else caseBtnHTML = `<button class="case-btn" onclick="openCase(false)" ${state.crystals < CFG.caseCost || isCaseAnimating ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`;
-    html += `<div class="case-box"><div class="case-title">🎁 Таинственный кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>${caseBtnHTML}</div>`;
-    if (state.activePets.length > 1) {
-      const eff = Math.round(Math.max(0.3, 1 - (state.activePets.length - 1) * 0.1) * 100);
-      html += `<div style="font-size:11px; text-align:center; color:#fbbf24; margin-bottom:8px;">Надето ${state.activePets.length} питомцев. Эффективность каждого: ${eff}%</div>`;
-    }
-    PETS.forEach(p => {
-      const owned = state.pets.includes(p.id); const active = state.activePets.includes(p.id);
-      let btnsHtml = active ? `<button class="pet-btn equipped" onclick="togglePet('${p.id}')">Снять</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>` 
-                    : owned ? `<button class="pet-btn equip" onclick="togglePet('${p.id}')">Надеть</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>` 
-                    : `<button class="pet-btn buy" onclick="buyPet('${p.id}')">Купить<br><span style="font-size:10px;">${fmt(p.cost)}✨</span></button>`;
-      html += `<div class="pet-card ${owned?'owned':''} ${active?'active-pet':''}"><div class="pet-icon">${p.emoji}</div><div class="pet-info"><div class="pet-title pet-rarity-${p.rarity}">${p.name}</div><div class="pet-bonus">${p.desc}</div></div><div class="pet-actions">${btnsHtml}</div></div>`;
-    });
-  }
-  else if (activeTab === 'casino') { html = renderCasino(); }
-  else if (activeTab === 'stats') {
-    const mins = Math.floor((Date.now() - state.startedAt) / 60000);
-    html = `<div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Всего ауры:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Питомцев:</span> <b>${state.pets.length} / 15</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>В игре:</span> <b>${mins} мин</b></div>`;
-  }
-  else if (activeTab === 'account') {
-    if (currentUser === 'guest') {
-      html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 10px; color: #fff;">Гостевой режим</div><div style="font-size: 11px; color: #aaa; margin-bottom: 15px;">Вы играете как гость. Прогресс сохраняется только в этом браузере.</div><input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль"><button class="case-btn" style="margin-top:10px;" onclick="registerAccount()">Создать аккаунт</button></div>`;
-    } else {
-      html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Прогресс привязан к этому аккаунту</div><button class="case-btn" style="background:#ef4444; margin-top:10px;" onclick="logoutAccount()">Выйти из аккаунта</button></div>`;
-    }
-  }
-  
-  el.tabContent.innerHTML = html;
-  if (keepScroll) el.tabContent.scrollTop = scrollPos;
-}
+function registerAccount() { const u = document.getElementById('authUser').value.trim(); const p = document.getElementById('authPass').value.trim(); if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err'); const nk = 'narzan_save_' + u + '_' + p; if (localStorage.getItem(nk)) return showToast('Этот аккаунт уже существует!', 'err'); currentUser = u; localStorage.setItem('narzan_current_user', u); currentSaveKey = nk; saveGame(); showToast('Аккаунт создан и привязан!', 'gold'); renderMenu(); }
+function logoutAccount() { currentUser = 'guest'; currentSaveKey = 'narzan_save_data'; localStorage.setItem('narzan_current_user', 'guest'); loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Вы вышли в гостевой режим', 'crystal'); }
+function switchTab(tabId, isSwipe = false, swipeDirection = '') { if (activeTab === tabId) return; activeTab = tabId; document.querySelectorAll('.tab').forEach(x => { x.classList.remove('active'); if(x.dataset.tab === activeTab) x.classList.add('active'); }); if (isSwipe) { el.tabContent.classList.remove('slide-in-left', 'slide-in-right'); void el.tabContent.offsetWidth; if (swipeDirection === 'left') el.tabContent.classList.add('slide-in-right'); else el.tabContent.classList.add('slide-in-left'); } renderMenu(false); }
 
-function registerAccount() {
-  const user = document.getElementById('authUser').value.trim();
-  const pass = document.getElementById('authPass').value.trim();
-  if (user.length < 3 || pass.length < 3) return showToast('Логин и пароль от 3 символов!', 'err');
-  
-  const newKey = 'narzan_save_' + user + '_' + pass;
-  if (localStorage.getItem(newKey)) return showToast('Этот аккаунт уже существует!', 'err');
-  
-  currentUser = user;
-  localStorage.setItem('narzan_current_user', user);
-  currentSaveKey = newKey;
-  
-  saveGame();
-  showToast('Аккаунт создан и привязан!', 'gold');
-  renderMenu();
-}
-
-function logoutAccount() {
-  currentUser = 'guest';
-  currentSaveKey = 'narzan_save_data';
-  localStorage.setItem('narzan_current_user', 'guest');
-  loadGame();
-  renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu();
-  showToast('Вы вышли в гостевой режим', 'crystal');
-}
-
-function switchTab(tabId, isSwipe = false, swipeDirection = '') {
-  if (activeTab === tabId) return;
-  activeTab = tabId;
-  document.querySelectorAll('.tab').forEach(x => {
-    x.classList.remove('active');
-    if(x.dataset.tab === activeTab) x.classList.add('active');
-  });
-  if (isSwipe) {
-    el.tabContent.classList.remove('slide-in-left', 'slide-in-right');
-    void el.tabContent.offsetWidth; 
-    if (swipeDirection === 'left') el.tabContent.classList.add('slide-in-right');
-    else el.tabContent.classList.add('slide-in-left');
-  }
-  renderMenu(false); 
-}
-
-el.clickZone.addEventListener('pointerdown', doClick);
-el.btnClick.addEventListener('pointerdown', buyClick);
-el.btnAura.addEventListener('pointerdown', buyAura);
-el.btnBooster.addEventListener('pointerdown', buyBooster);
-el.btnPrestige.addEventListener('pointerdown', doPrestige);
-el.codeBtn.addEventListener('click', useCode);
-el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); });
-el.menuBtn.addEventListener('pointerdown', () => { renderMenu(false); el.menuOverlay.classList.add('show'); });
-el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show'));
-el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
+el.clickZone.addEventListener('pointerdown', doClick); el.btnClick.addEventListener('pointerdown', buyClick); el.btnAura.addEventListener('pointerdown', buyAura); el.btnBooster.addEventListener('pointerdown', buyBooster); el.btnPrestige.addEventListener('pointerdown', doPrestige); el.codeBtn.addEventListener('click', useCode); el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); }); el.menuBtn.addEventListener('pointerdown', () => { renderMenu(false); el.menuOverlay.classList.add('show'); }); el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show')); el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
 document.querySelectorAll('.tab').forEach(t => { t.addEventListener('pointerdown', (e) => { e.preventDefault(); switchTab(t.dataset.tab, false); }); });
-
-let touchStartX = 0, touchStartY = 0;
-const menuContainer = document.querySelector('.menu');
+let touchStartX = 0, touchStartY = 0; const menuContainer = document.querySelector('.menu');
 menuContainer.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, { passive: true });
-menuContainer.addEventListener('touchend', e => {
-  let touchEndX = e.changedTouches[0].clientX; let touchEndY = e.changedTouches[0].clientY;
-  let deltaX = touchEndX - touchStartX; let deltaY = touchEndY - touchStartY;
-  if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
-    let currentIndex = tabsOrder.indexOf(activeTab);
-    if (deltaX > 0 && currentIndex > 0) switchTab(tabsOrder[currentIndex - 1], true, 'right');
-    else if (deltaX < 0 && currentIndex < tabsOrder.length - 1) switchTab(tabsOrder[currentIndex + 1], true, 'left');
+menuContainer.addEventListener('touchend', e => { let te = e.changedTouches[0].clientX; let ty = e.changedTouches[0].clientY; let dx = te - touchStartX; let dy = ty - touchStartY; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { let ci = tabsOrder.indexOf(activeTab); if (dx > 0 && ci > 0) switchTab(tabsOrder[ci - 1], true, 'right'); else if (dx < 0 && ci < tabsOrder.length - 1) switchTab(tabsOrder[ci + 1], true, 'left'); } });
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { saveGame(); } 
+  else if (document.visibilityState === 'visible') {
+    const saved = localStorage.getItem(currentSaveKey);
+    if (saved) { try { const p = JSON.parse(saved); const ds = Math.floor((Date.now() - (p.lastSaved || Date.now())) / 1000); if (ds > 10 && p.auraLevel > 0) { loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); saveGame(); } } catch(e) {} }
   }
 });
 
