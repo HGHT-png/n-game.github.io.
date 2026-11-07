@@ -400,8 +400,9 @@ const getClickCost = () => Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowt
 const getAuraCost = () => Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, state.auraLevel));
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
-const getClickPower = () => state.clickLevel * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
-const getAuraIncome = () => state.auraLevel * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier();
+// Теперь прокачка дает больше с каждым уровнем!
+const getClickPower = () => state.clickLevel * (1 + Math.floor(state.clickLevel / 10)) * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
+const getAuraIncome = () => state.auraLevel * (1 + Math.floor(state.auraLevel / 10)) * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier();
 
 function checkStage() {
   let newStage = 0;
