@@ -329,7 +329,32 @@ function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aur
 function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive() || state.aura < CFG.boosterCost) return; state.aura -= CFG.boosterCost; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); }
 function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000))); const nm = (state.prestigePoints + pts) * 10; if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${nm}%`)) { state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0; state.boosterEnd = 0; state.isBoosterPermanent = false; state.prestigePoints += pts; state.pets = []; state.activePets = []; renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold'); el.btnPrestige.classList.add('hidden'); } }
-function hardReset() { if (confirm("⚠️ ВНИМАНИЕ! Это полностью удалит ВЕСЬ прогресс (включая престиж, питомцев и кристаллы)! Вы уверены?")) { localStorage.removeItem(currentSaveKey); location.reload(); } }
+function hardReset(btn) {
+  // Если кнопка уже была нажата один раз (защита от случайного клика)
+  if (btn.dataset.confirmed === 'true') {
+    // Очищаем ВСЕ сохранения в браузере
+    localStorage.clear();
+    sessionStorage.clear();
+    // Принудительная перезагрузка
+    location.reload(); 
+  } else {
+    // Первое нажатие: меняем кнопку
+    btn.dataset.confirmed = 'true';
+    btn.textContent = '⚠️ ТОЧНО СБРОСИТЬ?';
+    btn.style.background = '#ef4444'; // Красный цвет
+    btn.style.color = 'white';
+    
+    // Через 3 секунды возвращаем кнопку в исходное состояние
+    setTimeout(() => {
+      if (btn) {
+        btn.dataset.confirmed = 'false';
+        btn.textContent = '💥 Полный сброс';
+        btn.style.background = '#4a4a5a';
+        btn.style.color = '#ccc';
+      }
+    }, 3000);
+  }
+}
 
 let bonusTimeout, crystalTimeout;
 function spawnFloatingBonus() { if (document.querySelector('.floating-bonus')) return; const b = document.createElement('div'); b.className = 'floating-bonus'; b.textContent = '🌟'; b.style.top = Math.floor(Math.random() * 60 + 10) + '%'; b.style.left = Math.floor(Math.random() * 80 + 10) + '%'; b.onclick = (e) => { e.stopPropagation(); if (Math.random() < 0.5) { const r = getAuraIncome() * 300; state.aura += r; state.totalAura += r; showToast(`🌟 Звезда: +${fmt(r)} ауры!`, 'gold'); } else { state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); } b.remove(); updateUI(); saveGame(); scheduleNextBonus(); }; el.clickZone.appendChild(b); bonusTimeout = setTimeout(() => { if (b.parentNode) b.remove(); scheduleNextBonus(); }, 8000); }
