@@ -519,7 +519,16 @@ function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aur
 function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive()) return; const cost = getBoosterCost(); if (state.aura >= cost) { state.aura -= cost; state.boosterLevel++; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); } }
 function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000))); const nm = (state.prestigePoints + pts) * 10; if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${nm}%`)) { state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0; state.boosterEnd = 0; state.boosterLevel = 0; state.isBoosterPermanent = false; state.prestigePoints += pts; state.pets = []; state.activePets = []; renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold'); el.btnPrestige.classList.add('hidden'); } }
-function hardReset(btn) { if (btn.dataset.confirmed === 'true') { localStorage.clear(); sessionStorage.clear(); location.reload(); } else { btn.dataset.confirmed = 'true'; btn.textContent = '⚠️ ТОЧНО СБРОСИТЬ?'; btn.style.background = '#ef4444'; btn.style.color = 'white'; setTimeout(() => { if (btn) { btn.dataset.confirmed = 'false'; btn.textContent = '💥 Полный сброс'; btn.style.background = '#4a4a5a'; btn.style.color = '#ccc'; } }, 3000); } }
+
+// ИСПРАВЛЕННЫЙ ПОЛНЫЙ СБРОС
+function hardReset() {
+    if (confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите полностью удалить ВСЕ данные (включая все аккаунты, прогресс и настройки)? Это действие нельзя отменить!')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        // Добавляем параметр, чтобы обойти кэш и принудительно перезагрузить страницу
+        window.location.href = window.location.pathname + '?reset=' + Date.now();
+    }
+}
 
 let bonusTimeout, crystalTimeout;
 function spawnFloatingBonus() { if (document.querySelector('.floating-bonus')) return; const b = document.createElement('div'); b.className = 'floating-bonus'; b.textContent = '🌟'; b.style.top = Math.floor(Math.random() * 60 + 10) + '%'; b.style.left = Math.floor(Math.random() * 80 + 10) + '%'; b.onclick = (e) => { e.stopPropagation(); if (Math.random() < 0.5) { const r = getAuraIncome() * 300; state.aura += r; state.totalAura += r; showToast(`🌟 Звезда: +${fmt(r)} капелек!`, 'gold'); } else { state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); } b.remove(); updateUI(); saveGame(); scheduleNextBonus(); }; el.clickZone.appendChild(b); bonusTimeout = setTimeout(() => { if (b.parentNode) b.remove(); scheduleNextBonus(); }, 8000); }
@@ -677,8 +686,8 @@ let activeTab = 'ach'; const tabsOrder = ['ach', 'evo', 'pets', 'talents', 'mini
 
 function buyTalent(id) {
   const maxLvls = { heavyHand: 5, goldenVein: 3, eternalCrit: 5, teamSpirit: 5 };
+  const baseCosts = { heavyHand: 15000, goldenVein: 20000, eternalCrit: 25000, teamSpirit: 30000 }; 
   if (state.talents[id] >= maxLvls[id]) return;
-  const baseCosts = { heavyHand: 15, goldenVein: 20, eternalCrit: 30, teamSpirit: 50 };
   const cost = baseCosts[id] * Math.pow(2, state.talents[id]);
   
   if (getAuraIncome() >= cost) {
@@ -726,7 +735,7 @@ function renderMenu(keepScroll = false) {
   } 
   else if (activeTab === 'talents') {
     const maxLvls = { heavyHand: 5, goldenVein: 3, eternalCrit: 5, teamSpirit: 5 };
-    const baseCosts = { heavyHand: 15, goldenVein: 20, eternalCrit: 30, teamSpirit: 50 };
+    const baseCosts = { heavyHand: 15000, goldenVein: 20000, eternalCrit: 25000, teamSpirit: 30000 }; 
     const tInfo = [
       { id: 'heavyHand', title: 'Тяжелая рука', desc: '+1% к силе клика (макс 5%)' },
       { id: 'goldenVein', title: 'Золотая жила', desc: '+1% к пассивному доходу (макс 3%)' },
@@ -897,7 +906,7 @@ function renderMenu(keepScroll = false) {
           <button class="case-btn" style="background:linear-gradient(135deg, #10b981, #059669);" onclick="importSave()">📥 Импорт (вставить)</button>
       </div>
 
-      <button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
+      <button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset()">💥 Полный сброс</button></div>`; 
     } else { 
       html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div>
       
@@ -908,7 +917,7 @@ function renderMenu(keepScroll = false) {
       </div>
       
       <button class="case-btn" style="background:#ef4444; margin-top:20px;" onclick="logoutAccount()">Выйти из аккаунта</button>
-      <button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
+      <button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="hardReset()">💥 Полный сброс</button></div>`; 
     } 
   } 
   el.tabContent.innerHTML = html; 
