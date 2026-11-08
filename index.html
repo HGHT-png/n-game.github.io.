@@ -346,9 +346,8 @@ const ACHIEVEMENTS = [
   { id:'petAll', icon:'🐉', name:'Зоопарк', desc:'Собери 5 питомцев', check:s=>s.pets.length>=5 },
 ];
 
-// Убран cases, теперь используем только freeCases
 const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, freeCases: 0, pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
-let state = { ...defaultState };
+let state = JSON.parse(JSON.stringify(defaultState)); // Глубокое копирование
 
 let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
 let currentSaveKey = localStorage.getItem('narzan_current_save_key') || (currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser);
@@ -362,15 +361,26 @@ const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), caseVal: $('cas
 
 function saveGame() { state.lastSaved = Date.now(); localStorage.setItem(currentSaveKey, JSON.stringify(state)); }
 function loadGame() {
+  // Сбрасываем state до дефолтного, чтобы не было старых багов
+  Object.assign(state, JSON.parse(JSON.stringify(defaultState)));
+  
   const saved = localStorage.getItem(currentSaveKey);
   if (saved) {
     try {
-      Object.assign(state, JSON.parse(saved));
-      if (!state.pets) state.pets = []; if (!state.codeUses) state.codeUses = {}; if (!state.freeCases) state.freeCases = 0; if (state.hasDrone === undefined) state.hasDrone = false; if (state.boosterLevel === undefined) state.boosterLevel = 0;
-      if (!state.talents) state.talents = { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 };
+      const parsed = JSON.parse(saved);
+      // Переносим сохраненные данные поверх дефолтных
+      Object.assign(state, parsed);
       
-      if (state.activePet) { if (!state.activePets) state.activePets = []; if (!state.activePets.includes(state.activePet)) state.activePets.push(state.activePet); delete state.activePet; }
-      if (!state.activePets) state.activePets = [];
+      // Проверка безопасности (чтобы не было NaN и пропавших питомцев)
+      if (!Array.isArray(state.pets)) state.pets = [];
+      if (!Array.isArray(state.activePets)) state.activePets = [];
+      if (!Array.isArray(state.usedCodes)) state.usedCodes = [];
+      if (!Array.isArray(state.achievements)) state.achievements = [];
+      if (!state.talents || typeof state.talents !== 'object') state.talents = { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 };
+      if (isNaN(state.aura)) state.aura = 0;
+      if (isNaN(state.crystals)) state.crystals = 0;
+      if (isNaN(state.freeCases)) state.freeCases = 0;
+      
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
       if (diffSec > 10 && state.auraLevel > 0) {
         const baseIncome = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)) * (1 + ((state.prestigePoints || 0) * 0.1));
@@ -378,16 +388,16 @@ function loadGame() {
         const offlineEarnings = totalIncome * Math.min(diffSec, 28800) * 0.5;
         if (offlineEarnings > 0) { state.aura += offlineEarnings; state.totalAura += offlineEarnings; setTimeout(() => showToast(`💤 Оффлайн-доход: +${fmt(offlineEarnings)} капелек!`, 'gold'), 1000); }
       }
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error("Ошибка загрузки", e); }
   } else { state.lastDaily = Date.now(); }
 }
 
-const fmt = n => Math.floor(n).toLocaleString('ru-RU');
+const fmt = n => Math.floor(n || 0).toLocaleString('ru-RU');
 function short(n) {
     if (n >= 1e9) return (n / 1e9).toFixed(1).replace('.0', '') + ' млрд';
     if (n >= 1e6) return (n / 1e6).toFixed(1).replace('.0', '') + ' млн';
     if (n >= 1e3) return (n / 1e3).toFixed(1).replace('.0', '') + ' к';
-    return n;
+    return n || 0;
 }
 function showToast(text, type = '') { const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = text; el.toasts.appendChild(t); setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500); }
 function floatText(x, y, text, isCrit) { const d = document.createElement('div'); d.className = 'float-text' + (isCrit ? ' crit-text' : ''); d.textContent = (isCrit ? 'КРИТ! ' : '') + text; d.style.left = x + 'px'; d.style.top = y + 'px'; document.body.appendChild(d); setTimeout(() => d.remove(), 800); }
@@ -398,12 +408,9 @@ const getPetsMultiplier = (type) => {
   let eq = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean); 
   let count = eq.length;
   if (state.hasDrone) count++;
-  
   if (count === 0) return 1; 
-  
   let penaltyPerPet = 0.15 - (state.talents.teamSpirit * 0.01); 
   let inf = Math.max(0.2, 1 - (count - 1) * penaltyPerPet); 
-  
   let tb = 0; 
   eq.forEach(p => { if (p.bonus.type === type || p.bonus.type === 'global') tb += (p.bonus.val - 1) * inf; }); 
   return 1 + tb; 
@@ -456,7 +463,7 @@ function renderPetsOnScreen() { el.petsContainer.innerHTML = ''; if (state.hasDr
 function updateUI() { 
   el.auraVal.textContent = fmt(state.aura); 
   el.crystalVal.textContent = fmt(state.crystals); 
-  el.caseVal.textContent = fmt(state.freeCases); // ТЕПЕРЬ ОТОБРАЖАЕТСЯ ПРАВИЛЬНЫЙ СЧЕТЧИК
+  el.caseVal.textContent = fmt(state.freeCases); // ОТОБРАЖАЕМ ПРАВИЛЬНЫЙ СЧЕТЧИК
   el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
   el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
   
@@ -867,7 +874,10 @@ function renderMenu(keepScroll = false) {
     if (currentUser === 'guest') { 
       html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 10px; color: #fff;">Гостевой режим</div><div style="font-size: 11px; color: #aaa; margin-bottom: 15px;">Вы играете как гость. Прогресс сохраняется только в этом браузере.</div>
       <input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль">
-      <button class="case-btn" style="margin-top:10px; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="loginOrRegister()">Войти / Создать</button>
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button>
+        <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button>
+      </div>
       <button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
     } else { 
       html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div><button class="case-btn" style="background:#ef4444; margin-top:10px;" onclick="logoutAccount()">Выйти из аккаунта</button><button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
@@ -882,31 +892,48 @@ function openDonateModal() {
   el.donateModal.classList.add('show');
 }
 
-function loginOrRegister() {
+// НОВАЯ ЛОГИКА РЕГИСТРАЦИИ
+function registerUser() {
     const u = document.getElementById('authUser').value.trim();
     const p = document.getElementById('authPass').value.trim();
     if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err');
     const nk = 'narzan_save_' + u + '_' + p;
     
     if (localStorage.getItem(nk)) {
-        // Аккаунт существует -> ВХОД
-        currentUser = u; currentSaveKey = nk; 
-        localStorage.setItem('narzan_current_user', u);
-        localStorage.setItem('narzan_current_save_key', nk);
-        
-        state = { ...defaultState }; 
-        loadGame();
-        renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu();
-        showToast('Вход выполнен! С возвращением, ' + u, 'gold');
+        showToast('Этот аккаунт уже существует! Войдите в него.', 'err');
     } else {
-        // Аккаунта нет -> РЕГИСТРАЦИЯ (с переносом текущего прогресса)
+        // Создаем аккаунт, перенося ТЕКУЩИЙ прогресс
         currentUser = u; currentSaveKey = nk;
         localStorage.setItem('narzan_current_user', u);
         localStorage.setItem('narzan_current_save_key', nk);
         
-        saveGame(); // Сохраняем ТЕКУЩИЙ прогресс (гостевой) в новый аккаунт
+        // Просто сохраняем текущий state под новым ключом
+        saveGame();
+        
         showToast('Аккаунт создан! Ваш прогресс перенесен.', 'gold');
-        renderMenu();
+        renderMenu(); updateUI();
+    }
+}
+
+// НОВАЯ ЛОГИКА ВХОДА
+function loginUser() {
+    const u = document.getElementById('authUser').value.trim();
+    const p = document.getElementById('authPass').value.trim();
+    if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err');
+    const nk = 'narzan_save_' + u + '_' + p;
+    
+    if (localStorage.getItem(nk)) {
+        currentUser = u; currentSaveKey = nk;
+        localStorage.setItem('narzan_current_user', u);
+        localStorage.setItem('narzan_current_save_key', nk);
+        
+        // Загружаем данные аккаунта (loadGame сбросит старый стейт и загрузит новый)
+        loadGame();
+        
+        renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu();
+        showToast('Вход выполнен! С возвращением, ' + u, 'gold');
+    } else {
+        showToast('Аккаунт не найден!', 'err');
     }
 }
 
@@ -915,7 +942,6 @@ function logoutAccount() {
     localStorage.setItem('narzan_current_user', 'guest'); 
     localStorage.setItem('narzan_current_save_key', 'narzan_save_data');
     
-    state = { ...defaultState }; 
     loadGame(); 
     renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); 
     showToast('Вы вышли в гостевой режим', 'crystal'); 
@@ -940,7 +966,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') { saveGame(); } 
   else if (document.visibilityState === 'visible') {
     const saved = localStorage.getItem(currentSaveKey);
-    if (saved) { try { const p = JSON.parse(saved); const ds = Math.floor((Date.now() - (p.lastSaved || Date.now())) / 1000); if (ds > 10 && p.auraLevel > 0) { state = { ...defaultState }; loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); saveGame(); } } catch(e) {} }
+    if (saved) { try { const p = JSON.parse(saved); const ds = Math.floor((Date.now() - (p.lastSaved || Date.now())) / 1000); if (ds > 10 && p.auraLevel > 0) { loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); saveGame(); } } catch(e) {} }
   }
 });
 
