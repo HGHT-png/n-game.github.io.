@@ -7,6 +7,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Эволюция Нарзана</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1b1c3e">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
   button, input { outline: none; border: none; -webkit-appearance: none; }
@@ -812,9 +814,9 @@ function renderMenu(keepScroll = false) {
   }
   else if (activeTab === 'leaders') {
     const fakeDrops = [
-      { name: 'Павел27', score: 1000000000000000},
+      { name: 'NarzanKing', score: 15400000000 },
       { name: 'WaterBoss', score: 8500000000 },
-      { name: 'HGHT', score: 1000000000 },
+      { name: 'H2O_Master', score: 3200000000 },
       { name: 'Player_1', score: 500000000 }
     ];
     fakeDrops.push({ name: currentUser === 'guest' ? 'Вы (Гость)' : currentUser, score: state.totalAura });
@@ -832,7 +834,7 @@ function renderMenu(keepScroll = false) {
     html += `<div style="font-weight:bold; color:#60a5fa; margin-top:20px; margin-bottom:10px; text-align:center;">💎 Топ донатеров</div>`;
     const fakeDonaters = [
       { name: 'MegaDed', amount: 5000 },
-      { name: 'Павел27', amount: 72 },
+      { name: 'SecretWhale', amount: 1000 },
       { name: 'Support_God', amount: 500 }
     ];
     fakeDonaters.forEach((d, i) => {
@@ -1026,6 +1028,15 @@ document.addEventListener('visibilitychange', () => {
 });
 
 loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); requestAnimationFrame(gameLoop); setInterval(checkAch, 1000); scheduleNextBonus(); scheduleNextCrystal();
+
+// РЕГИСТРАЦИЯ SERVICE WORKER ДЛЯ ОФФЛАЙН РЕЖИМА
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(registration => { console.log('SW зарегистрирован!'); })
+      .catch(err => { console.log('Ошибка SW: ', err); });
+  });
+}
 </script>
 </body>
 </html>
