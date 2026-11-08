@@ -8,7 +8,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
   button, input { outline: none; border: none; -webkit-appearance: none; }
   body, html { overscroll-behavior: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: radial-gradient(circle at top, #1b1c3e 0%, #0a0b1a 60%, #05050a 100%); color: #fff; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; touch-action: manipulation; }
-  .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: 100%; padding: 8px 12px 60px 12px; position: relative; }
+  .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: 100%; padding: 8px 12px 65px 12px; position: relative; }
   
   header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0 45px; }
   .aura-display { font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; line-height: 1.1; width: 100%; }
@@ -134,7 +134,6 @@
   .toast.err { border-color: #ef4444; color: #fca5a5; }
   @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
   
-  /* ТЕКСТ ОДНОГО РАЗМЕРА (18px) */
   .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 18px; color: #5eead4; text-shadow: 0 0 10px #5eead4, 0 0 20px #5eead4; z-index: 1000; animation: floatUp 0.8s ease-out forwards; }
   .float-text.crit-text { color: #ff0000; text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000; font-size: 18px; }
   @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(1.5); } }
@@ -284,7 +283,7 @@
     
     <div style="border-bottom:1px solid #0f0; margin-bottom:8px; padding-bottom:8px;">
       <div style="font-size:11px; margin-bottom:5px;">ГЕНЕРАТОР КОДОВ ДОНАТА:</div>
-      <input type="text" id="genIdInput" placeholder="Введите ID игрока" style="width:100%; padding:5px; margin-bottom:5px; background:#111; border:1px solid #0f0; color:#0f0;">
+      <input type="text" id="genIdInput" placeholder="Введите ID игрока (ID-XXXXXX)" style="width:100%; padding:5px; margin-bottom:5px; background:#111; border:1px solid #0f0; color:#0f0;">
       <div style="display:flex; gap:4px;">
         <button class="cheat-btn" onclick="genCode(15)">15₽</button>
         <button class="cheat-btn" onclick="genCode(30)">30₽</button>
@@ -347,11 +346,11 @@ const ACHIEVEMENTS = [
   { id:'petAll', icon:'🐉', name:'Зоопарк', desc:'Собери 5 питомцев', check:s=>s.pets.length>=5 },
 ];
 
-let state = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, cases: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
+const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, cases: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
+let state = { ...defaultState };
 let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
 let currentSaveKey = currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser;
 
-// Глобальные переменные для мини-игр
 let activeMinigame = null;
 let goldRushEnd = 0;
 let bossHp = 0;
@@ -423,9 +422,7 @@ const getClickPower = () => {
   let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5));
   let talentBonus = 1 + (state.talents.heavyHand * 0.01);
   let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
-  
-  if (Date.now() < goldRushEnd) multiplier *= 5; // Бонус Золотой лихорадки
-  
+  if (Date.now() < goldRushEnd) multiplier *= 5;
   return base * talentBonus * multiplier;
 };
 
@@ -523,7 +520,6 @@ const WHEEL_PRIZES = [{ text: '100💎', color: '#3b82f6', action: () => { state
 function renderCasino() { const deg = 360 / WHEEL_PRIZES.length; let gs = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', '); let lh = ''; WHEEL_PRIZES.forEach((prize, i) => { const a = (i * deg) + (deg / 2); const f = (a > 90 && a < 270) ? 180 : 0; lh += `<div class="wheel-label" style="transform: rotate(${a}deg) translateY(-85px) rotate(${-a + f}deg);">${prize.text}</div>`; }); return `<div class="casino-wrap"><div class="wheel-container"><div class="wheel-pointer">▼</div><div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gs});">${lh}</div></div><button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button></div>`; }
 function spinWheel() { if (isSpinning || state.crystals < 10) return; isSpinning = true; state.crystals -= 10; updateUI(); const w = document.getElementById('fortuneWheel'); const b = document.querySelector('.spin-btn'); if (b) b.disabled = true; const pi = Math.floor(Math.random() * WHEEL_PRIZES.length); const dps = 360 / WHEEL_PRIZES.length; const cos = (pi * dps) + (dps / 2); const tba = -cos; let cam = currentRotation % 360; if (cam < 0) cam += 360; let ad = (tba - cam + 360) % 360; currentRotation += 1800 + ad; w.style.transform = `rotate(${currentRotation}deg)`; setTimeout(() => { WHEEL_PRIZES[pi].action(); showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[pi].text}!`, 'gold'); isSpinning = false; updateUI(); saveGame(); renderMenu(true); }, 4200); }
 
-// --- МИНИ-ИГРЫ ---
 function startGoldRush() {
   if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err');
   state.crystals -= 10;
@@ -570,10 +566,19 @@ function labyrinthGuess() {
 
 function useCode() { const r = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!r) return; applyCode(r); }
 
+// ИСПРАВЛЕННЫЙ ХЭШ (ОДИНАКОВЫЙ ДЛЯ ID И ПРОВЕРКИ)
 function simpleHash(str) {
-    let hash = 5381;
-    for (let i = 0; i < str.length; i++) { hash = ((hash << 5) + hash) + str.charCodeAt(i); }
-    return Math.abs(hash).toString(36).toUpperCase();
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0; 
+    }
+    return Math.abs(hash).toString(36).toUpperCase().padStart(6, '0');
+}
+
+function generateUserID() {
+  if (currentUser === 'guest') return 'GUEST';
+  return 'ID-' + simpleHash(currentUser).substring(0, 6);
 }
 
 function generateDonateCodeForPlayer(playerId, tier) {
@@ -859,7 +864,13 @@ function renderMenu(keepScroll = false) {
   } 
   else if (activeTab === 'account') { 
     if (currentUser === 'guest') { 
-      html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 10px; color: #fff;">Гостевой режим</div><div style="font-size: 11px; color: #aaa; margin-bottom: 15px;">Вы играете как гость. Прогресс сохраняется только в этом браузере.</div><input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль"><button class="case-btn" style="margin-top:10px;" onclick="loginOrRegister()">Войти / Создать</button><div style="font-size:10px; color:#8a9bbd; margin-top:5px;">Если аккаунта нет, он создастся автоматически</div><button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
+      html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 10px; color: #fff;">Гостевой режим</div><div style="font-size: 11px; color: #aaa; margin-bottom: 15px;">Вы играете как гость. Прогресс сохраняется только в этом браузере.</div>
+      <input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль">
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button>
+        <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button>
+      </div>
+      <button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
     } else { 
       html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div><button class="case-btn" style="background:#ef4444; margin-top:10px;" onclick="logoutAccount()">Выйти из аккаунта</button><button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
     } 
@@ -868,21 +879,45 @@ function renderMenu(keepScroll = false) {
   if (keepScroll) el.tabContent.scrollTop = sp; 
 }
 
-function generateUserID() {
-  if (currentUser === 'guest') return 'GUEST';
-  let hash = 0;
-  for (let i = 0; i < currentUser.length; i++) { hash = (hash << 5) - hash + currentUser.charCodeAt(i); hash |= 0; }
-  return 'ID-' + Math.abs(hash).toString(16).toUpperCase().substring(0, 6);
-}
-
 function openDonateModal() {
   el.donateIdText.textContent = generateUserID();
   el.donateModal.classList.add('show');
 }
 
-function loginOrRegister() { const u = document.getElementById('authUser').value.trim(); const p = document.getElementById('authPass').value.trim(); if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err'); const nk = 'narzan_save_' + u + '_' + p; if (localStorage.getItem(nk)) { currentUser = u; currentSaveKey = nk; localStorage.setItem('narzan_current_user', u); loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Вход выполнен! С возвращением, ' + u, 'gold'); } else { currentUser = u; currentSaveKey = nk; localStorage.setItem('narzan_current_user', u); saveGame(); showToast('Аккаунт создан! Прогресс привязан.', 'gold'); renderMenu(); } }
-function logoutAccount() { currentUser = 'guest'; currentSaveKey = 'narzan_save_data'; localStorage.setItem('narzan_current_user', 'guest'); loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Вы вышли в гостевой режим', 'crystal'); }
-function switchTab(tabId, isSwipe = false, swipeDirection = '') { if (activeTab === tabId) return; activeTab = tabId; activeMinigame = null; document.querySelectorAll('.tab').forEach(x => { x.classList.remove('active'); if(x.dataset.tab === activeTab) x.classList.add('active'); }); if (isSwipe) { el.tabContent.classList.remove('slide-in-left', 'slide-in-right'); void el.tabContent.offsetWidth; if (swipeDirection === 'left') el.tabContent.classList.add('slide-in-right'); else el.tabContent.classList.add('slide-in-left'); } renderMenu(false); }
+function registerUser() {
+    const u = document.getElementById('authUser').value.trim();
+    const p = document.getElementById('authPass').value.trim();
+    if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err');
+    const nk = 'narzan_save_' + u + '_' + p;
+    if (localStorage.getItem(nk)) {
+        showToast('Этот аккаунт уже существует!', 'err');
+    } else {
+        currentUser = u; currentSaveKey = nk; localStorage.setItem('narzan_current_user', u);
+        state = { ...defaultState }; // Сбрасываем стейт для нового аккаунта
+        saveGame();
+        showToast('Аккаунт создан! Прогресс привязан.', 'gold');
+        renderMenu(); updateUI(); renderCharacter(); renderPetsOnScreen();
+    }
+}
+
+function loginUser() {
+    const u = document.getElementById('authUser').value.trim();
+    const p = document.getElementById('authPass').value.trim();
+    if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err');
+    const nk = 'narzan_save_' + u + '_' + p;
+    if (localStorage.getItem(nk)) {
+        currentUser = u; currentSaveKey = nk; localStorage.setItem('narzan_current_user', u);
+        state = { ...defaultState }; // Сбрасываем стейт перед загрузкой
+        loadGame();
+        renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu();
+        showToast('Вход выполнен! С возвращением, ' + u, 'gold');
+    } else {
+        showToast('Аккаунт не найден!', 'err');
+    }
+}
+
+function logoutAccount() { currentUser = 'guest'; currentSaveKey = 'narzan_save_data'; localStorage.setItem('narzan_current_user', 'guest'); state = { ...defaultState }; loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Вы вышли в гостевой режим', 'crystal'); }
+function switchTab(tabId, isSwipe = false, swipeDirection = '') { if (activeTab === tabId) return; activeTab = tabId; activeMinigame = null; document.querySelectorAll('.tab').forEach(x => { x.classList.remove('active'); if(x.dataset.tab === activeTab) x.classList.add('active'); }); renderMenu(false); }
 
 el.clickZone.addEventListener('pointerdown', doClick); 
 el.btnClick.addEventListener('pointerdown', buyClick); 
@@ -901,7 +936,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') { saveGame(); } 
   else if (document.visibilityState === 'visible') {
     const saved = localStorage.getItem(currentSaveKey);
-    if (saved) { try { const p = JSON.parse(saved); const ds = Math.floor((Date.now() - (p.lastSaved || Date.now())) / 1000); if (ds > 10 && p.auraLevel > 0) { loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); saveGame(); } } catch(e) {} }
+    if (saved) { try { const p = JSON.parse(saved); const ds = Math.floor((Date.now() - (p.lastSaved || Date.now())) / 1000); if (ds > 10 && p.auraLevel > 0) { state = { ...defaultState }; loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); saveGame(); } } catch(e) {} }
   }
 });
 
