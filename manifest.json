@@ -1,0 +1,15 @@
+{
+  "name": "Эволюция Нарзана",
+  "short_name": "Нарзан",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1b1c3e",
+  "theme_color": "#6a4cff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3154/3154366.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
