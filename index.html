@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- ЗАЩИТА ОТ КЭШИРОВАНИЯ БРАУЗЕРА -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Эволюция Нарзана</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -347,7 +351,7 @@ const ACHIEVEMENTS = [
 ];
 
 const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, freeCases: 0, pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
-let state = JSON.parse(JSON.stringify(defaultState)); // Глубокое копирование
+let state = JSON.parse(JSON.stringify(defaultState));
 
 let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
 let currentSaveKey = localStorage.getItem('narzan_current_save_key') || (currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser);
@@ -355,23 +359,33 @@ let currentSaveKey = localStorage.getItem('narzan_current_save_key') || (current
 let activeMinigame = null;
 let goldRushEnd = 0;
 let bossHp = 0;
+let hasShownStorageError = false;
 
 const $ = id => document.getElementById(id);
 const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'), caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText') };
 
-function saveGame() { state.lastSaved = Date.now(); localStorage.setItem(currentSaveKey, JSON.stringify(state)); }
+// БЕЗОПАСНОЕ СОХРАНЕНИЕ (с обработкой ошибок)
+function saveGame() { 
+    state.lastSaved = Date.now(); 
+    try {
+        localStorage.setItem(currentSaveKey, JSON.stringify(state)); 
+    } catch (e) {
+        if (!hasShownStorageError) {
+            showToast('❌ Ошибка: Браузер блокирует сохранение!', 'err');
+            hasShownStorageError = true;
+        }
+    }
+}
+
 function loadGame() {
-  // Сбрасываем state до дефолтного, чтобы не было старых багов
   Object.assign(state, JSON.parse(JSON.stringify(defaultState)));
   
   const saved = localStorage.getItem(currentSaveKey);
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      // Переносим сохраненные данные поверх дефолтных
       Object.assign(state, parsed);
       
-      // Проверка безопасности (чтобы не было NaN и пропавших питомцев)
       if (!Array.isArray(state.pets)) state.pets = [];
       if (!Array.isArray(state.activePets)) state.activePets = [];
       if (!Array.isArray(state.usedCodes)) state.usedCodes = [];
@@ -463,7 +477,7 @@ function renderPetsOnScreen() { el.petsContainer.innerHTML = ''; if (state.hasDr
 function updateUI() { 
   el.auraVal.textContent = fmt(state.aura); 
   el.crystalVal.textContent = fmt(state.crystals); 
-  el.caseVal.textContent = fmt(state.freeCases); // ОТОБРАЖАЕМ ПРАВИЛЬНЫЙ СЧЕТЧИК
+  el.caseVal.textContent = fmt(state.freeCases); 
   el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
   el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
   
@@ -892,7 +906,6 @@ function openDonateModal() {
   el.donateModal.classList.add('show');
 }
 
-// НОВАЯ ЛОГИКА РЕГИСТРАЦИИ
 function registerUser() {
     const u = document.getElementById('authUser').value.trim();
     const p = document.getElementById('authPass').value.trim();
@@ -902,20 +915,18 @@ function registerUser() {
     if (localStorage.getItem(nk)) {
         showToast('Этот аккаунт уже существует! Войдите в него.', 'err');
     } else {
-        // Создаем аккаунт, перенося ТЕКУЩИЙ прогресс
         currentUser = u; currentSaveKey = nk;
-        localStorage.setItem('narzan_current_user', u);
-        localStorage.setItem('narzan_current_save_key', nk);
+        try {
+            localStorage.setItem('narzan_current_user', u);
+            localStorage.setItem('narzan_current_save_key', nk);
+        } catch(e) { showToast('Ошибка памяти браузера!', 'err'); return; }
         
-        // Просто сохраняем текущий state под новым ключом
-        saveGame();
-        
+        saveGame(); 
         showToast('Аккаунт создан! Ваш прогресс перенесен.', 'gold');
         renderMenu(); updateUI();
     }
 }
 
-// НОВАЯ ЛОГИКА ВХОДА
 function loginUser() {
     const u = document.getElementById('authUser').value.trim();
     const p = document.getElementById('authPass').value.trim();
@@ -924,12 +935,12 @@ function loginUser() {
     
     if (localStorage.getItem(nk)) {
         currentUser = u; currentSaveKey = nk;
-        localStorage.setItem('narzan_current_user', u);
-        localStorage.setItem('narzan_current_save_key', nk);
+        try {
+            localStorage.setItem('narzan_current_user', u);
+            localStorage.setItem('narzan_current_save_key', nk);
+        } catch(e) { showToast('Ошибка памяти браузера!', 'err'); return; }
         
-        // Загружаем данные аккаунта (loadGame сбросит старый стейт и загрузит новый)
         loadGame();
-        
         renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu();
         showToast('Вход выполнен! С возвращением, ' + u, 'gold');
     } else {
@@ -939,8 +950,10 @@ function loginUser() {
 
 function logoutAccount() { 
     currentUser = 'guest'; currentSaveKey = 'narzan_save_data'; 
-    localStorage.setItem('narzan_current_user', 'guest'); 
-    localStorage.setItem('narzan_current_save_key', 'narzan_save_data');
+    try {
+        localStorage.setItem('narzan_current_user', 'guest'); 
+        localStorage.setItem('narzan_current_save_key', 'narzan_save_data');
+    } catch(e) { showToast('Ошибка памяти браузера!', 'err'); return; }
     
     loadGame(); 
     renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); 
