@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<!-- ЗАЩИТА ОТ КЭШИРОВАНИЯ БРАУЗЕРА -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -364,7 +363,6 @@ let hasShownStorageError = false;
 const $ = id => document.getElementById(id);
 const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'), caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText') };
 
-// БЕЗОПАСНОЕ СОХРАНЕНИЕ (с обработкой ошибок)
 function saveGame() { 
     state.lastSaved = Date.now(); 
     try {
@@ -892,9 +890,25 @@ function renderMenu(keepScroll = false) {
         <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button>
         <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button>
       </div>
+      
+      <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+          <div style="font-size:11px; color:#aaa; margin-bottom:10px;">Перенос прогресса (между устройствами):</div>
+          <button class="case-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom:8px;" onclick="exportSave()">📤 Экспорт (скопировать)</button>
+          <button class="case-btn" style="background:linear-gradient(135deg, #10b981, #059669);" onclick="importSave()">📥 Импорт (вставить)</button>
+      </div>
+
       <button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
     } else { 
-      html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div><button class="case-btn" style="background:#ef4444; margin-top:10px;" onclick="logoutAccount()">Выйти из аккаунта</button><button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
+      html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div>
+      
+      <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+          <div style="font-size:11px; color:#aaa; margin-bottom:10px;">Перенос прогресса (между устройствами):</div>
+          <button class="case-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom:8px;" onclick="exportSave()">📤 Экспорт (скопировать)</button>
+          <button class="case-btn" style="background:linear-gradient(135deg, #10b981, #059669);" onclick="importSave()">📥 Импорт (вставить)</button>
+      </div>
+      
+      <button class="case-btn" style="background:#ef4444; margin-top:20px;" onclick="logoutAccount()">Выйти из аккаунта</button>
+      <button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
     } 
   } 
   el.tabContent.innerHTML = html; 
@@ -904,6 +918,26 @@ function renderMenu(keepScroll = false) {
 function openDonateModal() {
   el.donateIdText.textContent = generateUserID();
   el.donateModal.classList.add('show');
+}
+
+function exportSave() {
+    const saveStr = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+    prompt("Скопируйте этот код и сохраните его:", saveStr);
+}
+
+function importSave() {
+    const code = prompt("Вставьте код сохранения:");
+    if (!code) return;
+    try {
+        const decoded = decodeURIComponent(escape(atob(code)));
+        const parsed = JSON.parse(decoded);
+        Object.assign(state, parsed);
+        saveGame();
+        renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu();
+        showToast('Прогресс успешно перенесен!', 'gold');
+    } catch(e) {
+        showToast('Неверный код сохранения!', 'err');
+    }
 }
 
 function registerUser() {
