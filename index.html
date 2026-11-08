@@ -8,8 +8,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
   button, input { outline: none; border: none; -webkit-appearance: none; }
   body, html { overscroll-behavior: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: radial-gradient(circle at top, #1b1c3e 0%, #0a0b1a 60%, #05050a 100%); color: #fff; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; touch-action: manipulation; }
-  
-  /* УВЕЛИЧЕН НИЖНИЙ ОТСТУП, ЧТОБЫ КНОПКИ БЫЛИ ВЫШЕ */
   .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: 100%; padding: 8px 12px 60px 12px; position: relative; }
   
   header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0 45px; }
@@ -136,8 +134,9 @@
   .toast.err { border-color: #ef4444; color: #fca5a5; }
   @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
   
-  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 20px; color: #5eead4; text-shadow: 0 0 10px #5eead4, 0 0 20px #5eead4; z-index: 1000; animation: floatUp 0.8s ease-out forwards; }
-  .float-text.crit-text { color: #ff0000; text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000; font-size: 32px; font-weight: 900; }
+  /* ТЕКСТ ОДНОГО РАЗМЕРА (18px) */
+  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 18px; color: #5eead4; text-shadow: 0 0 10px #5eead4, 0 0 20px #5eead4; z-index: 1000; animation: floatUp 0.8s ease-out forwards; }
+  .float-text.crit-text { color: #ff0000; text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000; font-size: 18px; }
   @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(1.5); } }
   
   .cheat-panel { background: #000; border: 1px solid #0f0; color: #0f0; padding: 12px; border-radius: 8px; font-family: monospace; width: 100%; max-width: 320px; max-height: 80vh; overflow-y: auto;}
@@ -260,7 +259,7 @@
       <div style="font-size: 12px; color: #aaa; margin-bottom: 15px; line-height: 1.5;">
         Очень важно указать ваш <b>Ник</b> и <b>ID</b> при переводе.<br><br>
         Ваш ID: <b id="donateIdText" style="color:#5eead4; font-size: 16px; display: block; margin-top: 5px; margin-bottom: 10px;"></b>
-        Переведите нужную сумму по кнопке ниже и напишите в ЛС ваш ID и чек. Ожидание награды может занять пару часов.
+        Переведите нужную сумму по кнопке ниже и напишите в ЛС ваш ID и чек. Взамен вы получите уникальный бонус-код!
       </div>
       <button class="case-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; margin-bottom: 10px;" onclick="window.open(DONATE_URL, '_blank')">Перейти к оплате</button>
       <button class="case-btn" style="background: #4a4a5a;" onclick="document.getElementById('donateModal').classList.remove('show')">Закрыть</button>
@@ -282,13 +281,22 @@
 <div class="overlay" id="cheatOverlay">
   <div class="cheat-panel">
     <h3 style="margin-bottom:8px;">ADMIN MENU</h3>
-    <div style="font-size:10px; margin-bottom:10px;">(Выдача наград за донат)</div>
-    <button class="cheat-btn" onclick="giveDonateReward(15)">Выдать за 15₽</button>
-    <button class="cheat-btn" onclick="giveDonateReward(30)">Выдать за 30₽</button>
-    <button class="cheat-btn" onclick="giveDonateReward(50)">Выдать за 50₽</button>
-    <button class="cheat-btn" onclick="giveDonateReward(100)">Выдать за 100₽</button>
-    <button class="cheat-btn" style="background:#f00;color:#fff;" onclick="giveDonateReward(1000)">Выдать за 1000₽</button>
     
+    <div style="border-bottom:1px solid #0f0; margin-bottom:8px; padding-bottom:8px;">
+      <div style="font-size:11px; margin-bottom:5px;">ГЕНЕРАТОР КОДОВ ДОНАТА:</div>
+      <input type="text" id="genIdInput" placeholder="Введите ID игрока" style="width:100%; padding:5px; margin-bottom:5px; background:#111; border:1px solid #0f0; color:#0f0;">
+      <div style="display:flex; gap:4px;">
+        <button class="cheat-btn" onclick="genCode(15)">15₽</button>
+        <button class="cheat-btn" onclick="genCode(30)">30₽</button>
+        <button class="cheat-btn" onclick="genCode(50)">50₽</button>
+      </div>
+      <div style="display:flex; gap:4px; margin-top:4px;">
+        <button class="cheat-btn" onclick="genCode(100)">100₽</button>
+        <button class="cheat-btn" style="color:#f00; border-color:#f00;" onclick="genCode(1000)">1000₽ (Феникс)</button>
+      </div>
+      <div id="genResult" style="margin-top:8px; font-size:12px; color:#fff; word-break:break-all; background:#222; padding:5px; display:none;"></div>
+    </div>
+
     <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px;">ТЕСТЫ:</div>
     <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
     <button class="cheat-btn" onclick="applyCode('CASEMAX')">> CASEMAX (кейсы)</button>
@@ -318,7 +326,6 @@ const PETS = [
   { id: 'p13', name: 'Лев', emoji: '🦁', rarity: 'legendary', cost: 900000000, bonus: {type:'global', val:2.5}, desc: 'x2.5 ко всему' },
   { id: 'p14', name: 'Дракон', emoji: '🐉', rarity: 'legendary', cost: 1500000000, bonus: {type:'global', val:3.0}, desc: 'x3 ко всему' },
   { id: 'p15', name: 'Кошка Милка', emoji: '🐱', rarity: 'legendary', cost: 3000000000, bonus: {type:'global', val:5.0}, desc: 'x5 ко всему' },
-  // Эксклюзивный донатный питомец
   { id: 'p16', name: 'Феникс', emoji: '🔥🦅', rarity: 'exclusive', cost: 999999999999, bonus: {type:'global', val:7.0}, desc: 'x7 ко всему' }
 ];
 
@@ -343,6 +350,11 @@ const ACHIEVEMENTS = [
 let state = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, cases: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
 let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
 let currentSaveKey = currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser;
+
+// Глобальные переменные для мини-игр
+let activeMinigame = null;
+let goldRushEnd = 0;
+let bossHp = 0;
 
 const $ = id => document.getElementById(id);
 const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'), caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText') };
@@ -410,7 +422,11 @@ const getMultiplier = () => isBoosterActive() ? 2 : 1;
 const getClickPower = () => {
   let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5));
   let talentBonus = 1 + (state.talents.heavyHand * 0.01);
-  return base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
+  let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
+  
+  if (Date.now() < goldRushEnd) multiplier *= 5; // Бонус Золотой лихорадки
+  
+  return base * talentBonus * multiplier;
 };
 
 const getAuraIncome = () => {
@@ -507,22 +523,124 @@ const WHEEL_PRIZES = [{ text: '100💎', color: '#3b82f6', action: () => { state
 function renderCasino() { const deg = 360 / WHEEL_PRIZES.length; let gs = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', '); let lh = ''; WHEEL_PRIZES.forEach((prize, i) => { const a = (i * deg) + (deg / 2); const f = (a > 90 && a < 270) ? 180 : 0; lh += `<div class="wheel-label" style="transform: rotate(${a}deg) translateY(-85px) rotate(${-a + f}deg);">${prize.text}</div>`; }); return `<div class="casino-wrap"><div class="wheel-container"><div class="wheel-pointer">▼</div><div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gs});">${lh}</div></div><button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button></div>`; }
 function spinWheel() { if (isSpinning || state.crystals < 10) return; isSpinning = true; state.crystals -= 10; updateUI(); const w = document.getElementById('fortuneWheel'); const b = document.querySelector('.spin-btn'); if (b) b.disabled = true; const pi = Math.floor(Math.random() * WHEEL_PRIZES.length); const dps = 360 / WHEEL_PRIZES.length; const cos = (pi * dps) + (dps / 2); const tba = -cos; let cam = currentRotation % 360; if (cam < 0) cam += 360; let ad = (tba - cam + 360) % 360; currentRotation += 1800 + ad; w.style.transform = `rotate(${currentRotation}deg)`; setTimeout(() => { WHEEL_PRIZES[pi].action(); showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[pi].text}!`, 'gold'); isSpinning = false; updateUI(); saveGame(); renderMenu(true); }, 4200); }
 
+// --- МИНИ-ИГРЫ ---
+function startGoldRush() {
+  if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err');
+  state.crystals -= 10;
+  goldRushEnd = Date.now() + 10000;
+  updateUI(); renderMenu(true);
+  showToast('⛏️ Лихорадка началась! (10 сек)');
+  setTimeout(() => {
+    if (activeTab === 'minigames' && activeMinigame === 'gold') renderMenu(true);
+  }, 10000);
+}
+
+function startBoss() {
+  if (state.crystals < 20) return showToast('Нужно 20 💎!', 'err');
+  state.crystals -= 20;
+  bossHp = 50000;
+  updateUI(); renderMenu(true);
+}
+
+function hitBoss() {
+  if (bossHp <= 0) return;
+  bossHp -= getClickPower();
+  if (bossHp <= 0) {
+    let rewardAura = getAuraIncome() * 600;
+    state.aura += rewardAura;
+    state.crystals += 50;
+    showToast(`☣️ Босс побежден! +${short(rewardAura)} капелек, +50 💎`, 'gold');
+    bossHp = 0;
+    saveGame();
+  }
+  updateUI(); renderMenu(true);
+}
+
+function labyrinthGuess() {
+  if (state.crystals < 5) return showToast('Нужно 5 💎!', 'err');
+  state.crystals -= 5;
+  if (Math.random() > 0.5) {
+    state.crystals += 15;
+    showToast('🌀 Удача! +15 💎', 'gold');
+  } else {
+    showToast('🌀 Не повезло...', 'err');
+  }
+  updateUI(); renderMenu(true);
+}
+
 function useCode() { const r = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!r) return; applyCode(r); }
-function applyCode(raw) { if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 АДМИН МЕНЮ!'); return; } if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); return; } if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; } if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; } if (raw === 'CASE1') { if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); state.usedCodes.push(raw); state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } if (raw === 'CASEMAX') { state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } if (!(raw in CODES)) return showToast('❌ Неверный код', 'err'); if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus; showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame(); }
+
+function simpleHash(str) {
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) { hash = ((hash << 5) + hash) + str.charCodeAt(i); }
+    return Math.abs(hash).toString(36).toUpperCase();
+}
+
+function generateDonateCodeForPlayer(playerId, tier) {
+    const secret = "NARZAN_SUPER_SECRET_2024";
+    const hash = simpleHash(playerId + tier + secret);
+    return `N-DON-${tier}-${hash}`;
+}
+
+function genCode(tier) {
+    let pid = document.getElementById('genIdInput').value.trim().toUpperCase();
+    if (!pid) return alert('Введите ID игрока!');
+    if (!pid.startsWith('ID-')) pid = 'ID-' + pid;
+    
+    const code = generateDonateCodeForPlayer(pid, tier);
+    const resDiv = document.getElementById('genResult');
+    resDiv.style.display = 'block';
+    resDiv.innerHTML = `Код для <b>${pid}</b> на <b>${tier}₽</b>:<br><br><span style="color:#0f0; font-size:14px; user-select:all;">${code}</span><br><br><i>(Нажмите, чтобы скопировать)</i>`;
+    resDiv.onclick = () => { navigator.clipboard.writeText(code); showToast('Код скопирован!', 'gold'); };
+}
+
+function applyCode(raw) { 
+  if (raw.startsWith('N-DON-')) {
+    const parts = raw.split('-');
+    if (parts.length === 4) {
+      const tier = parseInt(parts[2]);
+      const hash = parts[3];
+      const myId = generateUserID();
+      
+      const expectedHash = simpleHash(myId + tier + "NARZAN_SUPER_SECRET_2024");
+      
+      if (hash === expectedHash) {
+        if (state.usedCodes.includes(raw)) return showToast('Этот код уже использован!', 'err');
+        state.usedCodes.push(raw);
+        giveDonateReward(tier);
+        showToast(`✅ Активирован донат на ${tier}₽!`, 'gold');
+        return;
+      } else {
+        return showToast('❌ Код не подходит для вашего ID!', 'err');
+      }
+    }
+  }
+
+  if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 АДМИН МЕНЮ!'); return; } 
+  if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); return; } 
+  if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; } 
+  if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; } 
+  if (raw === 'CASE1') { if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); state.usedCodes.push(raw); state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } 
+  if (raw === 'CASEMAX') { state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } 
+  if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } 
+  if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } 
+  
+  if (!(raw in CODES)) return showToast('❌ Неверный код', 'err'); 
+  if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); 
+  const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus; showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame(); 
+}
 
 function giveDonateReward(tier) {
-  if (tier === 15) { state.crystals += 500; showToast('Выдано 500 кристаллов!'); }
-  if (tier === 30) { state.crystals += 1500; state.aura += 100000; state.cases += 1; showToast('Выдано: 1500💎, 100к💧, 1📦'); }
-  if (tier === 50) { state.crystals += 3000; state.aura += 500000; state.cases += 3; showToast('Выдано: 3000💎, 500к💧, 3📦'); }
-  if (tier === 100) { state.crystals += 10000; state.aura += 5000000; state.cases += 10; showToast('Выдано: 10к💎, 5млн💧, 10📦'); }
+  if (tier === 15) { state.crystals += 500; }
+  if (tier === 30) { state.crystals += 1500; state.aura += 100000; state.cases += 1; }
+  if (tier === 50) { state.crystals += 3000; state.aura += 500000; state.cases += 3; }
+  if (tier === 100) { state.crystals += 10000; state.aura += 5000000; state.cases += 10; }
   if (tier === 1000) { 
     state.crystals += 100000; state.aura += 100000000; state.cases += 25; 
-    // Выдаем Феникса (x7)
     if (!state.pets.includes('p16')) {
       state.pets.push('p16');
       if (state.activePets.length < 5) state.activePets.push('p16');
     }
-    showToast('МЕГА-ПАК ВЫДАН! Получен Феникс (x7)!'); 
   }
   updateUI(); saveGame(); renderMenu(true); renderPetsOnScreen();
 }
@@ -613,30 +731,52 @@ function renderMenu(keepScroll = false) {
   }
   else if (activeTab === 'minigames') {
     const mgs = [
-      { title: 'Золотая лихорадка', desc: 'Клик-испытание. Открывается на стадии «Квас».', stageReq: 10, icon: '⛏️', action: 'showToast("В разработке!", "err")' },
-      { title: 'Фонтан удачи', desc: 'Рулетка. Открывается на стадии «Пиво».', stageReq: 19, icon: '🎰', action: 'switchTab("casino", false)' },
-      { title: 'Бактериальный шторм', desc: 'Босс-файт. Открывается на стадии «Чекушка».', stageReq: 23, icon: '☣️', action: 'showToast("В разработке!", "err")' },
-      { title: 'Лабиринт вкусов', desc: 'Открывается на финальной стадии «Космос».', stageReq: 24, icon: '🌀', action: 'showToast("В разработке!", "err")' }
+      { id: 'gold', title: 'Золотая лихорадка', desc: 'Клик-испытание (10 сек x5).', stageReq: 10, icon: '⛏️' },
+      { id: 'fortune', title: 'Фонтан удачи', desc: 'Рулетка на кристаллы.', stageReq: 19, icon: '🎰' },
+      { id: 'boss', title: 'Бактериальный шторм', desc: 'Босс-файт. Награда за победу!', stageReq: 23, icon: '☣️' },
+      { id: 'labyrinth', title: 'Лабиринт вкусов', desc: 'Испытай удачу за 5💎.', stageReq: 24, icon: '🌀' }
     ];
     
-    mgs.forEach(mg => {
-      let unlocked = state.stage >= mg.stageReq;
-      html += `<div class="minigame-card ${!unlocked ? 'locked' : ''}">
-        <div class="mg-icon">${mg.icon}</div>
-        <div class="mg-info">
-          <div class="mg-title">${mg.title}</div>
-          <div class="mg-desc">${mg.desc}</div>
-        </div>
-        ${unlocked ? `<button class="mg-btn" onclick="${mg.action}">Играть</button>` : `<div style="font-size:10px; color:#ef4444;">Закрыто</div>`}
-      </div>`;
-    });
-    
-    if (activeTab === 'casino') {
-      html = renderCasino();
+    if (activeMinigame === null) {
+      mgs.forEach(mg => {
+        let unlocked = state.stage >= mg.stageReq;
+        html += `<div class="minigame-card ${!unlocked ? 'locked' : ''}">
+          <div class="mg-icon">${mg.icon}</div>
+          <div class="mg-info">
+            <div class="mg-title">${mg.title}</div>
+            <div class="mg-desc">${mg.desc}</div>
+          </div>
+          ${unlocked ? `<button class="mg-btn" onclick="activeMinigame='${mg.id}'; renderMenu();">Играть</button>` : `<div style="font-size:10px; color:#ef4444;">Закрыто</div>`}
+        </div>`;
+      });
+    } else {
+      html += `<button class="case-btn" style="background:#4a4a5a; margin-bottom:10px;" onclick="activeMinigame=null; renderMenu();">← Назад</button>`;
+      
+      if (activeMinigame === 'fortune') {
+        html += renderCasino();
+      } else if (activeMinigame === 'gold') {
+        if (Date.now() < goldRushEnd) {
+          let timeLeft = Math.ceil((goldRushEnd - Date.now())/1000);
+          html += `<div style="text-align:center; color:#fbbf24; font-size:20px; font-weight:bold; margin-bottom:10px;">Осталось: ${timeLeft} сек</div>`;
+          html += `<div style="text-align:center; color:#aaa; font-size:12px;">(Закройте меню и кликайте по мылу!)</div>`;
+        } else {
+          html += `<div style="text-align:center; margin-bottom:10px;">Активируйте режим x5 клик на 10 секунд!</div>`;
+          html += `<button class="case-btn" onclick="startGoldRush()">Начать (10 💎)</button>`;
+        }
+      } else if (activeMinigame === 'boss') {
+        if (bossHp > 0) {
+          html += `<div style="text-align:center; margin-bottom:10px;">Бактерия (HP: ${Math.max(0, Math.floor(bossHp))})</div>`;
+          html += `<div class="progress-bar" style="height:20px; margin-bottom:10px;"><div class="progress-fill" style="width:${Math.max(0, (bossHp/50000)*100)}%; background:red;"></div></div>`;
+          html += `<button class="case-btn" style="background:#ef4444;" onclick="hitBoss()">Атаковать</button>`;
+        } else {
+          html += `<div style="text-align:center; margin-bottom:10px;">Победите бактерию и получите награду!</div>`;
+          html += `<button class="case-btn" onclick="startBoss()">Начать бой (20 💎)</button>`;
+        }
+      } else if (activeMinigame === 'labyrinth') {
+        html += `<div style="text-align:center; margin-bottom:10px;">Испытайте удачу: 50% шанс получить 15 💎.</div>`;
+        html += `<button class="case-btn" onclick="labyrinthGuess()">Войти (5 💎)</button>`;
+      }
     }
-  }
-  else if (activeTab === 'casino') {
-    html = renderCasino();
   }
   else if (activeTab === 'leaders') {
     const fakeDrops = [
@@ -715,7 +855,7 @@ function renderMenu(keepScroll = false) {
   }
   else if (activeTab === 'stats') { 
     const m = Math.floor((Date.now() - state.startedAt) / 60000); 
-    html = `<div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Всего капелек:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Питомцев:</span> <b>${state.pets.length} / 15</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>В игре:</span> <b>${m} мин</b></div>`; 
+    html = `<div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Всего капелек:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Питомцев:</span> <b>${state.pets.length} / 16</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>В игре:</span> <b>${m} мин</b></div>`; 
   } 
   else if (activeTab === 'account') { 
     if (currentUser === 'guest') { 
@@ -742,7 +882,7 @@ function openDonateModal() {
 
 function loginOrRegister() { const u = document.getElementById('authUser').value.trim(); const p = document.getElementById('authPass').value.trim(); if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err'); const nk = 'narzan_save_' + u + '_' + p; if (localStorage.getItem(nk)) { currentUser = u; currentSaveKey = nk; localStorage.setItem('narzan_current_user', u); loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Вход выполнен! С возвращением, ' + u, 'gold'); } else { currentUser = u; currentSaveKey = nk; localStorage.setItem('narzan_current_user', u); saveGame(); showToast('Аккаунт создан! Прогресс привязан.', 'gold'); renderMenu(); } }
 function logoutAccount() { currentUser = 'guest'; currentSaveKey = 'narzan_save_data'; localStorage.setItem('narzan_current_user', 'guest'); loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Вы вышли в гостевой режим', 'crystal'); }
-function switchTab(tabId, isSwipe = false, swipeDirection = '') { if (activeTab === tabId) return; activeTab = tabId; document.querySelectorAll('.tab').forEach(x => { x.classList.remove('active'); if(x.dataset.tab === activeTab) x.classList.add('active'); }); if (isSwipe) { el.tabContent.classList.remove('slide-in-left', 'slide-in-right'); void el.tabContent.offsetWidth; if (swipeDirection === 'left') el.tabContent.classList.add('slide-in-right'); else el.tabContent.classList.add('slide-in-left'); } renderMenu(false); }
+function switchTab(tabId, isSwipe = false, swipeDirection = '') { if (activeTab === tabId) return; activeTab = tabId; activeMinigame = null; document.querySelectorAll('.tab').forEach(x => { x.classList.remove('active'); if(x.dataset.tab === activeTab) x.classList.add('active'); }); if (isSwipe) { el.tabContent.classList.remove('slide-in-left', 'slide-in-right'); void el.tabContent.offsetWidth; if (swipeDirection === 'left') el.tabContent.classList.add('slide-in-right'); else el.tabContent.classList.add('slide-in-left'); } renderMenu(false); }
 
 el.clickZone.addEventListener('pointerdown', doClick); 
 el.btnClick.addEventListener('pointerdown', buyClick); 
