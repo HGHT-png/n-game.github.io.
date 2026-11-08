@@ -8,7 +8,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
   button, input { outline: none; border: none; -webkit-appearance: none; }
   body, html { overscroll-behavior: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: radial-gradient(circle at top, #1b1c3e 0%, #0a0b1a 60%, #05050a 100%); color: #fff; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; touch-action: manipulation; }
-  .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: 100%; padding: 8px 12px 45px 12px; position: relative; }
+  .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: 100%; padding: 8px 12px 15px 12px; position: relative; }
   
   header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0 45px; }
   .aura-display { font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; line-height: 1.1; width: 100%; }
@@ -25,33 +25,39 @@
   .stage-name { font-size: 13px; color: #8a9bbd; margin-top: 2px; font-weight: 500; }
   .income-text { font-size: 12px; color: #5eead4; margin-top: 2px; font-weight: 600;}
   .prestige-text { font-size: 11px; color: #fbbf24; margin-top: 2px; font-weight: bold; }
+  
   .click-zone { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; min-height: 80px; cursor: pointer; touch-action: manipulation; }
   .click-zone::before { content: ''; position: absolute; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(110,200,255,0.15) 0%, transparent 70%); animation: pulse 3s infinite; pointer-events: none; }
   @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
   #charImg { max-width: 100px; max-height: 120px; object-fit: contain; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; border-radius: 10px; pointer-events: none; }
   #charEmoji { font-size: 70px; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
   .click-zone.pop #charImg, .click-zone.pop #charEmoji { transform: scale(1.1); }
+  
   .pets-container { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: visible; }
   .pet-wrapper { position: absolute; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 4; transform: translate(-50%, -50%); }
   .active-pet-display { font-size: 35px; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
   .drone-active { font-size: 50px; filter: drop-shadow(0 0 20px #00ffff) !important; animation: droneHover 1s infinite alternate ease-in-out !important; }
   @keyframes droneHover { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-20px) scale(1.1); } }
-  .bottom-panel { display: flex; flex-direction: column; gap: 5px; }
-  .final-box { display: none; padding: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,200,60,0.3); }
+  
+  .bottom-panel { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+  .final-box { display: none; padding: 5px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,200,60,0.3); }
   .final-box.show { display: block; }
   .final-text { font-size: 11px; color: #ffd66b; text-align: center; margin-bottom: 4px; font-weight: bold; }
   .progress-bar { height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #fbbf24, #ef4444); transition: width 0.3s; }
-  .buttons { display: flex; flex-direction: column; gap: 5px; }
-  .btn { width: 100%; border-radius: 12px; padding: 6px 8px; font-size: 13px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.15s; background: linear-gradient(135deg, #6a4cff, #8a6cff); color: #fff; box-shadow: 0 3px 8px rgba(106,76,255,0.3); cursor: pointer; touch-action: manipulation; }
+  
+  .buttons { display: flex; flex-direction: column; gap: 4px; }
+  .btn { width: 100%; border-radius: 10px; padding: 4px 8px; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.15s; background: linear-gradient(135deg, #6a4cff, #8a6cff); color: #fff; box-shadow: 0 2px 5px rgba(106,76,255,0.3); cursor: pointer; touch-action: manipulation; line-height: 1.2; }
   .btn:active { transform: scale(0.97); }
   .btn.disabled { opacity: 0.5; pointer-events: none; box-shadow: none; }
-  .btn-sub { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.8); margin-top: 1px; }
-  .codes { display: flex; gap: 5px; }
-  .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 10px; font-size: 12px; text-transform: uppercase;}
+  .btn-sub { font-size: 9px; font-weight: 400; color: rgba(255,255,255,0.8); margin-top: 1px; }
+  
+  .codes { display: flex; gap: 5px; margin-bottom: 2px;}
+  .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 5px 8px; border-radius: 8px; font-size: 12px; text-transform: uppercase;}
   .codes input::placeholder { color: #555; }
-  .codes button { background: #6a4cff; color: #fff; padding: 0 10px; border-radius: 10px; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 12px;}
+  .codes button { background: #6a4cff; color: #fff; padding: 0 10px; border-radius: 8px; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 12px;}
+  
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 15px; }
   .overlay.show { display: flex; }
   .menu { width: 100%; max-width: 400px; height: 85vh; background: #14152b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
@@ -63,16 +69,14 @@
   .tab { background: none; border: 1px solid rgba(255,255,255,0.1); color: #8a9bbd; padding: 5px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; white-space: nowrap; touch-action: manipulation; transition: 0.2s; }
   .tab.active { background: rgba(106,76,255,0.2); color: #fff; border-color: #6a4cff; }
   .tab-content { padding: 12px; overflow-y: auto; flex: 1; min-height: 0; color: #ccc; font-size: 13px; scroll-behavior: smooth; }
-  .tab-content.slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.17, 0.67, 0.12, 0.99) forwards; }
-  .tab-content.slide-in-left { animation: slideInLeft 0.3s cubic-bezier(0.17, 0.67, 0.12, 0.99) forwards; }
-  @keyframes slideInRight { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } }
-  @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
+  
   .ach-item { display: flex; gap: 8px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; opacity: 0.5; }
   .ach-item.unlocked { opacity: 1; background: rgba(94,234,212,0.1); border: 1px solid rgba(94,234,212,0.3); }
   .ach-item.hidden-ach { opacity: 0.3; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); }
   .ach-icon { font-size: 16px; }
   .ach-name { font-weight: bold; color: #fff; font-size: 12px;}
   .ach-desc { font-size: 10px; color: #8a9bbd; }
+  
   .pet-card { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 6px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.1); transition: 0.1s; }
   .pet-card.owned { border-color: #5eead4; background: rgba(94,234,212,0.05); }
   .pet-card.active-pet { border-color: #fbbf24; background: rgba(245,158,11,0.1); box-shadow: 0 0 10px rgba(245,158,11,0.2); }
@@ -89,12 +93,14 @@
   .pet-btn.equip { background: #fbbf24; color: black; }
   .pet-btn.equipped { background: #2a2a3a; color: #888; }
   .pet-btn.sell { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
+  
   .case-box { background: rgba(96,165,250,0.08); border: 1px solid #3b82f6; border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 12px; box-shadow: inset 0 0 20px rgba(59,130,246,0.15); }
   .case-title { font-weight: 800; color: #60a5fa; font-size: 15px; margin-bottom: 6px; }
   .case-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; margin-top: 8px; width: 100%; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
   .case-btn:active { transform: scale(0.97); }
   .case-btn:disabled { opacity: 0.4; pointer-events: none; box-shadow: none; }
   .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; box-shadow: 0 4px 12px rgba(245,158,11,0.4);}
+  
   .casino-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
   .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
@@ -102,6 +108,7 @@
   .wheel-label { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; width: 80px; margin-left: -40px; margin-top: -6px; pointer-events: none; display: flex; justify-content: center; align-items: center;}
   .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
   .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
+  
   .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
   .case-modal.show { display: flex; }
   .case-anim-box { font-size: 80px; animation: shake 0.5s infinite; }
@@ -115,28 +122,30 @@
   .case-close-btn:active { transform: scale(0.95); }
   .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   .close-case-x:active { background: rgba(255,255,255,0.2); }
+  
   .floating-bonus { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24); }
   .floating-crystal { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #60a5fa); }
+  
   #toasts { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; pointer-events: none; }
   .toast { background: rgba(20,21,43,0.95); border: 1px solid #6a4cff; color: #fff; padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; animation: slideDown 0.3s ease; text-align:center;}
   .toast.gold { border-color: #fbbf24; color: #fde68a; }
   .toast.crystal { border-color: #60a5fa; color: #bfdbfe; }
   .toast.err { border-color: #ef4444; color: #fca5a5; }
   @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
-  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 16px; color: #5eead4; text-shadow: 0 0 10px #5eead4; z-index: 1000; animation: floatUp 0.8s ease-out forwards; }
-  .float-text.crit-text { color: #ef4444; text-shadow: 0 0 15px #ef4444; font-size: 20px; }
-  @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -60px) scale(1.5); } }
+  
+  .float-text { position: fixed; pointer-events: none; font-weight: 800; font-size: 20px; color: #5eead4; text-shadow: 0 0 10px #5eead4, 0 0 20px #5eead4; z-index: 1000; animation: floatUp 0.8s ease-out forwards; }
+  .float-text.crit-text { color: #ff0000; text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000; font-size: 32px; font-weight: 900; }
+  @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(1.5); } }
+  
   .cheat-panel { background: #000; border: 1px solid #0f0; color: #0f0; padding: 12px; border-radius: 8px; font-family: monospace; width: 100%; max-width: 320px; max-height: 80vh; overflow-y: auto;}
   .cheat-btn { background: #0f0; color: #000; padding: 6px; margin: 4px 0; width: 100%; font-weight: bold; cursor: pointer; border-radius: 4px; text-align:left; touch-action: manipulation; font-size: 12px;}
   .auth-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; outline: none; text-align: center; }
   
-  /* Стили для новых вкладок */
-  .talents-grid { display: flex; flex-direction: column; gap: 8px; }
-  .talent-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(106,76,255,0.3); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .talent-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(106,76,255,0.3); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;}
   .talent-info { flex: 1; }
   .talent-title { font-weight: bold; color: #fff; font-size: 13px; }
   .talent-desc { font-size: 10px; color: #8a9bbd; margin-top: 2px; }
-  .talent-btn { background: #6a4cff; color: #fff; padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; touch-action: manipulation; display: flex; flex-direction: column; align-items: center; }
+  .talent-btn { background: #6a4cff; color: #fff; padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; touch-action: manipulation; display: flex; flex-direction: column; align-items: center; min-width: 70px; }
   .talent-btn:disabled { opacity: 0.5; pointer-events: none; }
   
   .minigame-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
@@ -164,6 +173,9 @@
   const lastOpen = sessionStorage.getItem('lastOpenTime');
   if (lastOpen && (Date.now() - lastOpen > 300000)) { window.location.reload(true); }
   sessionStorage.setItem('lastOpenTime', Date.now());
+  
+  // ССЫЛКА НА ТВОЙ DONATION ALERTS
+  const DONATE_URL = "https://www.donationalerts.com/r/ha1ght"; 
 </script>
 
 <div class="app">
@@ -171,7 +183,7 @@
     <button class="prestige-btn-small hidden" id="btnPrestige" title="Престиж">🔄</button>
     <button class="menu-btn" id="menuBtn">☰</button>
     <div class="aura-display"><span class="aura-icon">💧</span> <span id="auraVal">0</span></div>
-    <div class="crystal-display"><span class="crystal-icon">💎</span> <span id="crystalVal">0</span></div>
+    <div class="crystal-display"><span class="crystal-icon">💎</span> <span id="crystalVal">0</span> | 📦 <span id="caseVal">0</span></div>
     <div class="stage-name" id="stageName">Мыло «Аура»</div>
     <div class="income-text" id="incomeVal">+0 капелек/сек</div>
     <div class="prestige-text" id="prestigeVal"></div>
@@ -234,7 +246,6 @@
   </div>
 </div>
 
-<!-- Модалка для доната -->
 <div class="overlay" id="donateModal">
   <div class="menu" style="height: auto; max-height: 80vh;">
     <div class="menu-header">
@@ -246,10 +257,11 @@
       <div style="font-weight: bold; color: #fff; margin-bottom: 10px;">Спасибо за поддержку!</div>
       <div style="font-size: 12px; color: #aaa; margin-bottom: 15px; line-height: 1.5;">
         Очень важно указать ваш <b>Ник</b> и <b>ID</b> при переводе.<br><br>
-        Ваш ID: <b id="donateIdText" style="color:#5eead4; font-size: 16px; display: block; margin-top: 5px;"></b><br>
-        Переведите нужную сумму по реквизитам (в TG) и напишите нам в ЛС ваш ID. Ожидание награды может занять пару часов.
+        Ваш ID: <b id="donateIdText" style="color:#5eead4; font-size: 16px; display: block; margin-top: 5px; margin-bottom: 10px;"></b>
+        Переведите нужную сумму по кнопке ниже и напишите в ЛС ваш ID и чек. Ожидание награды может занять пару часов.
       </div>
-      <button class="case-btn" style="margin-top: 10px;" onclick="document.getElementById('donateModal').classList.remove('show')">Понятно</button>
+      <button class="case-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; margin-bottom: 10px;" onclick="window.open(DONATE_URL, '_blank')">Перейти к оплате</button>
+      <button class="case-btn" style="background: #4a4a5a;" onclick="document.getElementById('donateModal').classList.remove('show')">Закрыть</button>
     </div>
   </div>
 </div>
@@ -267,21 +279,20 @@
 
 <div class="overlay" id="cheatOverlay">
   <div class="cheat-panel">
-    <h3 style="margin-bottom:8px;">SYSTEM HACK MENU</h3>
-    <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
-    <button class="cheat-btn" onclick="applyCode('DRONE')">> ДРОН-ПЕРЕХВАТЧИК (x5)</button>
-    <button class="cheat-btn" onclick="applyCode('CRIT100')">> CRIT100</button>
-    <button class="cheat-btn" onclick="applyCode('BOOSTME')">> BOOSTME</button>
+    <h3 style="margin-bottom:8px;">ADMIN MENU</h3>
+    <div style="font-size:10px; margin-bottom:10px;">(Выдача наград за донат)</div>
+    <button class="cheat-btn" onclick="giveDonateReward(15)">Выдать за 15₽</button>
+    <button class="cheat-btn" onclick="giveDonateReward(30)">Выдать за 30₽</button>
+    <button class="cheat-btn" onclick="giveDonateReward(50)">Выдать за 50₽</button>
+    <button class="cheat-btn" onclick="giveDonateReward(100)">Выдать за 100₽</button>
+    <button class="cheat-btn" style="background:#f00;color:#fff;" onclick="giveDonateReward(1000)">Выдать за 1000₽</button>
     
-    <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px;">КОДЫ НА КЕЙСЫ:</div>
-    <button class="cheat-btn" style="background:#fbbf24;" onclick="applyCode('CASE1')">> CASE1 (1 раз)</button>
-    <button class="cheat-btn" style="background:#fbbf24;" onclick="applyCode('CASEMAX')">> CASEMAX (бесконечно)</button>
+    <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px;">ТЕСТЫ:</div>
+    <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
+    <button class="cheat-btn" onclick="applyCode('CASEMAX')">> CASEMAX (кейсы)</button>
+    <button class="cheat-btn" onclick="applyCode('GEMSMAX')">> GEMSMAX (гемы)</button>
 
-    <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px;">КОДЫ НА ГЕМЫ:</div>
-    <button class="cheat-btn" style="background:#0ff;" onclick="applyCode('GEMS2')">> GEMS2 (макс. 2 раза)</button>
-    <button class="cheat-btn" style="background:#0ff;" onclick="applyCode('GEMSMAX')">> GEMSMAX (бесконечно)</button>
-
-    <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:15px;" onclick="document.getElementById('cheatOverlay').classList.remove('show')">> CLOSE</button>
+    <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:15px;" onclick="document.getElementById('cheatOverlay').classList.remove('show')">> ЗАКРЫТЬ</button>
   </div>
 </div>
 
@@ -325,12 +336,12 @@ const ACHIEVEMENTS = [
   { id:'petAll', icon:'🐉', name:'Зоопарк', desc:'Собери 5 питомцев', check:s=>s.pets.length>=5 },
 ];
 
-let state = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
+let state = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, cases: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
 let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
 let currentSaveKey = currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser;
 
 const $ = id => document.getElementById(id);
-const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'), caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText') };
+const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'), caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText') };
 
 function saveGame() { state.lastSaved = Date.now(); localStorage.setItem(currentSaveKey, JSON.stringify(state)); }
 function loadGame() {
@@ -338,8 +349,9 @@ function loadGame() {
   if (saved) {
     try {
       Object.assign(state, JSON.parse(saved));
-      if (!state.pets) state.pets = []; if (!state.codeUses) state.codeUses = {}; if (!state.freeCases) state.freeCases = 0; if (state.hasDrone === undefined) state.hasDrone = false; if (state.boosterLevel === undefined) state.boosterLevel = 0;
+      if (!state.pets) state.pets = []; if (!state.codeUses) state.codeUses = {}; if (!state.freeCases) state.freeCases = 0; if (state.cases === undefined) state.cases = 0; if (state.hasDrone === undefined) state.hasDrone = false; if (state.boosterLevel === undefined) state.boosterLevel = 0;
       if (!state.talents) state.talents = { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 };
+      
       if (state.activePet) { if (!state.activePets) state.activePets = []; if (!state.activePets.includes(state.activePet)) state.activePets.push(state.activePet); delete state.activePet; }
       if (!state.activePets) state.activePets = [];
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
@@ -361,21 +373,19 @@ function short(n) {
     return n;
 }
 function showToast(text, type = '') { const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = text; el.toasts.appendChild(t); setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500); }
-function floatText(x, y, text, isCrit) { const d = document.createElement('div'); d.className = 'float-text' + (isCrit ? ' crit-text' : ''); d.textContent = text; d.style.left = x + 'px'; d.style.top = y + 'px'; document.body.appendChild(d); setTimeout(() => d.remove(), 800); }
+function floatText(x, y, text, isCrit) { const d = document.createElement('div'); d.className = 'float-text' + (isCrit ? ' crit-text' : ''); d.textContent = (isCrit ? 'КРИТ! ' : '') + text; d.style.left = x + 'px'; d.style.top = y + 'px'; document.body.appendChild(d); setTimeout(() => d.remove(), 800); }
 function playLevelUpSound() { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const play = (f, s, d) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(0.3, s + 0.05); g.gain.exponentialRampToValueAtTime(0.01, s + d); o.start(s); o.stop(s + d); }; const n = ctx.currentTime; play(523.25, n, 0.1); play(659.25, n + 0.1, 0.1); play(783.99, n + 0.2, 0.4); } catch(e) {} }
 
 const getPetsMultiplier = (type) => { 
   if (!state.activePets) return 1; 
   let eq = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean); 
   let count = eq.length;
-  if (state.hasDrone) count++; // Дрон участвует в штрафе
+  if (state.hasDrone) count++;
   
   if (count === 0) return 1; 
   
-  // Базовый штраф: 15% за каждого лишнего питомца. 
-  // Талант "Дружная команда" уменьшает штраф на 1% за уровень
   let penaltyPerPet = 0.15 - (state.talents.teamSpirit * 0.01); 
-  let inf = Math.max(0.2, 1 - (count - 1) * penaltyPerPet); // Минимум 20% эффективности
+  let inf = Math.max(0.2, 1 - (count - 1) * penaltyPerPet); 
   
   let tb = 0; 
   eq.forEach(p => { if (p.bonus.type === type || p.bonus.type === 'global') tb += (p.bonus.val - 1) * inf; }); 
@@ -386,21 +396,22 @@ const getPetIncomeMultiplier = () => getPetsMultiplier('income');
 const getDroneMultiplier = () => state.hasDrone ? 5 : 1;
 
 const getPrestigeMultiplier = () => 1 + ((state.prestigePoints || 0) * 0.1);
-const getClickCost = () => { if (state.clickLevel < 5) return Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, state.clickLevel - 1)); return Math.floor(1000 * Math.pow(CFG.costGrowth, state.clickLevel - 5)); };
-const getAuraCost = () => { if (state.auraLevel < 5) return Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, state.auraLevel)); return Math.floor(1000 * Math.pow(CFG.costGrowth, state.auraLevel - 5)); };
+const getClickCost = () => { return (state.clickLevel < 5) ? Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, state.clickLevel - 1)) : Math.floor(1000 * Math.pow(CFG.costGrowth, state.clickLevel - 5)); };
+const getAuraCost = () => { return (state.auraLevel < 5) ? Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, state.auraLevel)) : Math.floor(1000 * Math.pow(CFG.costGrowth, state.auraLevel - 5)); };
 const getBoosterCost = () => Math.floor(CFG.boosterCost * Math.pow(CFG.costGrowth, state.boosterLevel));
+
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
 
 const getClickPower = () => {
   let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5));
-  let talentBonus = 1 + (state.talents.heavyHand * 0.01); // Максимум +5%
+  let talentBonus = 1 + (state.talents.heavyHand * 0.01);
   return base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
 };
 
 const getAuraIncome = () => {
   let base = state.auraLevel * (1 + Math.floor(state.auraLevel / 5));
-  let talentBonus = 1 + (state.talents.goldenVein * 0.01); // Максимум +3%
+  let talentBonus = 1 + (state.talents.goldenVein * 0.01);
   return base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier();
 };
 
@@ -426,6 +437,7 @@ function renderPetsOnScreen() { el.petsContainer.innerHTML = ''; if (state.hasDr
 function updateUI() { 
   el.auraVal.textContent = fmt(state.aura); 
   el.crystalVal.textContent = fmt(state.crystals); 
+  el.caseVal.textContent = fmt(state.cases || 0);
   el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
   el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
   
@@ -455,8 +467,13 @@ function doClick(e) {
   if (Math.random() < state.critChance + (state.talents.eternalCrit * 0.04)) { g *= 5; state.crits++; c = true; } 
   state.aura += g; state.totalAura += g; state.clicks++; 
   el.clickZone.classList.add('pop'); setTimeout(() => el.clickZone.classList.remove('pop'), 100); 
+  
   let x = window.innerWidth / 2, y = window.innerHeight / 2; 
-  if (e && e.clientX !== undefined) { x = e.clientX; y = e.clientY; } else if (e && e.touches && e.touches[0]) { x = e.touches[0].clientX; y = e.touches[0].clientY; } 
+  if (e && e.clientX !== undefined) { x = e.clientX; y = e.clientY; } 
+  else if (e && e.touches && e.touches[0]) { x = e.touches[0].clientX; y = e.touches[0].clientY; } 
+  else if (e && e.changedTouches && e.changedTouches[0]) { x = e.changedTouches[0].clientX; y = e.changedTouches[0].clientY; }
+  else if (e && e.pointerId) { x = e.clientX; y = e.clientY; }
+  
   floatText(x, y, '+' + Math.floor(g), c); 
   checkAch(); updateUI(); 
 }
@@ -487,7 +504,16 @@ function renderCasino() { const deg = 360 / WHEEL_PRIZES.length; let gs = WHEEL_
 function spinWheel() { if (isSpinning || state.crystals < 10) return; isSpinning = true; state.crystals -= 10; updateUI(); const w = document.getElementById('fortuneWheel'); const b = document.querySelector('.spin-btn'); if (b) b.disabled = true; const pi = Math.floor(Math.random() * WHEEL_PRIZES.length); const dps = 360 / WHEEL_PRIZES.length; const cos = (pi * dps) + (dps / 2); const tba = -cos; let cam = currentRotation % 360; if (cam < 0) cam += 360; let ad = (tba - cam + 360) % 360; currentRotation += 1800 + ad; w.style.transform = `rotate(${currentRotation}deg)`; setTimeout(() => { WHEEL_PRIZES[pi].action(); showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[pi].text}!`, 'gold'); isSpinning = false; updateUI(); saveGame(); renderMenu(true); }, 4200); }
 
 function useCode() { const r = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!r) return; applyCode(r); }
-function applyCode(raw) { if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 ЧИТ-МЕНЮ!'); return; } if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); return; } if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; } if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; } if (raw === 'CASE1') { if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); state.usedCodes.push(raw); state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } if (raw === 'CASEMAX') { state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } if (!(raw in CODES)) return showToast('❌ Неверный код', 'err'); if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus; showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame(); }
+function applyCode(raw) { if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); el.cheatOverlay.classList.add('show'); showToast('🚀 АДМИН МЕНЮ!'); return; } if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 Дрон-перехватчик активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); return; } if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; } if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; } if (raw === 'CASE1') { if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); state.usedCodes.push(raw); state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } if (raw === 'CASEMAX') { state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } if (!(raw in CODES)) return showToast('❌ Неверный код', 'err'); if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus; showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame(); }
+
+function giveDonateReward(tier) {
+  if (tier === 15) { state.crystals += 500; showToast('Выдано 500 кристаллов!'); }
+  if (tier === 30) { state.crystals += 1500; state.aura += 100000; state.cases += 1; showToast('Выдано: 1500💎, 100к💧, 1📦'); }
+  if (tier === 50) { state.crystals += 3000; state.aura += 500000; state.cases += 3; showToast('Выдано: 3000💎, 500к💧, 3📦'); }
+  if (tier === 100) { state.crystals += 10000; state.aura += 5000000; state.cases += 10; showToast('Выдано: 10к💎, 5млн💧, 10📦'); }
+  if (tier === 1000) { state.crystals += 100000; state.aura += 100000000; state.cases += 25; showToast('МЕГА-ПАК ВЫДАН!'); }
+  updateUI(); saveGame(); renderMenu(true);
+}
 
 let lastTick = performance.now(), autoSaveTimer = 0;
 function gameLoop(now) { const dt = Math.min((now - lastTick) / 1000, 1); lastTick = now; if (state.auraLevel > 0) { const g = getAuraIncome() * dt; state.aura += g; state.totalAura += g; } if (state.boosterEnd > 0 && Date.now() > state.boosterEnd && !state.isBoosterPermanent) state.boosterEnd = 0; updateUI(); autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); } requestAnimationFrame(gameLoop); }
@@ -495,6 +521,7 @@ function gameLoop(now) { const dt = Math.min((now - lastTick) / 1000, 1); lastTi
 let activeTab = 'ach'; const tabsOrder = ['ach', 'evo', 'pets', 'talents', 'minigames', 'leaders', 'donate', 'stats', 'account'];
 
 function buyTalent(id) {
+  // ВОЗВРАЩЕНЫ 4 ТАЛАНТА
   const maxLvls = { heavyHand: 5, goldenVein: 3, eternalCrit: 5, teamSpirit: 5 };
   if (state.talents[id] >= maxLvls[id]) return;
   const baseCosts = { heavyHand: 15, goldenVein: 20, eternalCrit: 30, teamSpirit: 50 };
@@ -507,7 +534,7 @@ function buyTalent(id) {
     renderMenu(true);
     updateUI();
   } else {
-    showToast('Недостаточно пассивного дохода (капелек/сек)!', 'err');
+    showToast('Недостаточно пассивного дохода!', 'err');
   }
 }
 
@@ -552,7 +579,7 @@ function renderMenu(keepScroll = false) {
       { id: 'teamSpirit', title: 'Дружная команда', desc: 'Уменьшает штраф питомцев на 1% (макс 5%)' }
     ];
     
-    html += `<div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center;">Таланты покупаются за ваш пассивный доход (Аура/сек)!</div>`;
+    html += `<div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center;">Таланты покупаются за ваш пассивный доход!</div>`;
     html += `<div style="font-size:12px; margin-bottom:10px; text-align:center; color:#5eead4;">Ваш текущий доход: ${fmt(getAuraIncome())} 💧/сек</div>`;
     
     tInfo.forEach(t => {
@@ -600,7 +627,6 @@ function renderMenu(keepScroll = false) {
     html = renderCasino();
   }
   else if (activeTab === 'leaders') {
-    // Симуляция лидерборда
     const fakeDrops = [
       { name: 'NarzanKing', score: 15400000000 },
       { name: 'WaterBoss', score: 8500000000 },
@@ -706,7 +732,16 @@ function loginOrRegister() { const u = document.getElementById('authUser').value
 function logoutAccount() { currentUser = 'guest'; currentSaveKey = 'narzan_save_data'; localStorage.setItem('narzan_current_user', 'guest'); loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Вы вышли в гостевой режим', 'crystal'); }
 function switchTab(tabId, isSwipe = false, swipeDirection = '') { if (activeTab === tabId) return; activeTab = tabId; document.querySelectorAll('.tab').forEach(x => { x.classList.remove('active'); if(x.dataset.tab === activeTab) x.classList.add('active'); }); if (isSwipe) { el.tabContent.classList.remove('slide-in-left', 'slide-in-right'); void el.tabContent.offsetWidth; if (swipeDirection === 'left') el.tabContent.classList.add('slide-in-right'); else el.tabContent.classList.add('slide-in-left'); } renderMenu(false); }
 
-el.clickZone.addEventListener('pointerdown', doClick); el.btnClick.addEventListener('pointerdown', buyClick); el.btnAura.addEventListener('pointerdown', buyAura); el.btnBooster.addEventListener('pointerdown', buyBooster); el.btnPrestige.addEventListener('pointerdown', doPrestige); el.codeBtn.addEventListener('click', useCode); el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); }); el.menuBtn.addEventListener('pointerdown', () => { renderMenu(false); el.menuOverlay.classList.add('show'); }); el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show')); el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
+el.clickZone.addEventListener('pointerdown', doClick); 
+el.btnClick.addEventListener('pointerdown', buyClick); 
+el.btnAura.addEventListener('pointerdown', buyAura); 
+el.btnBooster.addEventListener('pointerdown', buyBooster); 
+el.btnPrestige.addEventListener('pointerdown', doPrestige); 
+el.codeBtn.addEventListener('click', useCode); 
+el.codeInput.addEventListener('keydown', e => { if(e.key==='Enter') useCode(); }); 
+el.menuBtn.addEventListener('pointerdown', () => { renderMenu(false); el.menuOverlay.classList.add('show'); }); 
+el.closeMenu.addEventListener('pointerdown', () => el.menuOverlay.classList.remove('show')); 
+el.menuOverlay.addEventListener('pointerdown', e => { if(e.target === el.menuOverlay) el.menuOverlay.classList.remove('show'); });
 
 document.querySelectorAll('.tab').forEach(t => { t.addEventListener('pointerdown', (e) => { e.preventDefault(); switchTab(t.dataset.tab, false); }); });
 let touchStartX = 0, touchStartY = 0; const menuContainer = document.querySelector('.menu');
