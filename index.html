@@ -346,10 +346,12 @@ const ACHIEVEMENTS = [
   { id:'petAll', icon:'🐉', name:'Зоопарк', desc:'Собери 5 питомцев', check:s=>s.pets.length>=5 },
 ];
 
-const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, cases: 0, pets: [], activePets: [], freeCases: 0, codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
+// Убран cases, теперь используем только freeCases
+const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, freeCases: 0, pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
 let state = { ...defaultState };
+
 let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
-let currentSaveKey = currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser;
+let currentSaveKey = localStorage.getItem('narzan_current_save_key') || (currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser);
 
 let activeMinigame = null;
 let goldRushEnd = 0;
@@ -364,7 +366,7 @@ function loadGame() {
   if (saved) {
     try {
       Object.assign(state, JSON.parse(saved));
-      if (!state.pets) state.pets = []; if (!state.codeUses) state.codeUses = {}; if (!state.freeCases) state.freeCases = 0; if (state.cases === undefined) state.cases = 0; if (state.hasDrone === undefined) state.hasDrone = false; if (state.boosterLevel === undefined) state.boosterLevel = 0;
+      if (!state.pets) state.pets = []; if (!state.codeUses) state.codeUses = {}; if (!state.freeCases) state.freeCases = 0; if (state.hasDrone === undefined) state.hasDrone = false; if (state.boosterLevel === undefined) state.boosterLevel = 0;
       if (!state.talents) state.talents = { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 };
       
       if (state.activePet) { if (!state.activePets) state.activePets = []; if (!state.activePets.includes(state.activePet)) state.activePets.push(state.activePet); delete state.activePet; }
@@ -454,7 +456,7 @@ function renderPetsOnScreen() { el.petsContainer.innerHTML = ''; if (state.hasDr
 function updateUI() { 
   el.auraVal.textContent = fmt(state.aura); 
   el.crystalVal.textContent = fmt(state.crystals); 
-  el.caseVal.textContent = fmt(state.cases || 0);
+  el.caseVal.textContent = fmt(state.freeCases); // ТЕПЕРЬ ОТОБРАЖАЕТСЯ ПРАВИЛЬНЫЙ СЧЕТЧИК
   el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
   el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
   
@@ -566,7 +568,6 @@ function labyrinthGuess() {
 
 function useCode() { const r = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!r) return; applyCode(r); }
 
-// ИСПРАВЛЕННЫЙ ХЭШ (ОДИНАКОВЫЙ ДЛЯ ID И ПРОВЕРКИ)
 function simpleHash(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -637,11 +638,11 @@ function applyCode(raw) {
 
 function giveDonateReward(tier) {
   if (tier === 15) { state.crystals += 500; }
-  if (tier === 30) { state.crystals += 1500; state.aura += 100000; state.cases += 1; }
-  if (tier === 50) { state.crystals += 3000; state.aura += 500000; state.cases += 3; }
-  if (tier === 100) { state.crystals += 10000; state.aura += 5000000; state.cases += 10; }
+  if (tier === 30) { state.crystals += 1500; state.aura += 100000; state.freeCases += 1; } 
+  if (tier === 50) { state.crystals += 3000; state.aura += 500000; state.freeCases += 3; } 
+  if (tier === 100) { state.crystals += 10000; state.aura += 5000000; state.freeCases += 10; } 
   if (tier === 1000) { 
-    state.crystals += 100000; state.aura += 100000000; state.cases += 25; 
+    state.crystals += 100000; state.aura += 100000000; state.freeCases += 25; 
     if (!state.pets.includes('p16')) {
       state.pets.push('p16');
       if (state.activePets.length < 5) state.activePets.push('p16');
@@ -866,10 +867,7 @@ function renderMenu(keepScroll = false) {
     if (currentUser === 'guest') { 
       html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 10px; color: #fff;">Гостевой режим</div><div style="font-size: 11px; color: #aaa; margin-bottom: 15px;">Вы играете как гость. Прогресс сохраняется только в этом браузере.</div>
       <input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль">
-      <div style="display:flex; gap:8px; margin-top:10px;">
-        <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button>
-        <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button>
-      </div>
+      <button class="case-btn" style="margin-top:10px; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="loginOrRegister()">Войти / Создать</button>
       <button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
     } else { 
       html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div><button class="case-btn" style="background:#ef4444; margin-top:10px;" onclick="logoutAccount()">Выйти из аккаунта</button><button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset(this)">💥 Полный сброс</button></div>`; 
@@ -884,39 +882,45 @@ function openDonateModal() {
   el.donateModal.classList.add('show');
 }
 
-function registerUser() {
+function loginOrRegister() {
     const u = document.getElementById('authUser').value.trim();
     const p = document.getElementById('authPass').value.trim();
     if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err');
     const nk = 'narzan_save_' + u + '_' + p;
+    
     if (localStorage.getItem(nk)) {
-        showToast('Этот аккаунт уже существует!', 'err');
-    } else {
-        currentUser = u; currentSaveKey = nk; localStorage.setItem('narzan_current_user', u);
-        state = { ...defaultState }; // Сбрасываем стейт для нового аккаунта
-        saveGame();
-        showToast('Аккаунт создан! Прогресс привязан.', 'gold');
-        renderMenu(); updateUI(); renderCharacter(); renderPetsOnScreen();
-    }
-}
-
-function loginUser() {
-    const u = document.getElementById('authUser').value.trim();
-    const p = document.getElementById('authPass').value.trim();
-    if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err');
-    const nk = 'narzan_save_' + u + '_' + p;
-    if (localStorage.getItem(nk)) {
-        currentUser = u; currentSaveKey = nk; localStorage.setItem('narzan_current_user', u);
-        state = { ...defaultState }; // Сбрасываем стейт перед загрузкой
+        // Аккаунт существует -> ВХОД
+        currentUser = u; currentSaveKey = nk; 
+        localStorage.setItem('narzan_current_user', u);
+        localStorage.setItem('narzan_current_save_key', nk);
+        
+        state = { ...defaultState }; 
         loadGame();
         renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu();
         showToast('Вход выполнен! С возвращением, ' + u, 'gold');
     } else {
-        showToast('Аккаунт не найден!', 'err');
+        // Аккаунта нет -> РЕГИСТРАЦИЯ (с переносом текущего прогресса)
+        currentUser = u; currentSaveKey = nk;
+        localStorage.setItem('narzan_current_user', u);
+        localStorage.setItem('narzan_current_save_key', nk);
+        
+        saveGame(); // Сохраняем ТЕКУЩИЙ прогресс (гостевой) в новый аккаунт
+        showToast('Аккаунт создан! Ваш прогресс перенесен.', 'gold');
+        renderMenu();
     }
 }
 
-function logoutAccount() { currentUser = 'guest'; currentSaveKey = 'narzan_save_data'; localStorage.setItem('narzan_current_user', 'guest'); state = { ...defaultState }; loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Вы вышли в гостевой режим', 'crystal'); }
+function logoutAccount() { 
+    currentUser = 'guest'; currentSaveKey = 'narzan_save_data'; 
+    localStorage.setItem('narzan_current_user', 'guest'); 
+    localStorage.setItem('narzan_current_save_key', 'narzan_save_data');
+    
+    state = { ...defaultState }; 
+    loadGame(); 
+    renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); 
+    showToast('Вы вышли в гостевой режим', 'crystal'); 
+}
+
 function switchTab(tabId, isSwipe = false, swipeDirection = '') { if (activeTab === tabId) return; activeTab = tabId; activeMinigame = null; document.querySelectorAll('.tab').forEach(x => { x.classList.remove('active'); if(x.dataset.tab === activeTab) x.classList.add('active'); }); renderMenu(false); }
 
 el.clickZone.addEventListener('pointerdown', doClick); 
