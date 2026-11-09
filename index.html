@@ -8,6 +8,8 @@
 <meta http-equiv="Expires" content="0">
 <title>Эволюция Нарзана</title>
 <meta name="theme-color" content="#1b1c3e">
+<!-- Подключаем Telegram WebApp SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root { --bg-grad-top: #1b1c3e; --bg-grad-bot: #0a0b1a; --btn-grad-start: #6a4cff; --btn-grad-end: #8a6cff; --accent: #60a5fa; --text: #ffffff; --panel: #14152b; }
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -100,11 +102,8 @@
   .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
   .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-  
-  /* ИСПРАВЛЕНО: Новые стили для идеального позиционирования текста на колесе */
   .wheel-label-container { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
   .wheel-label { position: absolute; left: -45px; top: -10px; width: 90px; text-align: center; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none; display: flex; justify-content: center; align-items: center;}
-
   .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
   .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
   .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
@@ -157,7 +156,21 @@
 <body>
 
 <script>
-  const DONATE_URL = "https://www.donationalerts.com/r/ha1ght"; 
+  // === ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP ===
+  const tg = window.Telegram?.WebApp;
+  let TG_USER = null;
+  
+  if (tg) {
+    tg.ready();
+    tg.expand(); // Разворачивает игру на весь экран
+    tg.disableVerticalSwipes?.(); // Отключает случайное закрытие свайпом
+    tg.setHeaderColor?.('#1b1c3e');
+    tg.setBackgroundColor?.('#0a0b1a');
+    TG_USER = tg.initDataUnsafe?.user || null;
+  }
+
+  // Ссылка на твой профиль в Telegram (для связи по донату)
+  const TG_OWNER = "https://t.me/TheHa1ght"; 
 </script>
 
 <div class="app">
@@ -228,18 +241,20 @@
 <div class="overlay" id="donateModal">
   <div class="menu" style="height: auto; max-height: 80vh;">
     <div class="menu-header">
-      <h2>💎 Поддержать проект</h2>
+      <h2>⭐ Поддержать проект</h2>
       <button class="close-btn" onclick="document.getElementById('donateModal').classList.remove('show')">✕</button>
     </div>
-    <div class="tab-content" style="padding: 20px; text-align: center;">
-      <div style="font-size: 40px; margin-bottom: 10px;">💖</div>
-      <div style="font-weight: bold; color: #fff; margin-bottom: 10px;">Спасибо за поддержку!</div>
-      <div style="font-size: 12px; color: #aaa; margin-bottom: 15px; line-height: 1.5;">
-        Очень важно указать ваш <b>Ник</b> и <b>ID</b> при переводе.<br><br>
-        Ваш ID: <b id="donateIdText" style="color:#5eead4; font-size: 16px; display: block; margin-top: 5px; margin-bottom: 10px;"></b>
-        Переведите нужную сумму по кнопке ниже и напишите в Telegram <b><a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></b> ваш ID и чек. Взамен вы получите уникальный бонус-код!
+    <div class="tab-content" style="padding: 20px; text-align: left;">
+      <div style="font-size: 40px; margin-bottom: 10px; text-align: center;">💖</div>
+      <div style="font-weight: bold; color: #fff; margin-bottom: 10px; text-align: center;">Как это работает:</div>
+      <div style="font-size: 13px; color: #ccc; margin-bottom: 15px; line-height: 1.5;">
+        1. Скопируйте ваш ID:<br>
+        <b id="donateIdText" style="color:#5eead4; font-size: 18px; display: block; margin-top: 5px; margin-bottom: 15px; text-align:center; background:rgba(94,234,212,0.1); padding:5px; border-radius:5px; border:1px dashed #5eead4;"></b>
+        2. Переведите нужное количество ⭐ (Звезд) на аккаунт <b>@TheHa1ght</b> (через подарки или @PremiumBot).<br><br>
+        3. Напишите в Telegram <b><a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></b> ваш ID и скриншот оплаты.<br><br>
+        4. Мы пришлем вам <b>Бонус-код</b>, который нужно ввести в поле «Бонус-код...» в игре!
       </div>
-      <button class="case-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; margin-bottom: 10px;" onclick="window.open(DONATE_URL, '_blank')">Перейти к оплате</button>
+      <button class="case-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; margin-bottom: 10px;" onclick="openDonateLink()">Написать в Telegram</button>
       <button class="case-btn" style="background: #4a4a5a;" onclick="document.getElementById('donateModal').classList.remove('show')">Закрыть</button>
     </div>
   </div>
@@ -261,14 +276,14 @@
     <h3 style="margin-bottom:8px;">ADMIN MENU</h3>
     <div style="border-bottom:1px solid #0f0; margin-bottom:8px; padding-bottom:8px;">
       <div style="font-size:11px; margin-bottom:5px;">ГЕНЕРАТОР КОДОВ ДОНАТА:</div>
-      <input type="text" id="genIdInput" placeholder="Введите ID игрока (ID-XXXXXX)" style="width:100%; padding:5px; margin-bottom:5px; background:#111; border:1px solid #0f0; color:#0f0;">
+      <input type="text" id="genIdInput" placeholder="Введите ID игрока (TG-1234567)" style="width:100%; padding:5px; margin-bottom:5px; background:#111; border:1px solid #0f0; color:#0f0;">
       <div style="display:flex; gap:4px;">
-        <button class="cheat-btn" onclick="genCode(15)">15₽</button>
-        <button class="cheat-btn" onclick="genCode(30)">30₽</button>
-        <button class="cheat-btn" onclick="genCode(50)">50₽</button>
+        <button class="cheat-btn" onclick="genCode(15)">15₽ (⭐)</button>
+        <button class="cheat-btn" onclick="genCode(30)">30₽ (⭐)</button>
+        <button class="cheat-btn" onclick="genCode(50)">50₽ (⭐)</button>
       </div>
       <div style="display:flex; gap:4px; margin-top:4px;">
-        <button class="cheat-btn" onclick="genCode(100)">100₽</button>
+        <button class="cheat-btn" onclick="genCode(100)">100₽ (⭐)</button>
         <button class="cheat-btn" style="color:#f00; border-color:#f00;" onclick="genCode(1000)">1000₽ (Феникс)</button>
       </div>
       <div id="genResult" style="margin-top:8px; font-size:12px; color:#fff; word-break:break-all; background:#222; padding:5px; display:none;"></div>
@@ -346,8 +361,17 @@ const ACHIEVEMENTS = [
 const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, freeCases: 0, pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 }, secretStage: null, preSecretStage: 0, theme: 'default', isPaused: false };
 let state = JSON.parse(JSON.stringify(defaultState));
 
-let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
-let currentSaveKey = localStorage.getItem('narzan_current_save_key') || (currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser);
+// === АВТОЛОГИН ЧЕРЕЗ TELEGRAM ===
+let currentUser, currentSaveKey;
+if (TG_USER) {
+  currentUser = 'tg_' + TG_USER.id;
+  currentSaveKey = 'narzan_tg_' + TG_USER.id;
+  localStorage.setItem('narzan_current_user', currentUser);
+  localStorage.setItem('narzan_current_save_key', currentSaveKey);
+} else {
+  currentUser = localStorage.getItem('narzan_current_user') || 'guest';
+  currentSaveKey = localStorage.getItem('narzan_current_save_key') || (currentUser === 'guest' ? 'narzan_save_data' : 'narzan_save_' + currentUser);
+}
 
 let activeMinigame = null;
 let goldRushEnd = 0;
@@ -511,7 +535,6 @@ function renderCharacter() {
 
 function checkAch() { ACHIEVEMENTS.forEach(a => { if (!state.achievements.includes(a.id) && a.check(state)) { state.achievements.push(a.id); showToast('🏆 ' + a.name, 'gold'); saveGame(); } }); }
 
-// Питомцы отодвинуты на радиус 120px
 function renderPetsOnScreen() { 
   el.petsContainer.innerHTML = ''; 
   if (state.hasDrone) { 
@@ -596,7 +619,7 @@ function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aur
 function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive()) return; const cost = getBoosterCost(); if (state.aura >= cost) { state.aura -= cost; state.boosterLevel++; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); } }
 function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000))); const nm = (state.prestigePoints + pts) * 10; if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${nm}%`)) { state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0; state.boosterEnd = 0; state.boosterLevel = 0; state.isBoosterPermanent = false; state.prestigePoints += pts; state.pets = []; state.activePets = []; state.secretStage = null; renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold'); el.btnPrestige.classList.add('hidden'); } }
-function hardReset() { if (confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите полностью удалить ВСЕ данные? Это действие нельзя отменить!')) { localStorage.clear(); sessionStorage.clear(); window.location.href = window.location.pathname + '?reset=' + Date.now(); } }
+function hardReset() { if (confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите полностью удалить ВСЕ данные? Это действие нельзя отменить!')) { localStorage.clear(); sessionStorage.clear(); window.location.reload(); } }
 
 let bonusTimeout, crystalTimeout;
 function spawnFloatingBonus() { if (document.querySelector('.floating-bonus')) return; const b = document.createElement('div'); b.className = 'floating-bonus'; b.textContent = '🌟'; b.style.top = Math.floor(Math.random() * 60 + 10) + '%'; b.style.left = Math.floor(Math.random() * 80 + 10) + '%'; b.onclick = (e) => { e.stopPropagation(); if (Math.random() < 0.5) { const r = getAuraIncome() * 300; state.aura += r; state.totalAura += r; showToast(`🌟 Звезда: +${fmt(r)} капелек!`, 'gold'); } else { state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); } b.remove(); updateUI(); saveGame(); scheduleNextBonus(); }; el.clickZone.appendChild(b); bonusTimeout = setTimeout(() => { if (b.parentNode) b.remove(); scheduleNextBonus(); }, 8000); }
@@ -615,19 +638,7 @@ el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventList
 
 let isSpinning = false; let currentRotation = 0;
 const WHEEL_PRIZES = [{ text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } }, { text: 'Аура x1000', color: '#ef4444', action: () => { let r = getAuraIncome() * 1000; state.aura += r; state.totalAura += r; } }, { text: '📦 Кейс', color: '#fbbf24', action: () => { state.freeCases++; } }, { text: 'Пусто', color: '#333', action: () => {} }, { text: '10💎', color: '#10b981', action: () => { state.crystals += 10; } }, { text: 'Бустер x2', color: '#8b5cf6', action: () => { state.boosterEnd = Date.now() + 60000; } }, { text: 'Аура x100', color: '#ef4444', action: () => { let r = getAuraIncome() * 100; state.aura += r; state.totalAura += r; } }, { text: '50💎', color: '#3b82f6', action: () => { state.crystals += 50; } }];
-
-// ИСПРАВЛЕНО: Теперь текст распределен по секторам через новый контейнер
-function renderCasino() { 
-  const deg = 360 / WHEEL_PRIZES.length; 
-  let gs = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', '); 
-  let lh = ''; 
-  WHEEL_PRIZES.forEach((prize, i) => { 
-    const a = (i * deg) + (deg / 2); 
-    lh += `<div class="wheel-label-container" style="transform: rotate(${a}deg) translateY(-85px);"><div class="wheel-label" style="transform: rotate(${-a}deg);">${prize.text}</div></div>`; 
-  }); 
-  return `<div class="casino-wrap"><div class="wheel-container"><div class="wheel-pointer">▼</div><div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gs});">${lh}</div></div><button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button></div>`; 
-}
-
+function renderCasino() { const deg = 360 / WHEEL_PRIZES.length; let gs = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', '); let lh = ''; WHEEL_PRIZES.forEach((prize, i) => { const a = (i * deg) + (deg / 2); lh += `<div class="wheel-label-container" style="transform: rotate(${a}deg) translateY(-85px);"><div class="wheel-label" style="transform: rotate(${-a}deg);">${prize.text}</div></div>`; }); return `<div class="casino-wrap"><div class="wheel-container"><div class="wheel-pointer">▼</div><div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gs});">${lh}</div></div><button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button></div>`; }
 function spinWheel() { if (isSpinning || state.crystals < 10) return; isSpinning = true; state.crystals -= 10; updateUI(); const w = document.getElementById('fortuneWheel'); const b = document.querySelector('.spin-btn'); if (b) b.disabled = true; const pi = Math.floor(Math.random() * WHEEL_PRIZES.length); const dps = 360 / WHEEL_PRIZES.length; const cos = (pi * dps) + (dps / 2); const tba = -cos; let cam = currentRotation % 360; if (cam < 0) cam += 360; let ad = (tba - cam + 360) % 360; currentRotation += 1800 + ad; w.style.transform = `rotate(${currentRotation}deg)`; setTimeout(() => { WHEEL_PRIZES[pi].action(); if (WHEEL_PRIZES[pi].text.includes('Кейс')) { showToast('🎁 Вы выиграли КЕЙС!', 'gold'); } else { showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[pi].text}!`, 'gold'); } isSpinning = false; updateUI(); saveGame(); renderMenu(true); }, 4200); }
 
 function startGoldRush() { if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); state.crystals -= 10; goldRushEnd = Date.now() + 10000; updateUI(); renderMenu(true); showToast('⛏️ Лихорадка началась! (10 сек)'); setTimeout(() => { if (activeTab === 'minigames' && activeMinigame === 'gold') renderMenu(true); }, 10000); }
@@ -637,9 +648,9 @@ function labyrinthGuess() { if (state.crystals < 5) return showToast('Нужно
 
 function useCode() { const r = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!r) return; applyCode(r); }
 function simpleHash(str) { let hash = 0; for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; } return Math.abs(hash).toString(36).toUpperCase().padStart(6, '0'); }
-function generateUserID() { if (currentUser === 'guest') return 'GUEST'; return 'ID-' + simpleHash(currentUser).substring(0, 6); }
+function generateUserID() { if (TG_USER) return 'TG-' + TG_USER.id; if (currentUser === 'guest') return 'GUEST'; return 'ID-' + simpleHash(currentUser).substring(0, 6); }
 function generateDonateCodeForPlayer(playerId, tier) { const secret = "NARZAN_SUPER_SECRET_2024"; const hash = simpleHash(playerId + tier + secret); return `N-DON-${tier}-${hash}`; }
-function genCode(tier) { let pid = document.getElementById('genIdInput').value.trim().toUpperCase(); if (!pid) return alert('Введите ID игрока!'); if (!pid.startsWith('ID-')) pid = 'ID-' + pid; const code = generateDonateCodeForPlayer(pid, tier); const resDiv = document.getElementById('genResult'); resDiv.style.display = 'block'; resDiv.innerHTML = `Код для <b>${pid}</b> на <b>${tier}₽</b>:<br><br><span style="color:#0f0; font-size:14px; user-select:all;">${code}</span><br><br><i>(Нажмите, чтобы скопировать)</i>`; resDiv.onclick = () => { navigator.clipboard.writeText(code); showToast('Код скопирован!', 'gold'); }; }
+function genCode(tier) { let pid = document.getElementById('genIdInput').value.trim().toUpperCase(); if (!pid) return alert('Введите ID игрока!'); if (!pid.startsWith('ID-') && !pid.startsWith('TG-')) pid = 'TG-' + pid; const code = generateDonateCodeForPlayer(pid, tier); const resDiv = document.getElementById('genResult'); resDiv.style.display = 'block'; resDiv.innerHTML = `Код для <b>${pid}</b> на <b>${tier}₽ (⭐)</b>:<br><br><span style="color:#0f0; font-size:14px; user-select:all;">${code}</span><br><br><i>(Нажмите, чтобы скопировать)</i>`; resDiv.onclick = () => { navigator.clipboard.writeText(code); showToast('Код скопирован!', 'gold'); }; }
 
 function applyCode(raw) { 
   if (raw.startsWith('N-DON-')) { const parts = raw.split('-'); if (parts.length === 4) { const tier = parseInt(parts[2]); const hash = parts[3]; const myId = generateUserID(); const expectedHash = simpleHash(myId + tier + "NARZAN_SUPER_SECRET_2024"); if (hash === expectedHash) { if (state.usedCodes.includes(raw)) return showToast('Этот код уже использован!', 'err'); state.usedCodes.push(raw); giveDonateReward(tier); showToast(`✅ Активирован донат на ${tier}₽!`, 'gold'); return; } else { return showToast('❌ Код не подходит для вашего ID!', 'err'); } } }
@@ -653,7 +664,6 @@ function applyCode(raw) {
   if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } 
   if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } 
   
-  // ИСПРАВЛЕНО: Правильная инициализация секретной стадии без скрытых переменных
   if (raw === 'ФИЗРУК') { 
     if (state.secretStage) return showToast('Секретная стадия уже активна!', 'err'); 
     state.preSecretStage = state.stage; 
@@ -670,6 +680,7 @@ function applyCode(raw) {
 }
 
 function giveDonateReward(tier) { if (tier === 15) { state.crystals += 500; } if (tier === 30) { state.crystals += 1500; state.aura += 100000; state.freeCases += 1; } if (tier === 50) { state.crystals += 3000; state.aura += 500000; state.freeCases += 3; } if (tier === 100) { state.crystals += 10000; state.aura += 5000000; state.freeCases += 10; } if (tier === 1000) { state.crystals += 100000; state.aura += 100000000; state.freeCases += 25; if (!state.pets.includes('p16')) { state.pets.push('p16'); if (state.activePets.length < 5) state.activePets.push('p16'); } } updateUI(); saveGame(); renderMenu(true); renderPetsOnScreen(); }
+
 let lastTick = performance.now(), autoSaveTimer = 0;
 function gameLoop(now) { 
     const dt = Math.min((now - lastTick) / 1000, 1); 
@@ -727,18 +738,26 @@ function renderMenu(keepScroll = false) {
       <button class="donate-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; margin-bottom:5px;" onclick="exchangeCurrency()">Обменять</button>
       <button class="donate-btn" style="background:#4a4a5a; color:#fff;" onclick="exchangeMax()">Обменять всё</button>
     </div>
-    <div style="font-weight:bold; color:#fbbf24; margin-top:20px; margin-bottom:10px; text-align:center; font-size:15px;">💖 ДОНАТ</div>`; 
-    if (currentUser === 'guest') { html += `<div style="text-align:center; padding:20px;"><div style="font-size:40px; margin-bottom:10px;">🔒</div><div style="color:#fff; font-weight:bold; margin-bottom:10px;">Донат доступен только с аккаунта</div><div style="font-size:12px; color:#aaa; margin-bottom:15px;">Пожалуйста, создайте аккаунт во вкладке «Профиль», чтобы видеть эту вкладку и получать награды.</div><button class="case-btn" onclick="switchTab('account', false)">Перейти в профиль</button></div>`; } 
-    else { html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div></div><div class="donate-card"><h3>15 рублей</h3><p>500 кристаллов для отличного старта.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div><div class="donate-card"><h3>30 рублей</h3><p>1500 кристаллов, 100 000 капелек и 1 кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div><div class="donate-card"><h3>50 рублей</h3><p>3000 кристаллов, 500 000 капелек и 3 кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div><div class="donate-card"><h3>100 рублей</h3><p>10 000 кристаллов, 5 000 000 капелек и 10 кейсов.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div><div class="donate-card" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.1);"><h3 style="color:#ef4444;">1000 рублей</h3><p>100 000 кристаллов, 100 000 000 капелек, 25 кейсов и <b>Феникс (x7 ко всему)</b>!</p><button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateModal()">Поддержать</button></div>`; } 
+    <div style="font-weight:bold; color:#fbbf24; margin-top:20px; margin-bottom:10px; text-align:center; font-size:15px;">⭐ ДОНАТ (ЗВЁЗДЫ)</div>`; 
+    
+    html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">Оплата в Telegram Stars. После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div></div>
+    <div class="donate-card"><h3>15 рублей (⭐)</h3><p>500 кристаллов для отличного старта.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+    <div class="donate-card"><h3>30 рублей (⭐)</h3><p>1500 кристаллов, 100 000 капелек и 1 кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+    <div class="donate-card"><h3>50 рублей (⭐)</h3><p>3000 кристаллов, 500 000 капелек и 3 кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+    <div class="donate-card"><h3>100 рублей (⭐)</h3><p>10 000 кристаллов, 5 000 000 капелек и 10 кейсов.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+    <div class="donate-card" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.1);"><h3 style="color:#ef4444;">1000 рублей (⭐)</h3><p>100 000 кристаллов, 100 000 000 капелек, 25 кейсов и <b>Феникс (x7 ко всему)</b>!</p><button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateModal()">Поддержать</button></div>`; 
   }
   else if (activeTab === 'account') { 
-    html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">${currentUser === 'guest' ? 'Гостевой режим' : 'Аккаунт: ' + currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">${currentUser === 'guest' ? 'Прогресс сохраняется только в этом браузере' : 'Ваш ID: ' + generateUserID()}</div>`; 
-    if (currentUser === 'guest') { html += `<input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль"><div style="display:flex; gap:8px; margin-top:10px;"><button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button><button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button></div>`; } 
+    html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">${TG_USER ? 'Аккаунт: ' + (TG_USER.username || TG_USER.first_name) : (currentUser === 'guest' ? 'Гостевой режим' : 'Аккаунт: ' + currentUser)}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div>`; 
+    
+    if (!TG_USER && currentUser === 'guest') { html += `<input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль"><div style="display:flex; gap:8px; margin-top:10px;"><button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button><button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button></div>`; } 
+    
     const m = Math.floor((Date.now() - state.startedAt) / 60000); 
     html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; text-align:left;"><div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">📊 Статистика</div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Всего капелек:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Питомцев:</span> <b>${state.pets.length} / 16</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>В игре:</span> <b>${m} мин</b></div></div>`; 
     html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;"><div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">🎨 Внешний вид</div><div style="display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;"><button class="theme-btn" style="background:#6a4cff;" onclick="setTheme('cosmos')" title="Космос"></button><button class="theme-btn" style="background:#ff4c4c;" onclick="setTheme('blood')" title="Кровь"></button><button class="theme-btn" style="background:#4cff4c;" onclick="setTheme('toxic')" title="Токсик"></button><button class="theme-btn" style="background:#ffb74c;" onclick="setTheme('gold')" title="Золото"></button><button class="theme-btn" style="background:#aaaaaa;" onclick="setTheme('mono')" title="Монохром"></button></div><div style="text-align:center; margin-bottom:10px; font-size:11px; color:#aaa;">Свой цвет:</div><div style="display:flex; justify-content:center; gap:8px; margin-bottom:10px;"><button class="pet-btn" style="background:#333;" onclick="customColor('bg')">Фон</button><button class="pet-btn" style="background:#333;" onclick="customColor('btn')">Кнопки</button></div></div>`; 
     html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;"><div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">💾 Данные</div><button class="case-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom:8px;" onclick="exportSave()">📤 Экспорт (скопировать)</button><button class="case-btn" style="background:linear-gradient(135deg, #10b981, #059669); margin-bottom:8px;" onclick="importSave()">📥 Импорт (вставить)</button></div>`; 
-    if (currentUser !== 'guest') { html += `<button class="case-btn" style="background:#ef4444; margin-top:15px;" onclick="logoutAccount()">Выйти из аккаунта</button>`; } 
+    
+    if (!TG_USER && currentUser !== 'guest') { html += `<button class="case-btn" style="background:#ef4444; margin-top:15px;" onclick="logoutAccount()">Выйти из аккаунта</button>`; } 
     if (state.hasDrone) { html += `<button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="removeDrone()">🛸 Убрать НЛО (потерять бонус x5)</button>`; } 
     html += `<button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="hardReset()">💥 Полный сброс</button></div>`; 
   } 
@@ -773,6 +792,14 @@ function exchangeMax() {
 }
 
 function openDonateModal() { el.donateIdText.textContent = generateUserID(); el.donateModal.classList.add('show'); }
+function openDonateLink() {
+  if (tg) {
+    tg.openTelegramLink(TG_OWNER);
+  } else {
+    window.open(TG_OWNER, '_blank');
+  }
+}
+
 function exportSave() { const saveStr = btoa(unescape(encodeURIComponent(JSON.stringify(state)))); prompt("Скопируйте этот код и сохраните его:", saveStr); }
 function importSave() { const code = prompt("Вставьте код сохранения:"); if (!code) return; try { const decoded = decodeURIComponent(escape(atob(code))); const parsed = JSON.parse(decoded); Object.assign(state, parsed); saveGame(); applyTheme(state.theme); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Прогресс успешно перенесен!', 'gold'); } catch(e) { showToast('Неверный код сохранения!', 'err'); } }
 function registerUser() { const u = document.getElementById('authUser').value.trim(); const p = document.getElementById('authPass').value.trim(); if (u.length < 3 || p.length < 3) return showToast('Логин и пароль от 3 символов!', 'err'); const nk = 'narzan_save_' + u + '_' + p; if (localStorage.getItem(nk)) { showToast('Этот аккаунт уже существует! Войдите в него.', 'err'); } else { currentUser = u; currentSaveKey = nk; try { localStorage.setItem('narzan_current_user', u); localStorage.setItem('narzan_current_save_key', nk); } catch(e) { showToast('Ошибка памяти браузера!', 'err'); return; } saveGame(); showToast('Аккаунт создан! Ваш прогресс перенесен.', 'gold'); renderMenu(); updateUI(); } }
