@@ -100,7 +100,11 @@
   .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
   .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-  .wheel-label { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; width: 80px; margin-left: -40px; margin-top: -6px; pointer-events: none; display: flex; justify-content: center; align-items: center;}
+  
+  /* ИСПРАВЛЕНО: Новые стили для идеального позиционирования текста на колесе */
+  .wheel-label-container { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+  .wheel-label { position: absolute; left: -45px; top: -10px; width: 90px; text-align: center; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none; display: flex; justify-content: center; align-items: center;}
+
   .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
   .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
   .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
@@ -153,7 +157,6 @@
 <body>
 
 <script>
-  // Убрана автоперезагрузка, которая вызывала ошибку сети в APK
   const DONATE_URL = "https://www.donationalerts.com/r/ha1ght"; 
 </script>
 
@@ -446,16 +449,27 @@ const getPetClickMultiplier = () => getPetsMultiplier('click');
 const getPetIncomeMultiplier = () => getPetsMultiplier('income');
 const getDroneMultiplier = () => state.hasDrone ? 5 : 1;
 const getPrestigeMultiplier = () => 1 + ((state.prestigePoints || 0) * 0.1);
-const getClickCost = () => { let lvl = state.secretStage ? state.secretStage.lvl : state.clickLevel; return (lvl < 5) ? Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, lvl - 1)) : Math.floor(1000 * Math.pow(CFG.costGrowth, lvl - 5)); };
-const getAuraCost = () => { let lvl = state.secretStage ? state.secretStage.lvl : state.auraLevel; return (lvl < 5) ? Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, lvl)) : Math.floor(1000 * Math.pow(CFG.costGrowth, lvl - 5)); };
+const getClickCost = () => { let lvl = state.clickLevel; return (lvl < 5) ? Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, lvl - 1)) : Math.floor(1000 * Math.pow(CFG.costGrowth, lvl - 5)); };
+const getAuraCost = () => { let lvl = state.auraLevel; return (lvl < 5) ? Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, lvl)) : Math.floor(1000 * Math.pow(CFG.costGrowth, lvl - 5)); };
 const getBoosterCost = () => Math.floor(CFG.boosterCost * Math.pow(CFG.boosterGrowth, state.boosterLevel));
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
-const getClickPower = () => { let base = (state.secretStage ? state.secretStage.lvl : state.clickLevel) * (1 + Math.floor((state.secretStage ? state.secretStage.lvl : state.clickLevel) / 5)); let talentBonus = 1 + (state.talents.heavyHand * 0.01); let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier(); if (Date.now() < goldRushEnd) multiplier *= 5; return base * talentBonus * multiplier; };
-const getAuraIncome = () => { let base = (state.secretStage ? state.secretStage.lvl : state.auraLevel) * (1 + Math.floor((state.secretStage ? state.secretStage.lvl : state.auraLevel) / 5)); let talentBonus = 1 + (state.talents.goldenVein * 0.01); return base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier(); };
+const getClickPower = () => { let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5)); let talentBonus = 1 + (state.talents.heavyHand * 0.01); let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier(); if (Date.now() < goldRushEnd) multiplier *= 5; return base * talentBonus * multiplier; };
+const getAuraIncome = () => { let base = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)); let talentBonus = 1 + (state.talents.goldenVein * 0.01); return base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier(); };
 
 function checkStage() { 
-  if (state.secretStage) { const target = state.secretStage.target; if (state.auraLevel >= target) { showToast(`🎉 Ты прошел секретную стадию! Возвращаем тебя обратно.`, 'gold'); state.stage = state.preSecretStage; state.auraLevel = state.secretStage.originalAura; state.clickLevel = state.secretStage.originalClick; state.secretStage = null; renderCharacter(); saveGame(); renderMenu(); updateUI(); } return; }
+  if (state.secretStage) { 
+    const target = state.secretStage.target; 
+    if (state.auraLevel >= target) { 
+      showToast(`🎉 Ты прошел секретную стадию! Возвращаем тебя обратно.`, 'gold'); 
+      state.stage = state.preSecretStage; 
+      state.auraLevel = state.secretStage.originalAura; 
+      state.clickLevel = state.secretStage.originalClick; 
+      state.secretStage = null; 
+      renderCharacter(); saveGame(); renderMenu(); updateUI(); 
+    } 
+    return; 
+  }
   let ns = 0; for (let i = 0; i < CFG.stageReq.length; i++) { if (state.auraLevel >= CFG.stageReq[i]) ns = i; } 
   if (ns > state.stage) { state.stage = ns; const STAGE_REWARDS = [300, 500, 800, 1200, 2000, 3500, 6000, 10000, 18000, 35000, 100000, 150000, 250000, 400000, 700000, 1200000, 2000000, 3500000, 6000000, 10000000, 18000000, 35000000, 60000000, 100000000, 200000000]; const reward = STAGE_REWARDS[state.stage] || 500000000; state.aura += reward; state.totalAura += reward; playLevelUpSound(); showToast(`🎉 Новая форма: ${CFG.names[CFG.order[state.stage]]}! Награда: +${fmt(reward)} капелек!`, 'gold'); renderCharacter(); saveGame(); renderMenu(); }
 }
@@ -497,7 +511,7 @@ function renderCharacter() {
 
 function checkAch() { ACHIEVEMENTS.forEach(a => { if (!state.achievements.includes(a.id) && a.check(state)) { state.achievements.push(a.id); showToast('🏆 ' + a.name, 'gold'); saveGame(); } }); }
 
-// ИСПРАВЛЕНО: Питомцы отодвинуты на радиус 120px, чтобы не закрывать картинку
+// Питомцы отодвинуты на радиус 120px
 function renderPetsOnScreen() { 
   el.petsContainer.innerHTML = ''; 
   if (state.hasDrone) { 
@@ -513,7 +527,7 @@ function renderPetsOnScreen() {
   } 
   if (state.activePets && state.activePets.length > 0) { 
     const t = state.activePets.length; 
-    const rad = 120; // Увеличенный радиус
+    const rad = 120; 
     state.activePets.forEach((id, i) => { 
       const p = PETS.find(x => x.id === id); 
       if (p) { 
@@ -542,11 +556,28 @@ function updateUI() {
   el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
   el.costClick.textContent = short(getClickCost()); 
   el.btnClick.classList.toggle('disabled', state.aura < getClickCost()); 
-  el.costAura.textContent = short(getAuraCost()) + ' · есть: ' + (state.secretStage ? state.secretStage.lvl : state.auraLevel); 
+  el.costAura.textContent = short(getAuraCost()) + ' · есть: ' + state.auraLevel; 
   el.btnAura.classList.toggle('disabled', state.aura < getAuraCost()); 
   el.costBooster.textContent = isBoosterActive() ? 'Активен!' : short(getBoosterCost()); 
   el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < getBoosterCost()); 
-  if (state.secretStage) { el.finalBox.classList.add('show'); const cr = 0, nr = state.secretStage.target, pr = Math.max(0, state.auraLevel - cr), tn = nr - cr; el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; el.finalText.textContent = `Секретная цель: ${state.auraLevel} / ${nr} ур. ауры`; } else if (state.stage < CFG.order.length - 1) { el.finalBox.classList.add('show'); const cr = CFG.stageReq[state.stage], nr = CFG.stageReq[state.stage + 1], pr = Math.max(0, state.auraLevel - cr), tn = nr - cr; el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; el.finalText.textContent = `До след. формы: ${state.auraLevel} / ${nr} ур. ауры`; } else { el.finalBox.classList.remove('show'); } if (state.stage >= 3 || state.secretStage) { el.btnPrestige.classList.remove('hidden'); } }
+  if (state.secretStage) { 
+    el.finalBox.classList.add('show'); 
+    const cr = state.secretStage.target - 10; 
+    const nr = state.secretStage.target; 
+    const pr = Math.max(0, state.auraLevel - cr); 
+    const tn = nr - cr; 
+    el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; 
+    el.finalText.textContent = `Секретная цель: ${state.auraLevel} / ${nr} ур. ауры`; 
+  } else if (state.stage < CFG.order.length - 1) { 
+    el.finalBox.classList.add('show'); 
+    const cr = CFG.stageReq[state.stage], nr = CFG.stageReq[state.stage + 1], pr = Math.max(0, state.auraLevel - cr), tn = nr - cr; 
+    el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; 
+    el.finalText.textContent = `До след. формы: ${state.auraLevel} / ${nr} ур. ауры`; 
+  } else { 
+    el.finalBox.classList.remove('show'); 
+  } 
+  if (state.stage >= 3 || state.secretStage) { el.btnPrestige.classList.remove('hidden'); } 
+}
 
 function doClick(e) { 
   let g = getClickPower(); 
@@ -561,8 +592,8 @@ function doClick(e) {
   checkAch(); updateUI(); 
 }
 
-function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aura -= c; if (state.secretStage) state.secretStage.lvl++; else state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
-function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; if (state.secretStage) state.secretStage.lvl++; else state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
+function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aura -= c; state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
+function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive()) return; const cost = getBoosterCost(); if (state.aura >= cost) { state.aura -= cost; state.boosterLevel++; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); } }
 function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000))); const nm = (state.prestigePoints + pts) * 10; if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${nm}%`)) { state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0; state.boosterEnd = 0; state.boosterLevel = 0; state.isBoosterPermanent = false; state.prestigePoints += pts; state.pets = []; state.activePets = []; state.secretStage = null; renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold'); el.btnPrestige.classList.add('hidden'); } }
 function hardReset() { if (confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите полностью удалить ВСЕ данные? Это действие нельзя отменить!')) { localStorage.clear(); sessionStorage.clear(); window.location.href = window.location.pathname + '?reset=' + Date.now(); } }
@@ -584,7 +615,19 @@ el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventList
 
 let isSpinning = false; let currentRotation = 0;
 const WHEEL_PRIZES = [{ text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } }, { text: 'Аура x1000', color: '#ef4444', action: () => { let r = getAuraIncome() * 1000; state.aura += r; state.totalAura += r; } }, { text: '📦 Кейс', color: '#fbbf24', action: () => { state.freeCases++; } }, { text: 'Пусто', color: '#333', action: () => {} }, { text: '10💎', color: '#10b981', action: () => { state.crystals += 10; } }, { text: 'Бустер x2', color: '#8b5cf6', action: () => { state.boosterEnd = Date.now() + 60000; } }, { text: 'Аура x100', color: '#ef4444', action: () => { let r = getAuraIncome() * 100; state.aura += r; state.totalAura += r; } }, { text: '50💎', color: '#3b82f6', action: () => { state.crystals += 50; } }];
-function renderCasino() { const deg = 360 / WHEEL_PRIZES.length; let gs = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', '); let lh = ''; WHEEL_PRIZES.forEach((prize, i) => { const a = (i * deg) + (deg / 2); const f = (a > 90 && a < 270) ? 180 : 0; lh += `<div class="wheel-label" style="transform: rotate(${a}deg) translateY(-85px) rotate(${-a + f}deg);">${prize.text}</div>`; }); return `<div class="casino-wrap"><div class="wheel-container"><div class="wheel-pointer">▼</div><div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gs});">${lh}</div></div><button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button></div>`; }
+
+// ИСПРАВЛЕНО: Теперь текст распределен по секторам через новый контейнер
+function renderCasino() { 
+  const deg = 360 / WHEEL_PRIZES.length; 
+  let gs = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', '); 
+  let lh = ''; 
+  WHEEL_PRIZES.forEach((prize, i) => { 
+    const a = (i * deg) + (deg / 2); 
+    lh += `<div class="wheel-label-container" style="transform: rotate(${a}deg) translateY(-85px);"><div class="wheel-label" style="transform: rotate(${-a}deg);">${prize.text}</div></div>`; 
+  }); 
+  return `<div class="casino-wrap"><div class="wheel-container"><div class="wheel-pointer">▼</div><div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gs});">${lh}</div></div><button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button></div>`; 
+}
+
 function spinWheel() { if (isSpinning || state.crystals < 10) return; isSpinning = true; state.crystals -= 10; updateUI(); const w = document.getElementById('fortuneWheel'); const b = document.querySelector('.spin-btn'); if (b) b.disabled = true; const pi = Math.floor(Math.random() * WHEEL_PRIZES.length); const dps = 360 / WHEEL_PRIZES.length; const cos = (pi * dps) + (dps / 2); const tba = -cos; let cam = currentRotation % 360; if (cam < 0) cam += 360; let ad = (tba - cam + 360) % 360; currentRotation += 1800 + ad; w.style.transform = `rotate(${currentRotation}deg)`; setTimeout(() => { WHEEL_PRIZES[pi].action(); if (WHEEL_PRIZES[pi].text.includes('Кейс')) { showToast('🎁 Вы выиграли КЕЙС!', 'gold'); } else { showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[pi].text}!`, 'gold'); } isSpinning = false; updateUI(); saveGame(); renderMenu(true); }, 4200); }
 
 function startGoldRush() { if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); state.crystals -= 10; goldRushEnd = Date.now() + 10000; updateUI(); renderMenu(true); showToast('⛏️ Лихорадка началась! (10 сек)'); setTimeout(() => { if (activeTab === 'minigames' && activeMinigame === 'gold') renderMenu(true); }, 10000); }
@@ -609,7 +652,18 @@ function applyCode(raw) {
   if (raw === 'CASEMAX') { state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } 
   if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } 
   if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } 
-  if (raw === 'ФИЗРУК') { if (state.secretStage) return showToast('Секретная стадия уже активна!', 'err'); state.preSecretStage = state.stage; let startLvl = Math.max(state.auraLevel, state.clickLevel) + 1; state.secretStage = { lvl: startLvl, target: startLvl + 10, originalAura: state.auraLevel, originalClick: state.clickLevel }; state.auraLevel = startLvl; state.clickLevel = startLvl; renderCharacter(); updateUI(); saveGame(); showToast('🚨 СЕКРЕТНАЯ СТАДИЯ АКТИВИРОВАНА!', 'gold'); return; }
+  
+  // ИСПРАВЛЕНО: Правильная инициализация секретной стадии без скрытых переменных
+  if (raw === 'ФИЗРУК') { 
+    if (state.secretStage) return showToast('Секретная стадия уже активна!', 'err'); 
+    state.preSecretStage = state.stage; 
+    let startLvl = Math.max(state.auraLevel, state.clickLevel) + 1; 
+    state.secretStage = { target: startLvl + 10, originalAura: state.auraLevel, originalClick: state.clickLevel }; 
+    state.auraLevel = startLvl; 
+    state.clickLevel = startLvl; 
+    renderCharacter(); updateUI(); saveGame(); showToast('🚨 СЕКРЕТНАЯ СТАДИЯ АКТИВИРОВАНА!', 'gold'); return; 
+  }
+  
   if (!(raw in CODES)) return showToast('❌ Неверный код', 'err'); 
   if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); 
   const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus; showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame(); 
@@ -743,8 +797,6 @@ document.querySelectorAll('.tab').forEach(t => { t.addEventListener('click', (e)
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { saveGame(); } else if (document.visibilityState === 'visible') { const saved = localStorage.getItem(currentSaveKey); if (saved) { try { const p = JSON.parse(saved); const ds = Math.floor((Date.now() - (p.lastSaved || Date.now())) / 1000); if (ds > 10 && p.auraLevel > 0) { loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); saveGame(); } } catch(e) {} } } });
 
 loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); requestAnimationFrame(gameLoop); setInterval(checkAch, 1000); scheduleNextBonus(); scheduleNextCrystal();
-
-// УДАЛЕНА регистрация Service Worker, которая может вызывать ошибки сети в APK
 </script>
 </body>
 </html>
