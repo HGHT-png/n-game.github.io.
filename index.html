@@ -7,7 +7,6 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Эволюция Нарзана</title>
-<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1b1c3e">
 <style>
   :root { --bg-grad-top: #1b1c3e; --bg-grad-bot: #0a0b1a; --btn-grad-start: #6a4cff; --btn-grad-end: #8a6cff; --accent: #60a5fa; --text: #ffffff; --panel: #14152b; }
@@ -154,9 +153,7 @@
 <body>
 
 <script>
-  const lastOpen = sessionStorage.getItem('lastOpenTime');
-  if (lastOpen && (Date.now() - lastOpen > 300000)) { window.location.reload(true); }
-  sessionStorage.setItem('lastOpenTime', Date.now());
+  // Убрана автоперезагрузка, которая вызывала ошибку сети в APK
   const DONATE_URL = "https://www.donationalerts.com/r/ha1ght"; 
 </script>
 
@@ -462,9 +459,80 @@ function checkStage() {
   let ns = 0; for (let i = 0; i < CFG.stageReq.length; i++) { if (state.auraLevel >= CFG.stageReq[i]) ns = i; } 
   if (ns > state.stage) { state.stage = ns; const STAGE_REWARDS = [300, 500, 800, 1200, 2000, 3500, 6000, 10000, 18000, 35000, 100000, 150000, 250000, 400000, 700000, 1200000, 2000000, 3500000, 6000000, 10000000, 18000000, 35000000, 60000000, 100000000, 200000000]; const reward = STAGE_REWARDS[state.stage] || 500000000; state.aura += reward; state.totalAura += reward; playLevelUpSound(); showToast(`🎉 Новая форма: ${CFG.names[CFG.order[state.stage]]}! Награда: +${fmt(reward)} капелек!`, 'gold'); renderCharacter(); saveGame(); renderMenu(); }
 }
+
+function renderCharacter() { 
+    if (state.secretStage) { 
+        el.charImg.src = 'fizruk.png'; 
+        el.charImg.style.display = 'block'; 
+        el.charEmoji.style.display = 'none'; 
+        el.stageName.textContent = 'Секретная стадия: Физрук'; 
+        el.charImg.onerror = function() {
+            el.charImg.style.display = 'none';
+            el.charEmoji.style.display = 'block';
+            el.charEmoji.textContent = '🕺';
+        };
+        return; 
+    } 
+    
+    const sid = CFG.order[state.stage]; 
+    const src = IMAGES[sid]; 
+    
+    if (src && src.length > 5) { 
+        el.charImg.src = src; 
+        el.charImg.style.display = 'block'; 
+        el.charEmoji.style.display = 'none'; 
+        
+        el.charImg.onerror = function() {
+            el.charImg.style.display = 'none';
+            el.charEmoji.style.display = 'block';
+            el.charEmoji.textContent = CFG.emoji[sid];
+        };
+    } else { 
+        el.charImg.style.display = 'none'; 
+        el.charEmoji.style.display = 'block'; 
+        el.charEmoji.textContent = CFG.emoji[sid]; 
+    } 
+    el.stageName.textContent = CFG.names[sid]; 
+}
+
 function checkAch() { ACHIEVEMENTS.forEach(a => { if (!state.achievements.includes(a.id) && a.check(state)) { state.achievements.push(a.id); showToast('🏆 ' + a.name, 'gold'); saveGame(); } }); }
-function renderCharacter() { if (state.secretStage) { el.charImg.src = 'fizruk.png'; el.charImg.style.display = 'block'; el.charEmoji.style.display = 'none'; el.stageName.textContent = 'Секретная стадия: Физрук'; return; } const sid = CFG.order[state.stage]; const src = IMAGES[sid]; if (src && src.length > 5) { el.charImg.src = src; el.charImg.style.display = 'block'; el.charEmoji.style.display = 'none'; } else { el.charImg.style.display = 'none'; el.charEmoji.style.display = 'block'; el.charEmoji.textContent = CFG.emoji[sid]; } el.stageName.textContent = CFG.names[sid]; }
-function renderPetsOnScreen() { el.petsContainer.innerHTML = ''; if (state.hasDrone) { const dw = document.createElement('div'); dw.className = 'pet-wrapper'; dw.style.left = 'calc(50% + 80px)'; dw.style.top = 'calc(50% + 80px)'; const d = document.createElement('div'); d.className = 'ufo-active'; d.textContent = '🛸'; dw.appendChild(d); el.petsContainer.appendChild(dw); } if (state.activePets && state.activePets.length > 0) { const t = state.activePets.length; const rad = 80; state.activePets.forEach((id, i) => { const p = PETS.find(x => x.id === id); if (p) { const w = document.createElement('div'); w.className = 'pet-wrapper'; const a = (i / t) * Math.PI * 2 - (Math.PI / 2); w.style.left = `calc(50% + ${Math.cos(a) * rad}px)`; w.style.top = `calc(50% + ${Math.sin(a) * rad}px)`; const pd = document.createElement('div'); pd.className = 'active-pet-display'; pd.textContent = p.emoji; pd.style.animationDelay = `${i * 0.3}s`; w.appendChild(pd); el.petsContainer.appendChild(w); } }); } }
+
+// ИСПРАВЛЕНО: Питомцы отодвинуты на радиус 120px, чтобы не закрывать картинку
+function renderPetsOnScreen() { 
+  el.petsContainer.innerHTML = ''; 
+  if (state.hasDrone) { 
+    const dw = document.createElement('div'); 
+    dw.className = 'pet-wrapper'; 
+    dw.style.left = 'calc(50% + 120px)'; 
+    dw.style.top = 'calc(50% + 120px)'; 
+    const d = document.createElement('div'); 
+    d.className = 'ufo-active'; 
+    d.textContent = '🛸'; 
+    dw.appendChild(d); 
+    el.petsContainer.appendChild(dw); 
+  } 
+  if (state.activePets && state.activePets.length > 0) { 
+    const t = state.activePets.length; 
+    const rad = 120; // Увеличенный радиус
+    state.activePets.forEach((id, i) => { 
+      const p = PETS.find(x => x.id === id); 
+      if (p) { 
+        const w = document.createElement('div'); 
+        w.className = 'pet-wrapper'; 
+        const a = (i / t) * Math.PI * 2 - (Math.PI / 2); 
+        w.style.left = `calc(50% + ${Math.cos(a) * rad}px)`; 
+        w.style.top = `calc(50% + ${Math.sin(a) * rad}px)`; 
+        const pd = document.createElement('div'); 
+        pd.className = 'active-pet-display'; 
+        pd.textContent = p.emoji; 
+        pd.style.animationDelay = `${i * 0.3}s`; 
+        w.appendChild(pd); 
+        el.petsContainer.appendChild(w); 
+      } 
+    }); 
+  } 
+}
+
 function updateUI() { 
   el.auraVal.textContent = fmt(state.aura); 
   el.crystalVal.textContent = fmt(state.crystals); 
@@ -675,7 +743,8 @@ document.querySelectorAll('.tab').forEach(t => { t.addEventListener('click', (e)
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { saveGame(); } else if (document.visibilityState === 'visible') { const saved = localStorage.getItem(currentSaveKey); if (saved) { try { const p = JSON.parse(saved); const ds = Math.floor((Date.now() - (p.lastSaved || Date.now())) / 1000); if (ds > 10 && p.auraLevel > 0) { loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); saveGame(); } } catch(e) {} } } });
 
 loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); requestAnimationFrame(gameLoop); setInterval(checkAch, 1000); scheduleNextBonus(); scheduleNextCrystal();
-if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('Ошибка SW: ', err)); }); }
+
+// УДАЛЕНА регистрация Service Worker, которая может вызывать ошибки сети в APK
 </script>
 </body>
 </html>
