@@ -10,9 +10,20 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1b1c3e">
 <style>
+  /* CSS ПЕРЕМЕННЫЕ ДЛЯ КАСТОМИЗАЦИИ */
+  :root {
+    --bg-grad-top: #1b1c3e;
+    --bg-grad-bot: #0a0b1a;
+    --btn-grad-start: #6a4cff;
+    --btn-grad-end: #8a6cff;
+    --accent: #60a5fa;
+    --text: #ffffff;
+    --panel: #14152b;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
   button, input { outline: none; border: none; -webkit-appearance: none; }
-  body, html { overscroll-behavior: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: radial-gradient(circle at top, #1b1c3e 0%, #0a0b1a 60%, #05050a 100%); color: #fff; display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; touch-action: manipulation; }
+  body, html { overscroll-behavior: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: radial-gradient(circle at top, var(--bg-grad-top) 0%, var(--bg-grad-bot) 60%, #05050a 100%); color: var(--text); display: flex; justify-content: center; height: 100vh; height: 100dvh; overflow: hidden; touch-action: manipulation; transition: background 0.3s; }
   .app { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: 100%; padding: 8px 12px 65px 12px; position: relative; }
   
   header { text-align: center; margin-top: 2px; position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0 45px; }
@@ -24,9 +35,9 @@
   .prestige-btn-small { position: absolute; top: 0; left: 0; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; touch-action: manipulation; z-index: 10;}
   .prestige-btn-small:active { transform: scale(0.9); background: rgba(245, 158, 11, 0.3); }
   .prestige-btn-small.hidden { display: none; }
-  .crystal-display { font-size: 14px; color: #60a5fa; margin-top: 2px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px;}
+  .crystal-display { font-size: 14px; color: var(--accent); margin-top: 2px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px;}
   .aura-icon { color: #ffd700; font-size: 22px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-  .crystal-icon { color: #60a5fa; font-size: 16px; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+  .crystal-icon { color: var(--accent); font-size: 16px; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
   .stage-name { font-size: 13px; color: #8a9bbd; margin-top: 2px; font-weight: 500; }
   .income-text { font-size: 12px; color: #5eead4; margin-top: 2px; font-weight: 600;}
   .prestige-text { font-size: 11px; color: #fbbf24; margin-top: 2px; font-weight: bold; }
@@ -34,7 +45,8 @@
   .click-zone { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; min-height: 80px; cursor: pointer; touch-action: manipulation; }
   .click-zone::before { content: ''; position: absolute; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(110,200,255,0.15) 0%, transparent 70%); animation: pulse 3s infinite; pointer-events: none; }
   @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
-  #charImg { max-width: 100px; max-height: 120px; object-fit: contain; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; border-radius: 10px; pointer-events: none; }
+  
+  #charImg { max-width: 120px; max-height: 140px; object-fit: contain; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; border-radius: 15px; pointer-events: none; background: rgba(0,0,0,0.2); padding: 5px; border: 1px solid rgba(255,255,255,0.1); }
   #charEmoji { font-size: 70px; z-index: 2; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
   .click-zone.pop #charImg, .click-zone.pop #charEmoji { transform: scale(1.1); }
   
@@ -43,7 +55,6 @@
   .active-pet-display { font-size: 35px; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
   
-  /* СТИЛИ ДЛЯ НЛО */
   .ufo-active { font-size: 50px; filter: drop-shadow(0 0 25px #00ffff) !important; animation: ufoHover 2s infinite alternate ease-in-out !important; }
   @keyframes ufoHover { 0% { transform: translateY(0) scale(1) rotate(-5deg); } 100% { transform: translateY(-15px) scale(1.1) rotate(5deg); } }
   
@@ -54,8 +65,9 @@
   .progress-bar { height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #fbbf24, #ef4444); transition: width 0.3s; }
   
-  .buttons { display: flex; flex-direction: column; gap: 4px; }
-  .btn { width: 100%; border-radius: 10px; padding: 4px 8px; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.15s; background: linear-gradient(135deg, #6a4cff, #8a6cff); color: #fff; box-shadow: 0 2px 5px rgba(106,76,255,0.3); cursor: pointer; touch-action: manipulation; line-height: 1.2; }
+  .buttons { display: flex; flex-direction: column; gap: 5px; }
+  .btn-row { display: flex; gap: 5px; }
+  .btn { flex: 1; border-radius: 10px; padding: 6px 8px; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.15s; background: linear-gradient(135deg, var(--btn-grad-start), var(--btn-grad-end)); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.3); cursor: pointer; touch-action: manipulation; line-height: 1.2; }
   .btn:active { transform: scale(0.97); }
   .btn.disabled { opacity: 0.5; pointer-events: none; box-shadow: none; }
   .btn-sub { font-size: 9px; font-weight: 400; color: rgba(255,255,255,0.8); margin-top: 1px; }
@@ -63,18 +75,19 @@
   .codes { display: flex; gap: 5px; margin-bottom: 2px;}
   .codes input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 5px 8px; border-radius: 8px; font-size: 12px; text-transform: uppercase;}
   .codes input::placeholder { color: #555; }
-  .codes button { background: #6a4cff; color: #fff; padding: 0 10px; border-radius: 8px; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 12px;}
+  .codes button { background: linear-gradient(135deg, var(--btn-grad-start), var(--btn-grad-end)); color: #fff; padding: 0 10px; border-radius: 8px; font-weight: bold; cursor: pointer; touch-action: manipulation; font-size: 12px;}
   
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 15px; }
   .overlay.show { display: flex; }
-  .menu { width: 100%; max-width: 400px; height: 85vh; background: #14152b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  .menu { width: 100%; max-width: 400px; height: 85vh; background: var(--panel); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
   .menu-header { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
   .menu-header h2 { font-size: 16px; color: #fff; }
   .close-btn { background: none; color: #8a9bbd; font-size: 20px; cursor: pointer; touch-action: manipulation;}
+  
   .tabs { display: flex; padding: 8px; gap: 4px; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab { background: none; border: 1px solid rgba(255,255,255,0.1); color: #8a9bbd; padding: 5px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; white-space: nowrap; touch-action: manipulation; transition: 0.2s; }
-  .tab.active { background: rgba(106,76,255,0.2); color: #fff; border-color: #6a4cff; }
+  .tab.active { background: rgba(255,255,255,0.1); color: #fff; border-color: var(--accent); }
   .tab-content { padding: 12px; overflow-y: auto; flex: 1; min-height: 0; color: #ccc; font-size: 13px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   
   .ach-item { display: flex; gap: 8px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; opacity: 0.5; }
@@ -97,14 +110,14 @@
   .pet-bonus { font-size: 9px; color: #5eead4; margin-top: 2px; }
   .pet-actions { display: flex; gap: 4px; flex-direction: column; flex-shrink: 0;}
   .pet-btn { padding: 4px 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; touch-action: manipulation; width: 65px;}
-  .pet-btn.buy { background: #6a4cff; color: white; }
+  .pet-btn.buy { background: var(--btn-grad-start); color: white; }
   .pet-btn.equip { background: #fbbf24; color: black; }
   .pet-btn.equipped { background: #2a2a3a; color: #888; }
   .pet-btn.sell { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
   
   .case-box { background: rgba(96,165,250,0.08); border: 1px solid #3b82f6; border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 12px; box-shadow: inset 0 0 20px rgba(59,130,246,0.15); }
   .case-title { font-weight: 800; color: #60a5fa; font-size: 15px; margin-bottom: 6px; }
-  .case-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; margin-top: 8px; width: 100%; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+  .case-btn { background: linear-gradient(135deg, var(--btn-grad-start), var(--btn-grad-end)); color: white; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; margin-top: 8px; width: 100%; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
   .case-btn:active { transform: scale(0.97); }
   .case-btn:disabled { opacity: 0.4; pointer-events: none; box-shadow: none; }
   .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; box-shadow: 0 4px 12px rgba(245,158,11,0.4);}
@@ -135,7 +148,7 @@
   .floating-crystal { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #60a5fa); }
   
   #toasts { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; pointer-events: none; }
-  .toast { background: rgba(20,21,43,0.95); border: 1px solid #6a4cff; color: #fff; padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; animation: slideDown 0.3s ease; text-align:center;}
+  .toast { background: rgba(20,21,43,0.95); border: 1px solid var(--accent); color: #fff; padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; animation: slideDown 0.3s ease; text-align:center;}
   .toast.gold { border-color: #fbbf24; color: #fde68a; }
   .toast.crystal { border-color: #60a5fa; color: #bfdbfe; }
   .toast.err { border-color: #ef4444; color: #fca5a5; }
@@ -153,7 +166,7 @@
   .talent-info { flex: 1; }
   .talent-title { font-weight: bold; color: #fff; font-size: 13px; }
   .talent-desc { font-size: 10px; color: #8a9bbd; margin-top: 2px; }
-  .talent-btn { background: #6a4cff; color: #fff; padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; touch-action: manipulation; display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+  .talent-btn { background: var(--btn-grad-start); color: #fff; padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; touch-action: manipulation; display: flex; flex-direction: column; align-items: center; min-width: 70px; }
   .talent-btn:disabled { opacity: 0.5; pointer-events: none; }
   
   .minigame-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
@@ -164,10 +177,12 @@
   .mg-desc { font-size: 10px; color: #8a9bbd; }
   .mg-btn { background: #fbbf24; color: #000; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
   
-  .donate-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(106,76,255,0.4); border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: center; }
+  .donate-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: center; }
   .donate-card h3 { color: #fbbf24; font-size: 16px; margin-bottom: 5px; }
   .donate-card p { font-size: 11px; color: #ccc; margin-bottom: 10px; }
   .donate-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; font-weight: bold; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 14px; }
+
+  .theme-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; display: inline-block; margin-right: 5px; }
   
   .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
   .leaderboard-row.top1 { background: rgba(251,191,36,0.1); color: #fbbf24; font-weight: bold; border-radius: 8px;}
@@ -214,19 +229,19 @@
     </div>
 
     <div class="buttons">
-      <button class="btn" id="btnClick">
-        <div>Улучшить клик</div>
-        <div class="btn-sub" id="costClick">Стоимость: 10</div>
-      </button>
-      
-      <button class="btn" id="btnAura">
-        <div>Улучшить ауру</div>
-        <div class="btn-sub" id="costAura">Стоимость: 15</div>
-      </button>
-      
+      <div class="btn-row">
+        <button class="btn" id="btnClick">
+          <div>Улучшить клик</div>
+          <div class="btn-sub" id="costClick">10</div>
+        </button>
+        <button class="btn" id="btnAura">
+          <div>Улучшить ауру</div>
+          <div class="btn-sub" id="costAura">15</div>
+        </button>
+      </div>
       <button class="btn" id="btnBooster">
         <div>Бустер x2 (30с)</div>
-        <div class="btn-sub" id="costBooster">Стоимость: 200</div>
+        <div class="btn-sub" id="costBooster">200</div>
       </button>
     </div>
   </div>
@@ -244,9 +259,7 @@
       <button class="tab" data-tab="pets">🐾 Питомцы</button>
       <button class="tab" data-tab="talents">🌳 Таланты</button>
       <button class="tab" data-tab="minigames">🎲 Мини-игры</button>
-      <button class="tab" data-tab="leaders">👑 Лидеры</button>
-      <button class="tab" data-tab="donate">💎 Донат</button>
-      <button class="tab" data-tab="stats">📊 Статы</button>
+      <button class="tab" data-tab="shop">💎 Магазин</button>
       <button class="tab" data-tab="account">👤 Профиль</button>
     </div>
     <div class="tab-content" id="tabContent"></div>
@@ -310,6 +323,7 @@
     <button class="cheat-btn" onclick="applyCode('CASEMAX')">> CASEMAX (кейсы)</button>
     <button class="cheat-btn" onclick="applyCode('GEMSMAX')">> GEMSMAX (гемы)</button>
     <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
+    <button class="cheat-btn" onclick="applyCode('ФИЗРУК')">> Секретная стадия</button>
 
     <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px; font-size:10px; line-height:1.2; color:#0f0;">
       <b>СПИСОК ВСЕХ КОДОВ:</b><br>
@@ -323,7 +337,8 @@
       HGHT - 5000 капелек<br>
       0765 - 1500 капелек<br>
       27 - 2700 капелек<br>
-      E04 - 404 капельки
+      E04 - 404 капельки<br>
+      ФИЗРУК - Секретная стадия (картинка fizruk.png)
     </div>
 
     <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:15px;" onclick="document.getElementById('cheatOverlay').classList.remove('show')">> ЗАКРЫТЬ</button>
@@ -333,7 +348,11 @@
 <div id="toasts"></div>
 
 <script>
-const IMAGES = { soap: '', water: '', brush: '', narzan: '', chekushka: '', cosmic: '' };
+// КАРТИНКИ СТАДИЙ
+const IMAGES = { 
+  soap: 'stage_0.png', liquid_soap: 'stage_1.png', solid_soap: 'stage_2.png', water: 'stage_3.png', mineral_water: 'stage_4.png', sparkling_water: 'stage_5.png', brush: 'stage_6.png', electric_brush: 'stage_7.png', sonic_brush: 'stage_8.png', narzan: 'stage_9.png', kvass: 'stage_10.png', juice: 'stage_11.png', mors: 'stage_12.png', compote: 'stage_13.png', lemonade: 'stage_14.png', tea: 'stage_15.png', coffee: 'stage_16.png', cocoa: 'stage_17.png', energy: 'stage_18.png', beer: 'stage_19.png', wine: 'stage_20.png', champagne: 'stage_21.png', cognac: 'stage_22.png', chekushka: 'stage_23.png', cosmic: 'stage_24.png' 
+};
+
 const PETS = [
   { id: 'p1', name: 'Мышь', emoji: '🐁', rarity: 'rare', cost: 10, bonus: {type:'click', val:1.2}, desc: '+20% к клику' },
   { id: 'p2', name: 'Енот', emoji: '🦝', rarity: 'rare', cost: 10, bonus: {type:'income', val:1.2}, desc: '+20% к доходу' },
@@ -371,7 +390,7 @@ const ACHIEVEMENTS = [
   { id:'petAll', icon:'🐉', name:'Зоопарк', desc:'Собери 5 питомцев', check:s=>s.pets.length>=5 },
 ];
 
-const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, freeCases: 0, pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 } };
+const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, freeCases: 0, pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 }, secretStage: null, preSecretStage: 0, theme: 'default' };
 let state = JSON.parse(JSON.stringify(defaultState));
 
 let currentUser = localStorage.getItem('narzan_current_user') || 'guest';
@@ -415,11 +434,17 @@ function loadGame() {
       if (isNaN(state.crystals)) state.crystals = 0;
       if (isNaN(state.freeCases)) state.freeCases = 0;
       
+      applyTheme(state.theme);
+      
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
       if (diffSec > 10 && state.auraLevel > 0) {
         const baseIncome = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)) * (1 + ((state.prestigePoints || 0) * 0.1));
         const totalIncome = baseIncome * (state.hasDrone ? 5 : 1);
-        const offlineEarnings = totalIncome * Math.min(diffSec, 28800) * 0.5;
+        let offlineEarnings = totalIncome * Math.min(diffSec, 28800) * 0.5;
+        
+        // ОГРАНИЧЕНИЕ ОФФЛАЙН ДОХОДА
+        if (offlineEarnings > 100000000) offlineEarnings = 100000000;
+        
         if (offlineEarnings > 0) { state.aura += offlineEarnings; state.totalAura += offlineEarnings; setTimeout(() => showToast(`💤 Оффлайн-доход: +${fmt(offlineEarnings)} капелек!`, 'gold'), 1000); }
       }
     } catch(e) { console.error("Ошибка загрузки", e); }
@@ -436,6 +461,78 @@ function short(n) {
 function showToast(text, type = '') { const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = text; el.toasts.appendChild(t); setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500); }
 function floatText(x, y, text, isCrit) { const d = document.createElement('div'); d.className = 'float-text' + (isCrit ? ' crit-text' : ''); d.textContent = (isCrit ? 'КРИТ! ' : '') + text; d.style.left = x + 'px'; d.style.top = y + 'px'; document.body.appendChild(d); setTimeout(() => d.remove(), 800); }
 function playLevelUpSound() { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const play = (f, s, d) => { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(0.3, s + 0.05); g.gain.exponentialRampToValueAtTime(0.01, s + d); o.start(s); o.stop(s + d); }; const n = ctx.currentTime; play(523.25, n, 0.1); play(659.25, n + 0.1, 0.1); play(783.99, n + 0.2, 0.4); } catch(e) {} }
+
+// ТЕМЫ ОФОРМЛЕНИЯ
+function applyTheme(theme) {
+    const root = document.documentElement;
+    if (theme === 'cosmos') {
+        root.style.setProperty('--bg-grad-top', '#1b1c3e');
+        root.style.setProperty('--bg-grad-bot', '#0a0b1a');
+        root.style.setProperty('--btn-grad-start', '#6a4cff');
+        root.style.setProperty('--btn-grad-end', '#8a6cff');
+        root.style.setProperty('--accent', '#60a5fa');
+    } else if (theme === 'blood') {
+        root.style.setProperty('--bg-grad-top', '#3e1b1b');
+        root.style.setProperty('--bg-grad-bot', '#1a0a0a');
+        root.style.setProperty('--btn-grad-start', '#ff4c4c');
+        root.style.setProperty('--btn-grad-end', '#ff6c6c');
+        root.style.setProperty('--accent', '#ff6b6b');
+    } else if (theme === 'toxic') {
+        root.style.setProperty('--bg-grad-top', '#1b3e1b');
+        root.style.setProperty('--bg-grad-bot', '#0a1a0a');
+        root.style.setProperty('--btn-grad-start', '#4cff4c');
+        root.style.setProperty('--btn-grad-end', '#6cff6c');
+        root.style.setProperty('--accent', '#6bff6b');
+    } else if (theme === 'gold') {
+        root.style.setProperty('--bg-grad-top', '#3e341b');
+        root.style.setProperty('--bg-grad-bot', '#1a140a');
+        root.style.setProperty('--btn-grad-start', '#ffb74c');
+        root.style.setProperty('--btn-grad-end', '#ffd54c');
+        root.style.setProperty('--accent', '#ffd700');
+    } else if (theme === 'mono') {
+        root.style.setProperty('--bg-grad-top', '#2a2a2a');
+        root.style.setProperty('--bg-grad-bot', '#0a0a0a');
+        root.style.setProperty('--btn-grad-start', '#888888');
+        root.style.setProperty('--btn-grad-end', '#aaaaaa');
+        root.style.setProperty('--accent', '#cccccc');
+    } else if (theme === 'custom') {
+        // Если кастомная тема, берём сохранённые цвета
+        root.style.setProperty('--bg-grad-top', state.customBg || '#1b1c3e');
+        root.style.setProperty('--bg-grad-bot', '#000000');
+        root.style.setProperty('--btn-grad-start', state.customBtn || '#6a4cff');
+        root.style.setProperty('--btn-grad-end', state.customBtn || '#8a6cff');
+        root.style.setProperty('--accent', state.customAccent || '#60a5fa');
+    } else {
+        // По умолчанию (Космос)
+        root.style.setProperty('--bg-grad-top', '#1b1c3e');
+        root.style.setProperty('--bg-grad-bot', '#0a0b1a');
+        root.style.setProperty('--btn-grad-start', '#6a4cff');
+        root.style.setProperty('--btn-grad-end', '#8a6cff');
+        root.style.setProperty('--accent', '#60a5fa');
+    }
+}
+
+function setTheme(themeName) {
+    state.theme = themeName;
+    applyTheme(themeName);
+    saveGame();
+    renderMenu(true);
+}
+
+function customColor(type) {
+    const input = document.createElement('input');
+    input.type = 'color';
+    input.value = type === 'bg' ? (state.customBg || '#1b1c3e') : (state.customBtn || '#6a4cff');
+    input.addEventListener('input', (e) => {
+        if (type === 'bg') state.customBg = e.target.value;
+        if (type === 'btn') state.customBtn = e.target.value;
+        if (type === 'accent') state.customAccent = e.target.value;
+        state.theme = 'custom';
+        applyTheme('custom');
+        saveGame();
+    });
+    input.click();
+}
 
 const getPetsMultiplier = (type) => { 
   if (!state.activePets) return 1; 
@@ -454,15 +551,21 @@ const getPetIncomeMultiplier = () => getPetsMultiplier('income');
 const getDroneMultiplier = () => state.hasDrone ? 5 : 1;
 
 const getPrestigeMultiplier = () => 1 + ((state.prestigePoints || 0) * 0.1);
-const getClickCost = () => { return (state.clickLevel < 5) ? Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, state.clickLevel - 1)) : Math.floor(1000 * Math.pow(CFG.costGrowth, state.clickLevel - 5)); };
-const getAuraCost = () => { return (state.auraLevel < 5) ? Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, state.auraLevel)) : Math.floor(1000 * Math.pow(CFG.costGrowth, state.auraLevel - 5)); };
+const getClickCost = () => { 
+    let lvl = state.secretStage ? state.secretStage.lvl : state.clickLevel;
+    return (lvl < 5) ? Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, lvl - 1)) : Math.floor(1000 * Math.pow(CFG.costGrowth, lvl - 5)); 
+};
+const getAuraCost = () => { 
+    let lvl = state.secretStage ? state.secretStage.lvl : state.auraLevel;
+    return (lvl < 5) ? Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, lvl)) : Math.floor(1000 * Math.pow(CFG.costGrowth, lvl - 5)); 
+};
 const getBoosterCost = () => Math.floor(CFG.boosterCost * Math.pow(CFG.boosterGrowth, state.boosterLevel));
 
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
 
 const getClickPower = () => {
-  let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5));
+  let base = (state.secretStage ? state.secretStage.lvl : state.clickLevel) * (1 + Math.floor((state.secretStage ? state.secretStage.lvl : state.clickLevel) / 5));
   let talentBonus = 1 + (state.talents.heavyHand * 0.01);
   let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier();
   if (Date.now() < goldRushEnd) multiplier *= 5;
@@ -470,12 +573,25 @@ const getClickPower = () => {
 };
 
 const getAuraIncome = () => {
-  let base = state.auraLevel * (1 + Math.floor(state.auraLevel / 5));
+  let base = (state.secretStage ? state.secretStage.lvl : state.auraLevel) * (1 + Math.floor((state.secretStage ? state.secretStage.lvl : state.auraLevel) / 5));
   let talentBonus = 1 + (state.talents.goldenVein * 0.01);
   return base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier();
 };
 
 function checkStage() { 
+  if (state.secretStage) {
+      const target = state.secretStage.target;
+      if (state.auraLevel >= target) {
+          showToast(`🎉 Ты прошел секретную стадию! Возвращаем тебя обратно.`, 'gold');
+          state.stage = state.preSecretStage; 
+          state.auraLevel = state.secretStage.originalAura; 
+          state.clickLevel = state.secretStage.originalClick; 
+          state.secretStage = null; 
+          renderCharacter(); saveGame(); renderMenu(); updateUI();
+      }
+      return;
+  }
+
   let ns = 0; 
   for (let i = 0; i < CFG.stageReq.length; i++) { if (state.auraLevel >= CFG.stageReq[i]) ns = i; } 
   if (ns > state.stage) { 
@@ -491,7 +607,31 @@ function checkStage() {
   } 
 }
 function checkAch() { ACHIEVEMENTS.forEach(a => { if (!state.achievements.includes(a.id) && a.check(state)) { state.achievements.push(a.id); showToast('🏆 ' + a.name, 'gold'); saveGame(); } }); }
-function renderCharacter() { const sid = CFG.order[state.stage]; const src = IMAGES[sid]; if (src && src.length > 50) { el.charImg.src = src; el.charImg.style.display = 'block'; el.charEmoji.style.display = 'none'; } else { el.charImg.style.display = 'none'; el.charEmoji.style.display = 'block'; el.charEmoji.textContent = CFG.emoji[sid]; } el.stageName.textContent = CFG.names[sid]; }
+
+function renderCharacter() { 
+    if (state.secretStage) {
+        el.charImg.src = 'fizruk.png';
+        el.charImg.style.display = 'block';
+        el.charEmoji.style.display = 'none';
+        el.stageName.textContent = 'Секретная стадия: Физрук';
+        return;
+    }
+    
+    const sid = CFG.order[state.stage]; 
+    const src = IMAGES[sid]; 
+    
+    if (src && src.length > 5) { 
+        el.charImg.src = src; 
+        el.charImg.style.display = 'block'; 
+        el.charEmoji.style.display = 'none'; 
+    } else { 
+        el.charImg.style.display = 'none'; 
+        el.charEmoji.style.display = 'block'; 
+        el.charEmoji.textContent = CFG.emoji[sid]; 
+    } 
+    el.stageName.textContent = CFG.names[sid]; 
+}
+
 function renderPetsOnScreen() { 
   el.petsContainer.innerHTML = ''; 
   if (state.hasDrone) { 
@@ -500,7 +640,7 @@ function renderPetsOnScreen() {
     dw.style.left = 'calc(50% + 80px)'; 
     dw.style.top = 'calc(50% + 80px)'; 
     const d = document.createElement('div'); 
-    d.className = 'ufo-active'; // НОВЫЙ КЛАСС ДЛЯ НЛО
+    d.className = 'ufo-active';
     d.textContent = '🛸'; 
     dw.appendChild(d); 
     el.petsContainer.appendChild(dw); 
@@ -534,16 +674,21 @@ function updateUI() {
   el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
   el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
   
-  el.costClick.textContent = 'Стоимость: ' + short(getClickCost()); 
+  el.costClick.textContent = short(getClickCost()); 
   el.btnClick.classList.toggle('disabled', state.aura < getClickCost()); 
   
-  el.costAura.textContent = 'Стоимость: ' + short(getAuraCost()) + ' · есть: ' + state.auraLevel; 
+  el.costAura.textContent = short(getAuraCost()) + ' · есть: ' + (state.secretStage ? state.secretStage.lvl : state.auraLevel); 
   el.btnAura.classList.toggle('disabled', state.aura < getAuraCost()); 
   
-  el.costBooster.textContent = isBoosterActive() ? 'Активен!' : 'Стоимость: ' + short(getBoosterCost()); 
+  el.costBooster.textContent = isBoosterActive() ? 'Активен!' : short(getBoosterCost()); 
   el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < getBoosterCost()); 
   
-  if (state.stage < CFG.order.length - 1) { 
+  if (state.secretStage) {
+      el.finalBox.classList.add('show'); 
+      const cr = 0, nr = state.secretStage.target, pr = Math.max(0, state.auraLevel - cr), tn = nr - cr; 
+      el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; 
+      el.finalText.textContent = `Секретная цель: ${state.auraLevel} / ${nr} ур. ауры`; 
+  } else if (state.stage < CFG.order.length - 1) { 
     el.finalBox.classList.add('show'); 
     const cr = CFG.stageReq[state.stage], nr = CFG.stageReq[state.stage + 1], pr = Math.max(0, state.auraLevel - cr), tn = nr - cr; 
     el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; 
@@ -551,7 +696,7 @@ function updateUI() {
   } else { 
     el.finalBox.classList.remove('show'); 
   } 
-  if (state.stage >= 3) { el.btnPrestige.classList.remove('hidden'); } 
+  if (state.stage >= 3 || state.secretStage) { el.btnPrestige.classList.remove('hidden'); } 
 }
 
 function doClick(e) { 
@@ -570,13 +715,29 @@ function doClick(e) {
   floatText(x, y, '+' + Math.floor(g), c); 
   checkAch(); updateUI(); 
 }
-function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aura -= c; state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
-function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
+function buyClick() { 
+    const c = getClickCost(); 
+    if (state.aura >= c) { 
+        state.aura -= c; 
+        if (state.secretStage) state.secretStage.lvl++;
+        else state.clickLevel++; 
+        updateUI(); checkAch(); saveGame(); 
+    } 
+}
+function buyAura() { 
+    const c = getAuraCost(); 
+    if (state.aura >= c) { 
+        state.aura -= c; 
+        if (state.secretStage) state.secretStage.lvl++;
+        else state.auraLevel++; 
+        checkStage(); updateUI(); checkAch(); saveGame(); 
+    } 
+}
 function buyBooster() { if (isBoosterActive()) return; const cost = getBoosterCost(); if (state.aura >= cost) { state.aura -= cost; state.boosterLevel++; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); } }
-function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000))); const nm = (state.prestigePoints + pts) * 10; if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${nm}%`)) { state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0; state.boosterEnd = 0; state.boosterLevel = 0; state.isBoosterPermanent = false; state.prestigePoints += pts; state.pets = []; state.activePets = []; renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold'); el.btnPrestige.classList.add('hidden'); } }
+function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000))); const nm = (state.prestigePoints + pts) * 10; if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${nm}%`)) { state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0; state.boosterEnd = 0; state.boosterLevel = 0; state.isBoosterPermanent = false; state.prestigePoints += pts; state.pets = []; state.activePets = []; state.secretStage = null; renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold'); el.btnPrestige.classList.add('hidden'); } }
 
 function hardReset() {
-    if (confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите полностью удалить ВСЕ данные (включая все аккаунты, прогресс и настройки)? Это действие нельзя отменить!')) {
+    if (confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите полностью удалить ВСЕ данные? Это действие нельзя отменить!')) {
         localStorage.clear();
         sessionStorage.clear();
         window.location.href = window.location.pathname + '?reset=' + Date.now();
@@ -713,6 +874,23 @@ function applyCode(raw) {
   if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } 
   if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } 
   
+  if (raw === 'ФИЗРУК') {
+      if (state.secretStage) return showToast('Секретная стадия уже активна!', 'err');
+      state.preSecretStage = state.stage;
+      let startLvl = Math.max(state.auraLevel, state.clickLevel) + 1;
+      state.secretStage = {
+          lvl: startLvl,
+          target: startLvl + 10,
+          originalAura: state.auraLevel,
+          originalClick: state.clickLevel
+      };
+      state.auraLevel = startLvl; 
+      state.clickLevel = startLvl;
+      renderCharacter(); updateUI(); saveGame();
+      showToast('🚨 СЕКРЕТНАЯ СТАДИЯ АКТИВИРОВАНА!', 'gold');
+      return;
+  }
+
   if (!(raw in CODES)) return showToast('❌ Неверный код', 'err'); 
   if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); 
   const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus; showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame(); 
@@ -736,7 +914,7 @@ function giveDonateReward(tier) {
 let lastTick = performance.now(), autoSaveTimer = 0;
 function gameLoop(now) { const dt = Math.min((now - lastTick) / 1000, 1); lastTick = now; if (state.auraLevel > 0) { const g = getAuraIncome() * dt; state.aura += g; state.totalAura += g; } if (state.boosterEnd > 0 && Date.now() > state.boosterEnd && !state.isBoosterPermanent) state.boosterEnd = 0; updateUI(); autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); } requestAnimationFrame(gameLoop); }
 
-let activeTab = 'ach'; const tabsOrder = ['ach', 'evo', 'pets', 'talents', 'minigames', 'leaders', 'donate', 'stats', 'account'];
+let activeTab = 'ach'; const tabsOrder = ['ach', 'evo', 'pets', 'talents', 'minigames', 'shop', 'account'];
 
 function buyTalent(id) {
   const maxLvls = { heavyHand: 5, goldenVein: 3, eternalCrit: 5, teamSpirit: 5 };
@@ -866,52 +1044,28 @@ function renderMenu(keepScroll = false) {
       }
     }
   }
-  else if (activeTab === 'leaders') {
-    const fakeDrops = [
-      { name: 'NarzanKing', score: 15400000000 },
-      { name: 'WaterBoss', score: 8500000000 },
-      { name: 'H2O_Master', score: 3200000000 },
-      { name: 'Player_1', score: 500000000 }
-    ];
-    fakeDrops.push({ name: currentUser === 'guest' ? 'Вы (Гость)' : currentUser, score: state.totalAura });
-    fakeDrops.sort((a, b) => b.score - a.score);
+  else if (activeTab === 'shop') {
+    html = `
+      <div style="font-weight:bold; color:#fbbf24; margin-bottom:10px; text-align:center; font-size:15px;">💎 ОБМЕННИК</div>
+      <div class="donate-card" style="border-color:#60a5fa;">
+        <h3 style="color:#60a5fa;">Обмен капелек на кристаллы</h3>
+        <p>Курс: 1 💎 = 1 000 000 000 💧</p>
+        <button class="donate-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff;" onclick="exchangeCurrency()" ${state.aura < 1000000000 ? 'disabled style="opacity:0.5;pointer-events:none;"' : ''}>Обменять 1 млрд 💧</button>
+      </div>
+      
+      <div style="font-weight:bold; color:#fbbf24; margin-top:20px; margin-bottom:10px; text-align:center; font-size:15px;">💖 ДОНАТ</div>
+    `;
     
-    html += `<div style="font-weight:bold; color:#fbbf24; margin-bottom:10px; text-align:center;">👑 Топ по капелькам</div>`;
-    fakeDrops.forEach((p, i) => {
-      let cls = i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
-      html += `<div class="leaderboard-row ${cls}">
-        <div>${i + 1}. ${p.name}</div>
-        <div>${short(p.score)} 💧</div>
-      </div>`;
-    });
-    
-    html += `<div style="font-weight:bold; color:#60a5fa; margin-top:20px; margin-bottom:10px; text-align:center;">💎 Топ донатеров</div>`;
-    const fakeDonaters = [
-      { name: 'MegaDed', amount: 5000 },
-      { name: 'SecretWhale', amount: 1000 },
-      { name: 'Support_God', amount: 500 }
-    ];
-    fakeDonaters.forEach((d, i) => {
-      let cls = i === 0 ? 'top1' : '';
-      html += `<div class="leaderboard-row ${cls}">
-        <div>${i + 1}. ${d.name}</div>
-        <div>${d.amount} ₽</div>
-      </div>`;
-    });
-  }
-  else if (activeTab === 'donate') {
     if (currentUser === 'guest') {
-      html = `<div style="text-align:center; padding:20px;">
+      html += `<div style="text-align:center; padding:20px;">
         <div style="font-size:40px; margin-bottom:10px;">🔒</div>
         <div style="color:#fff; font-weight:bold; margin-bottom:10px;">Донат доступен только с аккаунта</div>
         <div style="font-size:12px; color:#aaa; margin-bottom:15px;">Пожалуйста, создайте аккаунт во вкладке «Профиль», чтобы видеть эту вкладку и получать награды.</div>
         <button class="case-btn" onclick="switchTab('account', false)">Перейти в профиль</button>
       </div>`;
     } else {
-      html = `
+      html += `
         <div style="text-align:center; margin-bottom:15px;">
-          <div style="font-size:32px; margin-bottom:5px;">💖</div>
-          <div style="font-size:12px; color:#aaa;">Поддержите разработку игры и получите бонусы!</div>
           <div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div>
         </div>
         <div class="donate-card">
@@ -942,43 +1096,80 @@ function renderMenu(keepScroll = false) {
       `;
     }
   }
-  else if (activeTab === 'stats') { 
-    const m = Math.floor((Date.now() - state.startedAt) / 60000); 
-    html = `<div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Всего капелек:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Питомцев:</span> <b>${state.pets.length} / 16</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>В игре:</span> <b>${m} мин</b></div>`; 
-  } 
   else if (activeTab === 'account') { 
-    if (currentUser === 'guest') { 
-      html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 10px; color: #fff;">Гостевой режим</div><div style="font-size: 11px; color: #aaa; margin-bottom: 15px;">Вы играете как гость. Прогресс сохраняется только в этом браузере.</div>
-      <input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль">
+    html = `<div style="text-align:center; padding: 10px 0;">
+      <div style="font-size: 40px; margin-bottom: 10px;">👤</div>
+      <div style="font-weight: bold; margin-bottom: 5px; color: #fff;">${currentUser === 'guest' ? 'Гостевой режим' : 'Аккаунт: ' + currentUser}</div>
+      <div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">${currentUser === 'guest' ? 'Прогресс сохраняется только в этом браузере' : 'Ваш ID: ' + generateUserID()}</div>
+    `;
+    
+    if (currentUser === 'guest') {
+      html += `<input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль">
       <div style="display:flex; gap:8px; margin-top:10px;">
         <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button>
         <button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button>
-      </div>
-      
-      <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-          <div style="font-size:11px; color:#aaa; margin-bottom:10px;">Перенос прогресса (между устройствами):</div>
-          <button class="case-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom:8px;" onclick="exportSave()">📤 Экспорт (скопировать)</button>
-          <button class="case-btn" style="background:linear-gradient(135deg, #10b981, #059669);" onclick="importSave()">📥 Импорт (вставить)</button>
-      </div>
+      </div>`;
+    }
+    
+    // БЛОК СТАТИСТИКИ (Перенесено сюда)
+    const m = Math.floor((Date.now() - state.startedAt) / 60000); 
+    html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; text-align:left;">
+      <div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">📊 Статистика</div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Всего капелек:</span> <b>${fmt(state.totalAura)}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Питомцев:</span> <b>${state.pets.length} / 16</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>В игре:</span> <b>${m} мин</b></div>
+    </div>`;
 
-      <button class="case-btn" style="background:#4a4a5a; margin-top:20px;" onclick="hardReset()">💥 Полный сброс</button></div>`; 
-    } else { 
-      html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">✅</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">Аккаунт: ${currentUser}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div>
-      
-      <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-          <div style="font-size:11px; color:#aaa; margin-bottom:10px;">Перенос прогресса (между устройствами):</div>
-          <button class="case-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom:8px;" onclick="exportSave()">📤 Экспорт (скопировать)</button>
-          <button class="case-btn" style="background:linear-gradient(135deg, #10b981, #059669);" onclick="importSave()">📥 Импорт (вставить)</button>
+    // БЛОК КАСТОМИЗАЦИИ
+    html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+      <div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">🎨 Внешний вид</div>
+      <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+        <div class="theme-btn" style="background:#6a4cff;" onclick="setTheme('cosmos')" title="Космос"></div>
+        <div class="theme-btn" style="background:#ff4c4c;" onclick="setTheme('blood')" title="Кровь"></div>
+        <div class="theme-btn" style="background:#4cff4c;" onclick="setTheme('toxic')" title="Токсик"></div>
+        <div class="theme-btn" style="background:#ffb74c;" onclick="setTheme('gold')" title="Золото"></div>
+        <div class="theme-btn" style="background:#aaaaaa;" onclick="setTheme('mono')" title="Монохром"></div>
       </div>
-      
-      ${state.hasDrone ? `<button class="case-btn" style="background:#4a4a5a; margin-top:15px;" onclick="removeDrone()">🛸 Убрать НЛО (потерять бонус x5)</button>` : ''}
-      
-      <button class="case-btn" style="background:#ef4444; margin-top:15px;" onclick="logoutAccount()">Выйти из аккаунта</button>
-      <button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="hardReset()">💥 Полный сброс</button></div>`; 
-    } 
+      <div style="text-align:center; margin-bottom:10px; font-size:11px; color:#aaa;">Свой цвет:</div>
+      <div style="display:flex; justify-content:center; gap:8px; margin-bottom:10px;">
+        <button class="pet-btn" style="background:#333;" onclick="customColor('bg')">Фон</button>
+        <button class="pet-btn" style="background:#333;" onclick="customColor('btn')">Кнопки</button>
+      </div>
+    </div>`;
+
+    // БЛОК АККАУНТА
+    html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+      <div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">💾 Данные</div>
+      <button class="case-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom:8px;" onclick="exportSave()">📤 Экспорт (скопировать)</button>
+      <button class="case-btn" style="background:linear-gradient(135deg, #10b981, #059669); margin-bottom:8px;" onclick="importSave()">📥 Импорт (вставить)</button>
+    </div>`;
+
+    if (currentUser !== 'guest') {
+      html += `<button class="case-btn" style="background:#ef4444; margin-top:15px;" onclick="logoutAccount()">Выйти из аккаунта</button>`;
+    }
+    
+    if (state.hasDrone) {
+      html += `<button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="removeDrone()">🛸 Убрать НЛО (потерять бонус x5)</button>`;
+    }
+    
+    html += `<button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="hardReset()">💥 Полный сброс</button></div>`;
   } 
   el.tabContent.innerHTML = html; 
   if (keepScroll) el.tabContent.scrollTop = sp; 
+}
+
+function exchangeCurrency() {
+    if (state.aura >= 1000000000) {
+        state.aura -= 1000000000;
+        state.crystals += 1;
+        showToast('💎 Обмен успешен: -1 млрд капелек, +1 кристалл!', 'crystal');
+        updateUI(); saveGame(); renderMenu(true);
+    } else {
+        showToast('Недостаточно капелек!', 'err');
+    }
 }
 
 function openDonateModal() {
@@ -999,6 +1190,7 @@ function importSave() {
         const parsed = JSON.parse(decoded);
         Object.assign(state, parsed);
         saveGame();
+        applyTheme(state.theme);
         renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu();
         showToast('Прогресс успешно перенесен!', 'gold');
     } catch(e) {
