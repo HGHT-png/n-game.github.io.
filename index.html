@@ -446,6 +446,7 @@ let bossHp = 0;
 let bossMaxHp = 0;
 let bossTimerId = null;
 let bossTimeLeft = 0;
+let lastBossHitTime = 0; // Переменная для кулдауна
 let hasShownStorageError = false;
 let activeTab = 'main'; 
 
@@ -461,7 +462,6 @@ function loadGame() {
     try {
       const parsed = JSON.parse(saved);
       Object.assign(state, parsed);
-      // Жесткая защита от NaN (вылетов интерфейса)
       if (!Array.isArray(state.pets)) state.pets = [];
       if (!Array.isArray(state.activePets)) state.activePets = [];
       if (!Array.isArray(state.usedCodes)) state.usedCodes = [];
@@ -568,7 +568,6 @@ const getBoosterCost = () => Math.floor(CFG.boosterCost * Math.pow(CFG.boosterGr
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
 
-// Защита от NaN в кликах
 const getClickPower = () => { 
     let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5)); 
     let talentBonus = 1 + (state.talents.heavyHand * 0.01); 
@@ -577,7 +576,6 @@ const getClickPower = () => {
     let res = base * talentBonus * multiplier;
     return isNaN(res) ? 1 : res;
 };
-// Защита от NaN в доходе
 const getAuraIncome = () => { 
     let base = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)); 
     let talentBonus = 1 + (state.talents.goldenVein * 0.01); 
@@ -845,13 +843,15 @@ function openCase(isFree = false) {
 function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = false; renderMenu(true); }
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
+/* === БОСС (С КУЛДАУНОМ) === */
 function startBoss() { 
   if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); 
   state.crystals -= 10; 
-  // ЖЕСТКО СБАЛАНСИРОВАННЫЙ БОСС (зависит только от клика, 25 кликов)
-  bossMaxHp = Math.max(10000, Math.floor(getClickPower() * 25)); 
+  // ЖЕСТКО СБАЛАНСИРОВАННЫЙ БОСС (40 кликов)
+  bossMaxHp = Math.max(10000, Math.floor(getClickPower() * 40)); 
   bossHp = bossMaxHp;
   bossTimeLeft = 30;
+  lastBossHitTime = 0; // Сброс кулдауна
   
   el.bossModal.classList.add('show');
   el.bossHpFill.style.width = '100%';
@@ -898,8 +898,14 @@ function spawnBossDamage(x, y, dmg) {
 
 function hitBoss(e) { 
   if (bossHp <= 0 || bossTimeLeft <= 0) return; 
+  
+  // ЗАЩИТА ОТ МУЛЬТИТАЧА (кулдаун 150 мс)
+  const now = Date.now();
+  if (now - lastBossHitTime < 150) return;
+  lastBossHitTime = now;
+
   let dmg = getClickPower();
-  if (isNaN(dmg)) dmg = 1; // Защита
+  if (isNaN(dmg)) dmg = 1; 
   bossHp -= dmg; 
   
   let clickX = window.innerWidth / 2;
