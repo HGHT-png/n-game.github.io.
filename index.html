@@ -47,7 +47,14 @@
   .active-pet-display img { width: 100%; height: 100%; object-fit: contain; }
   
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
-  .ufo-active { font-size: 50px; filter: drop-shadow(0 0 25px #00ffff) !important; animation: ufoHover 2s infinite alternate ease-in-out !important; }
+  
+  /* ИСПРАВЛЕНА ПОДСВЕТКА НЛО (убран темный квадрат) */
+  .ufo-active { 
+      font-size: 45px; 
+      filter: drop-shadow(0 0 10px #00ffff); 
+      animation: ufoHover 2s infinite alternate ease-in-out; 
+      background: transparent;
+  }
   @keyframes ufoHover { 0% { transform: translateY(0) scale(1) rotate(-5deg); } 100% { transform: translateY(-15px) scale(1.1) rotate(5deg); } }
   
   .bottom-panel { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
@@ -79,12 +86,6 @@
   .menu-header h2 { font-size: 16px; color: #fff; }
   .close-btn { background: none; color: #8a9bbd; font-size: 20px; cursor: pointer; touch-action: manipulation;}
 
-  /* НОВОЕ МЕНЮ (СЕТКА) */
-  .menu-tabs-container { display: flex; padding: 12px; gap: 6px; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-  .menu-tabs-container::-webkit-scrollbar { display: none; }
-  .tab { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #8a9bbd; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; white-space: nowrap; touch-action: manipulation; transition: 0.2s; display: flex; align-items: center; gap: 5px;}
-  .tab.active { background: rgba(255,255,255,0.1); color: #fff; border-color: var(--accent); }
-  
   .tab-content { padding: 12px; overflow-y: auto; flex: 1; min-height: 0; color: #ccc; font-size: 13px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   
   /* Сетка главного меню */
@@ -286,11 +287,7 @@
       <h2 id="menuTitle">Меню</h2>
       <button class="close-btn" id="closeMenu">✕</button>
     </div>
-    <!-- Контейнер для сетки меню (главный экран) -->
-    <div id="mainMenuGrid" class="tab-content" style="display: block;">
-        <!-- Заполняется через JS -->
-    </div>
-    <!-- Контейнер для контента (вкладки) -->
+    <div id="mainMenuGrid" class="tab-content" style="display: block;"></div>
     <div id="tabContent" class="tab-content" style="display: none;"></div>
   </div>
 </div>
@@ -463,7 +460,7 @@ let bossMaxHp = 0;
 let bossTimerId = null;
 let bossTimeLeft = 0;
 let hasShownStorageError = false;
-let activeTab = 'main'; // Теперь главный экран - это сетка
+let activeTab = 'main'; 
 
 const $ = id => document.getElementById(id);
 const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), shardVal: $('shardVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), pauseBtn: $('pauseBtn'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charContainer: $('charContainer'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), mainMenuGrid: $('mainMenuGrid'), menuTitle: $('menuTitle'), toasts: $('toasts'), caseModal: $('caseModal'), rouletteTrack: $('rouletteTrack'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText'), bossModal: $('bossModal'), bossTimer: $('bossTimer'), bossHpFill: $('bossHpFill'), bossEmoji: $('bossEmoji'), bossRewardText: $('bossRewardText'), dailyModal: $('dailyModal'), dailyGrid: $('dailyGrid') };
@@ -954,7 +951,7 @@ function applyCode(raw) {
   if (raw.startsWith('N-DON-')) { const parts = raw.split('-'); if (parts.length === 4) { const tier = parseInt(parts[2]); const hash = parts[3]; const myId = generateUserID(); const expectedHash = simpleHash(myId + tier + "NARZAN_SUPER_SECRET_2024"); if (hash === expectedHash) { if (state.usedCodes.includes(raw)) return showToast('Этот код уже использован!', 'err'); state.usedCodes.push(raw); giveDonateReward(tier); showToast(`✅ Активирован донат на ${tier}₽!`, 'gold'); return; } else { return showToast('❌ Код не подходит для вашего ID!', 'err'); } } }
   if (raw === 'HGHACK') { el.cheatOverlay.classList.add('show'); showToast('🚀 АДМИН МЕНЮ!'); return; } 
   if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); showToast('+1 000 000 капелек!'); return; } 
-  if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 НЛО активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); return; } 
+  if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 НЛО активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); return; } 
   if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; } 
   if (raw === 'BOOSTME') { state.isBoosterPermanent = true; showToast('🚀 Вечный бустер!'); updateUI(); saveGame(); return; } 
   if (raw === 'CASE1') { if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); state.usedCodes.push(raw); state.freeCases++; showToast('🎁 Вы получили 1 бесплатный кейс!', 'gold'); updateUI(); saveGame(); return; } 
@@ -989,12 +986,10 @@ function gameLoop(now) {
     updateUI(); autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); } requestAnimationFrame(gameLoop); 
 }
 
-// === НОВОЕ МЕНЮ (РЕНДЕР) ===
 function renderMenu(keepScroll = false) { 
   let sp = 0; 
   if (activeTab !== 'main' && keepScroll) sp = el.tabContent.scrollTop; 
   
-  // Если открыто главное меню (сетка)
   if (activeTab === 'main') {
       el.mainMenuGrid.style.display = 'block';
       el.tabContent.style.display = 'none';
@@ -1024,7 +1019,6 @@ function renderMenu(keepScroll = false) {
       el.mainMenuGrid.innerHTML = html;
       
   } else {
-      // Если открыт конкретный раздел
       el.mainMenuGrid.style.display = 'none';
       el.tabContent.style.display = 'block';
       
@@ -1044,6 +1038,20 @@ function renderMenu(keepScroll = false) {
           let cb = ''; if (state.freeCases > 0) cb = `<button class="case-btn free-case" onclick="openCase(true)" ${isCaseAnimating?'disabled':''}>Открыть (${state.freeCases} шт)</button>`; else cb = `<button class="case-btn" onclick="openCase(false)" ${state.crystals < CFG.caseCost || isCaseAnimating ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`; 
           html += `<div class="case-box"><div class="case-title">🎁 Таинственный кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>${cb}</div>`; 
           
+          // Отображение НЛО в списке питомцев (СЕКРЕТНОЕ)
+          if (state.hasDrone) {
+              html += `<div class="pet-card active-pet" style="border-color: #00ffff; background: rgba(0,255,255,0.1);">
+                  <div class="pet-icon" style="font-size:30px; filter: drop-shadow(0 0 5px #00ffff);">🛸</div>
+                  <div class="pet-info">
+                      <div class="pet-title" style="color: #00ffff; text-shadow: 0 0 5px #00ffff;">НЛО (Секретное)</div>
+                      <div class="pet-bonus">x5 ко всему</div>
+                  </div>
+                  <div class="pet-actions">
+                      <button class="pet-btn sell" onclick="removeDrone()">Убрать</button>
+                  </div>
+              </div>`;
+          }
+
           let eq = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean);
           let rarities = { rare: 0, epic: 0, legendary: 0, exclusive: 0 };
           eq.forEach(p => rarities[p.rarity]++);
