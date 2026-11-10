@@ -154,29 +154,23 @@
 <body>
 
 <script>
-  // === ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP (Безопасная загрузка) ===
-  // Если игра запущена в APK, скрипт не будет пытаться загрузиться и вызывать ошибку "No Internet Connection"
-  let tg = null;
+  // === БЕЗОПАСНАЯ ИНИЦИАЛИЗАЦИЯ ===
+  // Telegram сам внедряет объект window.Telegram.WebApp, если игра открыта внутри него.
+  // Никаких внешних скриптов не нужно, ошибка "No Internet" в APK исчезнет.
+  const tg = window.Telegram?.WebApp;
   let TG_USER = null;
-
-  if (window.TelegramWebviewProxy || navigator.userAgent.includes("Telegram")) {
-    const script = document.createElement('script');
-    script.src = "https://telegram.org/js/telegram-web-app.js";
-    script.onload = () => {
-      tg = window.Telegram?.WebApp;
-      if (tg) {
-        tg.ready();
-        tg.expand();
-        tg.disableVerticalSwipes?.();
-        tg.setHeaderColor?.('#1b1c3e');
-        tg.setBackgroundColor?.('#0a0b1a');
-        TG_USER = tg.initDataUnsafe?.user || null;
-      }
-    };
-    document.head.appendChild(script);
+  
+  if (tg) {
+    tg.ready();
+    tg.expand(); // Разворачивает игру на весь экран
+    tg.disableVerticalSwipes?.(); // Отключает случайное закрытие свайпом
+    tg.setHeaderColor?.('#1b1c3e');
+    tg.setBackgroundColor?.('#0a0b1a');
+    TG_USER = tg.initDataUnsafe?.user || null;
   }
 
-  // Ссылка на твой профиль в Telegram (для связи по донату)
+  // Ссылка на бота и профиль для доната
+  const TG_BOT_LINK = "https://t.me/narzan_game_bot"; 
   const TG_OWNER = "https://t.me/TheHa1ght"; 
 </script>
 
@@ -644,7 +638,6 @@ function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = 
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
 let isSpinning = false; let currentRotation = 0;
-// Изменены названия призов для ясности
 const WHEEL_PRIZES = [
   { text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } }, 
   { text: 'Доход x1000', color: '#ef4444', action: () => { let r = getAuraIncome() * 1000; state.aura += r; state.totalAura += r; } }, 
@@ -758,12 +751,23 @@ function renderMenu(keepScroll = false) {
     </div>
     <div style="font-weight:bold; color:#fbbf24; margin-top:20px; margin-bottom:10px; text-align:center; font-size:15px;">⭐ ДОНАТ (ЗВЁЗДЫ)</div>`; 
     
-    html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">Оплата в Telegram Stars. После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div></div>
-    <div class="donate-card"><h3>15 рублей (⭐)</h3><p>500 кристаллов для отличного старта.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-    <div class="donate-card"><h3>30 рублей (⭐)</h3><p>1500 кристаллов, 100 000 капелек и 1 кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-    <div class="donate-card"><h3>50 рублей (⭐)</h3><p>3000 кристаллов, 500 000 капелек и 3 кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-    <div class="donate-card"><h3>100 рублей (⭐)</h3><p>10 000 кристаллов, 5 000 000 капелек и 10 кейсов.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-    <div class="donate-card" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.1);"><h3 style="color:#ef4444;">1000 рублей (⭐)</h3><p>100 000 кристаллов, 100 000 000 капелек, 25 кейсов и <b>Феникс (x7 ко всему)</b>!</p><button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateModal()">Поддержать</button></div>`; 
+    // Если игра открыта НЕ в Telegram
+    if (!tg) {
+      html += `<div class="donate-card" style="border-color:#ef4444; background:rgba(239,68,68,0.1);">
+        <h3 style="color:#ef4444;">Внимание!</h3>
+        <p>Донат доступен <b>только внутри Telegram</b>. Пожалуйста, запустите игру через нашего бота, чтобы пополнить баланс Звёздами.</p>
+        <button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="window.open(TG_BOT_LINK, '_blank')">Открыть в Telegram</button>
+      </div>`;
+    } 
+    // Если игра открыта в Telegram
+    else {
+      html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">Оплата в Telegram Stars. После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div></div>
+      <div class="donate-card"><h3>15 рублей (⭐)</h3><p>500 кристаллов для отличного старта.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+      <div class="donate-card"><h3>30 рублей (⭐)</h3><p>1500 кристаллов, 100 000 капелек и 1 кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+      <div class="donate-card"><h3>50 рублей (⭐)</h3><p>3000 кристаллов, 500 000 капелек и 3 кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+      <div class="donate-card"><h3>100 рублей (⭐)</h3><p>10 000 кристаллов, 5 000 000 капелек и 10 кейсов.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+      <div class="donate-card" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.1);"><h3 style="color:#ef4444;">1000 рублей (⭐)</h3><p>100 000 кристаллов, 100 000 000 капелек, 25 кейсов и <b>Феникс (x7 ко всему)</b>!</p><button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateModal()">Поддержать</button></div>`; 
+    }
   }
   else if (activeTab === 'account') { 
     html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">${TG_USER ? 'Аккаунт: ' + (TG_USER.username || TG_USER.first_name) : (currentUser === 'guest' ? 'Гостевой режим' : 'Аккаунт: ' + currentUser)}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div>`; 
@@ -809,7 +813,15 @@ function exchangeMax() {
     }
 }
 
-function openDonateModal() { el.donateIdText.textContent = generateUserID(); el.donateModal.classList.add('show'); }
+function openDonateModal() { 
+  if (!tg) {
+    showToast('Донат доступен только в Telegram!', 'err');
+    window.open(TG_BOT_LINK, '_blank');
+    return;
+  }
+  el.donateIdText.textContent = generateUserID(); 
+  el.donateModal.classList.add('show'); 
+}
 function openDonateLink() {
   if (tg) {
     tg.openTelegramLink(TG_OWNER);
