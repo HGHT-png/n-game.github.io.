@@ -8,8 +8,6 @@
 <meta http-equiv="Expires" content="0">
 <title>Эволюция Нарзана</title>
 <meta name="theme-color" content="#1b1c3e">
-<!-- Подключаем Telegram WebApp SDK -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root { --bg-grad-top: #1b1c3e; --bg-grad-bot: #0a0b1a; --btn-grad-start: #6a4cff; --btn-grad-end: #8a6cff; --accent: #60a5fa; --text: #ffffff; --panel: #14152b; }
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -156,17 +154,26 @@
 <body>
 
 <script>
-  // === ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP ===
-  const tg = window.Telegram?.WebApp;
+  // === ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP (Безопасная загрузка) ===
+  // Если игра запущена в APK, скрипт не будет пытаться загрузиться и вызывать ошибку "No Internet Connection"
+  let tg = null;
   let TG_USER = null;
-  
-  if (tg) {
-    tg.ready();
-    tg.expand(); // Разворачивает игру на весь экран
-    tg.disableVerticalSwipes?.(); // Отключает случайное закрытие свайпом
-    tg.setHeaderColor?.('#1b1c3e');
-    tg.setBackgroundColor?.('#0a0b1a');
-    TG_USER = tg.initDataUnsafe?.user || null;
+
+  if (window.TelegramWebviewProxy || navigator.userAgent.includes("Telegram")) {
+    const script = document.createElement('script');
+    script.src = "https://telegram.org/js/telegram-web-app.js";
+    script.onload = () => {
+      tg = window.Telegram?.WebApp;
+      if (tg) {
+        tg.ready();
+        tg.expand();
+        tg.disableVerticalSwipes?.();
+        tg.setHeaderColor?.('#1b1c3e');
+        tg.setBackgroundColor?.('#0a0b1a');
+        TG_USER = tg.initDataUnsafe?.user || null;
+      }
+    };
+    document.head.appendChild(script);
   }
 
   // Ссылка на твой профиль в Telegram (для связи по донату)
@@ -361,7 +368,7 @@ const ACHIEVEMENTS = [
 const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, freeCases: 0, pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 }, secretStage: null, preSecretStage: 0, theme: 'default', isPaused: false };
 let state = JSON.parse(JSON.stringify(defaultState));
 
-// === АВТОЛОГИН ЧЕРЕЗ TELEGRAM ===
+// === АВТОЛОГИН ЧЕРЕЗ TELEGRAM ИЛИ ГОСТЬ ===
 let currentUser, currentSaveKey;
 if (TG_USER) {
   currentUser = 'tg_' + TG_USER.id;
@@ -637,7 +644,18 @@ function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = 
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
 let isSpinning = false; let currentRotation = 0;
-const WHEEL_PRIZES = [{ text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } }, { text: 'Аура x1000', color: '#ef4444', action: () => { let r = getAuraIncome() * 1000; state.aura += r; state.totalAura += r; } }, { text: '📦 Кейс', color: '#fbbf24', action: () => { state.freeCases++; } }, { text: 'Пусто', color: '#333', action: () => {} }, { text: '10💎', color: '#10b981', action: () => { state.crystals += 10; } }, { text: 'Бустер x2', color: '#8b5cf6', action: () => { state.boosterEnd = Date.now() + 60000; } }, { text: 'Аура x100', color: '#ef4444', action: () => { let r = getAuraIncome() * 100; state.aura += r; state.totalAura += r; } }, { text: '50💎', color: '#3b82f6', action: () => { state.crystals += 50; } }];
+// Изменены названия призов для ясности
+const WHEEL_PRIZES = [
+  { text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } }, 
+  { text: 'Доход x1000', color: '#ef4444', action: () => { let r = getAuraIncome() * 1000; state.aura += r; state.totalAura += r; } }, 
+  { text: '📦 Кейс', color: '#fbbf24', action: () => { state.freeCases++; } }, 
+  { text: 'Пусто', color: '#333', action: () => {} }, 
+  { text: '10💎', color: '#10b981', action: () => { state.crystals += 10; } }, 
+  { text: 'Бустер x2', color: '#8b5cf6', action: () => { state.boosterEnd = Date.now() + 60000; } }, 
+  { text: 'Доход x100', color: '#ef4444', action: () => { let r = getAuraIncome() * 100; state.aura += r; state.totalAura += r; } }, 
+  { text: '50💎', color: '#3b82f6', action: () => { state.crystals += 50; } }
+];
+
 function renderCasino() { const deg = 360 / WHEEL_PRIZES.length; let gs = WHEEL_PRIZES.map((p, i) => `${p.color} ${i*deg}deg ${(i+1)*deg}deg`).join(', '); let lh = ''; WHEEL_PRIZES.forEach((prize, i) => { const a = (i * deg) + (deg / 2); lh += `<div class="wheel-label-container" style="transform: rotate(${a}deg) translateY(-85px);"><div class="wheel-label" style="transform: rotate(${-a}deg);">${prize.text}</div></div>`; }); return `<div class="casino-wrap"><div class="wheel-container"><div class="wheel-pointer">▼</div><div class="wheel" id="fortuneWheel" style="background: conic-gradient(${gs});">${lh}</div></div><button class="spin-btn" onclick="spinWheel()" ${state.crystals < 10 || isSpinning ? 'disabled' : ''}>Крутить (10 💎)</button></div>`; }
 function spinWheel() { if (isSpinning || state.crystals < 10) return; isSpinning = true; state.crystals -= 10; updateUI(); const w = document.getElementById('fortuneWheel'); const b = document.querySelector('.spin-btn'); if (b) b.disabled = true; const pi = Math.floor(Math.random() * WHEEL_PRIZES.length); const dps = 360 / WHEEL_PRIZES.length; const cos = (pi * dps) + (dps / 2); const tba = -cos; let cam = currentRotation % 360; if (cam < 0) cam += 360; let ad = (tba - cam + 360) % 360; currentRotation += 1800 + ad; w.style.transform = `rotate(${currentRotation}deg)`; setTimeout(() => { WHEEL_PRIZES[pi].action(); if (WHEEL_PRIZES[pi].text.includes('Кейс')) { showToast('🎁 Вы выиграли КЕЙС!', 'gold'); } else { showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[pi].text}!`, 'gold'); } isSpinning = false; updateUI(); saveGame(); renderMenu(true); }, 4200); }
 
