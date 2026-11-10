@@ -22,9 +22,12 @@
   .prestige-btn-small { position: absolute; top: 0; left: 0; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; touch-action: manipulation; z-index: 10;}
   .prestige-btn-small:active { transform: scale(0.9); background: rgba(245, 158, 11, 0.3); }
   .prestige-btn-small.hidden { display: none; }
-  .crystal-display { font-size: 14px; color: var(--accent); margin-top: 2px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px;}
+  
+  .crystal-display { font-size: 13px; color: var(--accent); margin-top: 2px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px;}
   .aura-icon { color: #ffd700; font-size: 22px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-  .crystal-icon { color: var(--accent); font-size: 16px; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+  .crystal-icon { color: var(--accent); font-size: 15px; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+  .shard-icon { color: #a78bfa; font-size: 15px; text-shadow: 0 0 10px rgba(167, 139, 250, 0.5); }
+  
   .stage-name { font-size: 13px; color: #8a9bbd; margin-top: 2px; font-weight: 500; }
   .income-text { font-size: 12px; color: #5eead4; margin-top: 2px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 5px;}
   .prestige-text { font-size: 11px; color: #fbbf24; margin-top: 2px; font-weight: bold; }
@@ -33,25 +36,32 @@
   @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
   
   #charContainer { width: 120px; height: 140px; z-index: 2; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 0 20px rgba(110,200,255,0.4)); transition: transform 0.1s; pointer-events: none; }
-  #charImg { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 15px; background: rgba(0,0,0,0.2); padding: 5px; border: 1px solid rgba(255,255,255,0.1); }
+  #charImg { max-width: 100%; max-height: 100%; object-fit: contain; }
   #charEmoji { font-size: 70px; }
   .click-zone.pop #charContainer { transform: scale(1.1); }
   
   .pets-container { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: visible; }
-  .pet-wrapper { position: absolute; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 4; transform: translate(-50%, -50%); }
+  .pet-wrapper { position: absolute; width: 55px; height: 55px; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 4; transform: translate(-50%, -50%); }
   
-  .active-pet-display { width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); font-size: 35px; }
+  .active-pet-display { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; animation: floatPet 2s infinite alternate ease-in-out; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); font-size: 35px; }
   .active-pet-display img { width: 100%; height: 100%; object-fit: contain; }
   
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
   .ufo-active { font-size: 50px; filter: drop-shadow(0 0 25px #00ffff) !important; animation: ufoHover 2s infinite alternate ease-in-out !important; }
   @keyframes ufoHover { 0% { transform: translateY(0) scale(1) rotate(-5deg); } 100% { transform: translateY(-15px) scale(1.1) rotate(5deg); } }
+  
   .bottom-panel { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
   .final-box { display: none; padding: 5px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,200,60,0.3); }
   .final-box.show { display: block; }
   .final-text { font-size: 11px; color: #ffd66b; text-align: center; margin-bottom: 4px; font-weight: bold; }
   .progress-bar { height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #fbbf24, #ef4444); transition: width 0.3s; }
+  
+  /* Кнопки покупки */
+  .buy-toggles { display: flex; gap: 4px; margin-bottom: 4px; justify-content: center; }
+  .buy-toggle { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #aaa; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
+  .buy-toggle.active { background: var(--btn-grad-start); color: #fff; border-color: var(--btn-grad-end); }
+
   .buttons { display: flex; flex-direction: column; gap: 5px; }
   .btn-row { display: flex; gap: 5px; }
   .btn { flex: 1; border-radius: 10px; padding: 6px 8px; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.15s; background: linear-gradient(135deg, var(--btn-grad-start), var(--btn-grad-end)); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.3); cursor: pointer; touch-action: manipulation; line-height: 1.2; }
@@ -82,8 +92,8 @@
   .pet-card { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 6px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.1); transition: 0.1s; }
   .pet-card.owned { border-color: #5eead4; background: rgba(94,234,212,0.05); }
   .pet-card.active-pet { border-color: #fbbf24; background: rgba(245,158,11,0.1); box-shadow: 0 0 10px rgba(245,158,11,0.2); }
-  .pet-icon { font-size: 22px; width: 35px; height: 35px; text-align: center; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
-  .pet-icon img { width: 100%; height: 100%; object-fit: contain; }
+  .pet-icon { font-size: 22px; width: 40px; height: 40px; text-align: center; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
+  .pet-icon img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
   .pet-info { flex: 1; min-width: 0; }
   .pet-title { font-weight: 700; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
   .pet-rarity-rare { color: #60a5fa; }
@@ -103,28 +113,54 @@
   .case-btn:active { transform: scale(0.97); }
   .case-btn:disabled { opacity: 0.4; pointer-events: none; box-shadow: none; }
   .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; box-shadow: 0 4px 12px rgba(245,158,11,0.4);}
-  .casino-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
-  .wheel-container { position: relative; width: 240px; height: 240px; margin-bottom: 15px; }
-  .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
-  .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-  .wheel-label-container { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
-  .wheel-label { position: absolute; left: -45px; top: -10px; width: 90px; text-align: center; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none; display: flex; justify-content: center; align-items: center;}
-  .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
-  .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
-  .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; }
+  
+  /* РУЛЕТКА КЕЙСА (CS:GO STYLE) */
+  .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;}
   .case-modal.show { display: flex; }
-  .case-anim-box { font-size: 80px; animation: shake 0.5s infinite; }
-  @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
-  .case-result { display: none; flex-direction: column; align-items: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; }
+  
+  .roulette-wrap { position: relative; width: 100%; height: 120px; background: #05050a; border-top: 2px solid #2a2a3a; border-bottom: 2px solid #2a2a3a; overflow: hidden; display: flex; align-items: center; }
+  .roulette-track { display: flex; align-items: center; height: 100%; position: absolute; left: 0; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); will-change: transform; }
+  
+  .roulette-item { flex-shrink: 0; width: 90px; height: 100px; margin: 0 5px; background: #14152b; border: 2px solid #2a2a3a; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; }
+  .roulette-item img { width: 60px; height: 60px; object-fit: contain; }
+  .roulette-item span { font-size: 30px; }
+  .roulette-item.rare { border-bottom: 4px solid #60a5fa; }
+  .roulette-item.epic { border-bottom: 4px solid #c084fc; }
+  .roulette-item.legendary { border-bottom: 4px solid #fbbf24; box-shadow: inset 0 0 20px rgba(251,191,36,0.2); }
+  
+  .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #ef4444; z-index: 10; box-shadow: 0 0 10px #ef4444; transform: translateX(-50%); }
+  
+  .case-result { display: none; flex-direction: column; align-items: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; margin-top: 20px; }
   @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-  .case-result-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-  .case-result-icon { font-size: 100px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .case-result-icon img { width: 100px; height: 100px; object-fit: contain; }
-  .case-result-name { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
-  .case-close-btn { background: #3b82f6; color: white; padding: 12px 40px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
-  .case-close-btn:active { transform: scale(0.95); }
+  .case-result-icon { font-size: 100px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); margin-bottom: 10px; }
+  .case-result-icon img { width: 120px; height: 120px; object-fit: contain; }
+  .case-result-name { font-size: 22px; font-weight: bold; margin-bottom: 20px; }
+  
   .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   .close-case-x:active { background: rgba(255,255,255,0.2); }
+
+  /* БОСС */
+  .boss-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 250; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+  .boss-modal.show { display: flex; }
+  .boss-name { font-size: 24px; font-weight: bold; color: #ef4444; margin-bottom: 10px; text-shadow: 0 0 10px #ef4444; }
+  .boss-timer { font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 20px; }
+  .boss-hp-bar { width: 100%; height: 25px; background: #333; border-radius: 15px; overflow: hidden; margin-bottom: 20px; border: 2px solid #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+  .boss-hp-fill { height: 100%; background: linear-gradient(90deg, #b91c1c, #ef4444); width: 100%; transition: width 0.1s; }
+  .boss-emoji { font-size: 140px; line-height: 1; cursor: crosshair; text-shadow: 0 0 30px rgba(239, 68, 68, 0.8), 0 0 60px rgba(239, 68, 68, 0.4); animation: floatBoss 1.5s infinite alternate ease-in-out; transition: transform 0.05s; }
+  .boss-emoji:active { transform: scale(0.9); }
+  @keyframes floatBoss { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-15px) scale(1.05); } }
+  .boss-hit-anim { animation: shake 0.2s; }
+  @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+
+  /* Ежедневный бонус */
+  .daily-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.9); backdrop-filter: blur(8px); z-index: 300; display: none; align-items: center; justify-content: center; padding: 15px;}
+  .daily-modal.show { display: flex; }
+  .daily-grid { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;}
+  .daily-item { width: 45px; height: 55px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: #888; border: 1px solid transparent;}
+  .daily-item.active { border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); color: #fff; box-shadow: 0 0 10px rgba(251,191,36,0.3);}
+  .daily-icon { font-size: 18px; margin-bottom: 2px;}
+  
+  /* ОСТАЛЬНОЕ */
   .floating-bonus { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24); }
   .floating-crystal { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #60a5fa); }
   #toasts { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; pointer-events: none; }
@@ -177,7 +213,11 @@
     <button class="prestige-btn-small hidden" id="btnPrestige" title="Престиж">🔄</button>
     <button class="menu-btn" id="menuBtn">☰</button>
     <div class="aura-display"><span class="aura-icon">💧</span> <span id="auraVal">0</span></div>
-    <div class="crystal-display"><span class="crystal-icon">💎</span> <span id="crystalVal">0</span> | 📦 <span id="caseVal">0</span></div>
+    <div class="crystal-display">
+      <span class="crystal-icon">💎</span> <span id="crystalVal">0</span> | 
+      <span class="shard-icon">🔹</span> <span id="shardVal">0</span> | 
+      📦 <span id="caseVal">0</span>
+    </div>
     <div class="stage-name" id="stageName">Мыло «Аура»</div>
     <div class="income-text">
       <span id="incomeVal">+0 капелек/сек</span>
@@ -203,6 +243,14 @@
       <input id="codeInput" placeholder="Бонус-код..." autocomplete="off">
       <button id="codeBtn">Ввести</button>
     </div>
+    
+    <!-- КНОПКИ ПОКУПКИ x1 x10 x100 -->
+    <div class="buy-toggles">
+      <button class="buy-toggle active" id="buy1" onclick="setBuyAmount(1)">x1</button>
+      <button class="buy-toggle" id="buy10" onclick="setBuyAmount(10)">x10</button>
+      <button class="buy-toggle" id="buy100" onclick="setBuyAmount(100)">x100</button>
+    </div>
+
     <div class="buttons">
       <div class="btn-row">
         <button class="btn" id="btnClick">
@@ -241,6 +289,7 @@
   </div>
 </div>
 
+<!-- ДОНАТ -->
 <div class="overlay" id="donateModal">
   <div class="menu" style="height: auto; max-height: 80vh;">
     <div class="menu-header">
@@ -253,9 +302,9 @@
       <div style="font-size: 13px; color: #ccc; margin-bottom: 15px; line-height: 1.5;">
         1. Скопируйте ваш ID:<br>
         <b id="donateIdText" style="color:#5eead4; font-size: 18px; display: block; margin-top: 5px; margin-bottom: 15px; text-align:center; background:rgba(94,234,212,0.1); padding:5px; border-radius:5px; border:1px dashed #5eead4;"></b>
-        2. Переведите нужное количество ⭐ (Звезд) на аккаунт <b>@TheHa1ght</b> (через подарки или @PremiumBot).<br><br>
+        2. Переведите нужное количество ⭐ (Звезд) на аккаунт <b>@TheHa1ght</b>.<br><br>
         3. Напишите в Telegram <b><a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></b> ваш ID и скриншот оплаты.<br><br>
-        4. Мы пришлем вам <b>Бонус-код</b>, который нужно ввести в поле «Бонус-код...» в игре!
+        4. Мы пришлем вам <b>Бонус-код</b>!
       </div>
       <button class="case-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; margin-bottom: 10px;" onclick="openDonateLink()">Написать в Telegram</button>
       <button class="case-btn" style="background: #4a4a5a;" onclick="document.getElementById('donateModal').classList.remove('show')">Закрыть</button>
@@ -263,57 +312,72 @@
   </div>
 </div>
 
+<!-- КЕЙС -->
 <div class="case-modal" id="caseModal">
   <button class="close-case-x" id="closeCaseX">✕</button>
-  <div class="case-anim-box" id="caseAnimBox">🎁</div>
+  <div id="rouletteContainer" style="width:100%;">
+    <div class="roulette-wrap">
+      <div class="roulette-pointer"></div>
+      <div class="roulette-track" id="rouletteTrack"></div>
+    </div>
+  </div>
   <div class="case-result" id="caseResult">
-    <div class="case-result-title" id="caseResultTitle">Вы выбили:</div>
+    <div class="case-result-title" id="caseResultTitle" style="font-size:20px; font-weight:bold; margin-bottom:10px; color:#fff;">Вы выбили:</div>
     <div class="case-result-icon" id="caseResultIcon">🐉</div>
     <div class="case-result-name" id="caseResultName">Дракон</div>
-    <button class="case-close-btn" id="caseCloseBtn">Забрать</button>
+    <button class="case-close-btn" id="caseCloseBtn" style="background:#3b82f6; color:white; padding:12px 40px; border-radius:12px; font-weight:bold; font-size:16px; cursor:pointer; box-shadow: 0 4px 15px rgba(59,130,246,0.4);">Забрать</button>
   </div>
 </div>
 
+<!-- БОСС -->
+<div class="boss-modal" id="bossModal">
+  <button class="close-case-x" onclick="closeBoss()">✕</button>
+  <div class="boss-name" id="bossName">Космический Мутант</div>
+  <div class="boss-timer" id="bossTimer">30 сек</div>
+  <div class="boss-hp-bar"><div class="boss-hp-fill" id="bossHpFill"></div></div>
+  <div class="boss-emoji" id="bossEmoji" onclick="hitBoss(event)">👾</div>
+  <div id="bossRewardText" style="margin-top:20px; font-size:20px; font-weight:bold; color:#5eead4; display:none; text-align:center;">Награда: +50 💎</div>
+</div>
+
+<!-- ЕЖЕДНЕВНЫЙ БОНУС -->
+<div class="daily-modal" id="dailyModal">
+  <div class="menu" style="height: auto; padding: 20px; text-align: center; max-width: 350px;">
+    <h2 style="color: #fbbf24; margin-bottom: 10px;">Ежедневный бонус!</h2>
+    <p style="font-size: 12px; color: #aaa; margin-bottom: 15px;">Заходи каждый день и получай награды!</p>
+    <div class="daily-grid" id="dailyGrid">
+      <!-- Заполняется через JS -->
+    </div>
+    <button class="case-btn" onclick="claimDaily()" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000;">Забрать награду</button>
+  </div>
+</div>
+
+<!-- АДМИНКА -->
 <div class="overlay" id="cheatOverlay">
   <div class="cheat-panel">
     <h3 style="margin-bottom:8px;">ADMIN MENU</h3>
     <div style="border-bottom:1px solid #0f0; margin-bottom:8px; padding-bottom:8px;">
-      <div style="font-size:11px; margin-bottom:5px;">ГЕНЕРАТОР КОДОВ ДОНАТА:</div>
-      <input type="text" id="genIdInput" placeholder="Введите ID игрока (TG-1234567)" style="width:100%; padding:5px; margin-bottom:5px; background:#111; border:1px solid #0f0; color:#0f0;">
+      <div style="font-size:11px; margin-bottom:5px;">ГЕНЕРАТОР КОДОВ:</div>
+      <input type="text" id="genIdInput" placeholder="TG-1234567" style="width:100%; padding:5px; margin-bottom:5px; background:#111; border:1px solid #0f0; color:#0f0;">
       <div style="display:flex; gap:4px;">
-        <button class="cheat-btn" onclick="genCode(15)">15₽ (⭐)</button>
-        <button class="cheat-btn" onclick="genCode(30)">30₽ (⭐)</button>
-        <button class="cheat-btn" onclick="genCode(50)">50₽ (⭐)</button>
+        <button class="cheat-btn" onclick="genCode(15)">15₽</button>
+        <button class="cheat-btn" onclick="genCode(30)">30₽</button>
+        <button class="cheat-btn" onclick="genCode(50)">50₽</button>
       </div>
       <div style="display:flex; gap:4px; margin-top:4px;">
-        <button class="cheat-btn" onclick="genCode(100)">100₽ (⭐)</button>
-        <button class="cheat-btn" style="color:#f00; border-color:#f00;" onclick="genCode(1000)">1000₽ (Феникс)</button>
+        <button class="cheat-btn" onclick="genCode(100)">100₽</button>
+        <button class="cheat-btn" style="color:#f00; border-color:#f00;" onclick="genCode(1000)">1000₽</button>
       </div>
       <div id="genResult" style="margin-top:8px; font-size:12px; color:#fff; word-break:break-all; background:#222; padding:5px; display:none;"></div>
     </div>
     <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px;">ТЕСТЫ:</div>
-    <button class="cheat-btn" onclick="applyCode('DRONE')">> НЛО (x5)</button>
+    <button class="cheat-btn" onclick="applyCode('DRONE')">> НЛО</button>
     <button class="cheat-btn" onclick="applyCode('CRIT100')">> CRIT100</button>
     <button class="cheat-btn" onclick="applyCode('BOOSTME')">> BOOSTME</button>
-    <button class="cheat-btn" onclick="applyCode('CASEMAX')">> CASEMAX (кейсы)</button>
-    <button class="cheat-btn" onclick="applyCode('GEMSMAX')">> GEMSMAX (гемы)</button>
+    <button class="cheat-btn" onclick="applyCode('CASEMAX')">> CASEMAX</button>
+    <button class="cheat-btn" onclick="applyCode('GEMSMAX')">> GEMSMAX</button>
     <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
     <button class="cheat-btn" onclick="applyCode('ФИЗРУК')">> Секретная стадия</button>
-    <div style="border-top:1px solid #0f0; margin:8px 0; padding-top:8px; font-size:10px; line-height:1.2; color:#0f0;">
-      <b>СПИСОК ВСЕХ КОДОВ:</b><br>
-      HGHACK - Открыть это меню<br>
-      DRONE - Получить НЛО (x5)<br>
-      CRIT100 - 100% криты<br>
-      BOOSTME - Вечный бустер<br>
-      MAXSCORE559 - 1млн капелек<br>
-      CASEMAX - +1 кейс<br>
-      GEMSMAX - +50 кристаллов<br>
-      HGHT - 5000 капелек<br>
-      0765 - 1500 капелек<br>
-      27 - 2700 капелек<br>
-      E04 - 404 капельки<br>
-      ФИЗРУК - Секретная стадия
-    </div>
+    <button class="cheat-btn" onclick="applyCode('BOSS')">> Тест Босса</button>
     <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:15px;" onclick="document.getElementById('cheatOverlay').classList.remove('show')">> ЗАКРЫТЬ</button>
   </div>
 </div>
@@ -348,7 +412,9 @@ const CFG = {
   names: { soap:'Мыло «Аура»', liquid_soap:'Жидкое мыло', solid_soap:'Твёрдое мыло', water:'Бутылка воды', mineral_water:'Минеральная вода', sparkling_water:'Газированная вода', brush:'Чёрная зубная щётка', electric_brush:'Электрическая щётка', sonic_brush:'Ультразвуковая щётка', narzan:'Нарзан', kvass:'Квас', juice:'Сок', mors:'Морс', compote:'Компот', lemonade:'Лимонад', tea:'Чай', coffee:'Кофе', cocoa:'Какао', energy:'Энергетик', beer:'Пиво', wine:'Вино', champagne:'Шампанское', cognac:'Коньяк', chekushka:'Чекушка', cosmic:'Космический Нарзан' },
   order: ['soap','liquid_soap','solid_soap','water','mineral_water','sparkling_water','brush','electric_brush','sonic_brush','narzan','kvass','juice','mors','compote','lemonade','tea','coffee','cocoa','energy','beer','wine','champagne','cognac','chekushka','cosmic'],
   stageReq: [0, 5, 10, 15, 20, 30, 40, 50, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 260, 280, 300, 350],
-  clickBaseCost: 10, auraBaseCost: 15, costGrowth: 1.05, boosterCost: 200, boosterGrowth: 1.20, boosterDuration: 30000, caseCost: 10, sellRare: 10, sellEpic: 15, sellLegendary: 250, sellExclusive: 1000
+  clickBaseCost: 10, auraBaseCost: 15, costGrowth: 1.05, boosterCost: 200, boosterGrowth: 1.20, boosterDuration: 30000, 
+  caseCost: 15, // Изменено на 15
+  sellRare: 5, sellEpic: 15, sellLegendary: 50, sellExclusive: 200 // Осколки
 };
 
 const CODES = { 'HGHT': 5000, '0765': 1500, '27': 2700, 'E04': 404 };
@@ -361,7 +427,18 @@ const ACHIEVEMENTS = [
   { id:'petAll', icon:'🐉', name:'Зоопарк', desc:'Собери 5 питомцев', check:s=>s.pets.length>=5 },
 ];
 
-const defaultState = { aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, crystals: 0, freeCases: 0, pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), critChance: 0.05, prestigePoints: 0, lastDaily: 0, isBoosterPermanent: false, talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 }, secretStage: null, preSecretStage: 0, theme: 'default', isPaused: false };
+const defaultState = { 
+  aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, 
+  crystals: 0, shards: 0, freeCases: 0, 
+  pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], 
+  boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), 
+  critChance: 0.05, prestigePoints: 0, isBoosterPermanent: false, 
+  talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 }, 
+  secretStage: null, preSecretStage: 0, theme: 'default', isPaused: false,
+  buyAmount: 1,
+  lastDaily: 0, dailyStreak: 0,
+  totalBossKills: 0, totalCasesOpened: 0, totalPetsSold: 0
+};
 let state = JSON.parse(JSON.stringify(defaultState));
 
 let currentUser, currentSaveKey;
@@ -378,10 +455,13 @@ if (TG_USER) {
 let activeMinigame = null;
 let goldRushEnd = 0;
 let bossHp = 0;
+let bossMaxHp = 0;
+let bossTimerId = null;
+let bossTimeLeft = 0;
 let hasShownStorageError = false;
 
 const $ = id => document.getElementById(id);
-const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), pauseBtn: $('pauseBtn'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charContainer: $('charContainer'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'), caseModal: $('caseModal'), caseAnimBox: $('caseAnimBox'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText') };
+const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), shardVal: $('shardVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), pauseBtn: $('pauseBtn'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charContainer: $('charContainer'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), toasts: $('toasts'), caseModal: $('caseModal'), rouletteTrack: $('rouletteTrack'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText'), bossModal: $('bossModal'), bossTimer: $('bossTimer'), bossHpFill: $('bossHpFill'), bossEmoji: $('bossEmoji'), bossRewardText: $('bossRewardText'), dailyModal: $('dailyModal'), dailyGrid: $('dailyGrid') };
 
 function saveGame() { state.lastSaved = Date.now(); try { localStorage.setItem(currentSaveKey, JSON.stringify(state)); } catch (e) {} }
 function loadGame() {
@@ -398,8 +478,10 @@ function loadGame() {
       if (!state.talents || typeof state.talents !== 'object') state.talents = { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 };
       if (isNaN(state.aura)) state.aura = 0;
       if (isNaN(state.crystals)) state.crystals = 0;
+      if (isNaN(state.shards)) state.shards = 0;
       if (isNaN(state.freeCases)) state.freeCases = 0;
       if (state.isPaused === undefined) state.isPaused = false;
+      if (state.buyAmount === undefined) state.buyAmount = 1;
       applyTheme(state.theme);
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
       if (diffSec > 10 && state.auraLevel > 0) {
@@ -433,19 +515,111 @@ function setTheme(themeName) { state.theme = themeName; applyTheme(themeName); s
 function togglePause() { state.isPaused = !state.isPaused; showToast(state.isPaused ? '⏸️ Фарм на паузе' : '▶️ Фарм возобновлен', 'gold'); saveGame(); }
 function customColor(type) { const picker = document.getElementById('customColorPicker'); picker.value = type === 'bg' ? (state.customBg || '#1b1c3e') : (state.customBtn || '#6a4cff'); picker.oninput = (e) => { if (type === 'bg') state.customBg = e.target.value; if (type === 'btn') state.customBtn = e.target.value; state.theme = 'custom'; applyTheme('custom'); saveGame(); }; picker.click(); }
 
-const getPetsMultiplier = (type) => { if (!state.activePets) return 1; let eq = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean); let count = eq.length; if (state.hasDrone) count++; if (count === 0) return 1; let penaltyPerPet = 0.15 - (state.talents.teamSpirit * 0.01); let inf = Math.max(0.2, 1 - (count - 1) * penaltyPerPet); let tb = 0; eq.forEach(p => { if (p.bonus.type === type || p.bonus.type === 'global') tb += (p.bonus.val - 1) * inf; }); return 1 + tb; };
+// === СИНЕРГИЯ ПИТОМЦЕВ ===
+const getPetsMultiplier = (type) => { 
+  if (!state.activePets) return 1; 
+  let eq = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean); 
+  let count = eq.length; if (state.hasDrone) count++; 
+  if (count === 0) return 1; 
+  let penaltyPerPet = 0.15 - (state.talents.teamSpirit * 0.01); 
+  let inf = Math.max(0.2, 1 - (count - 1) * penaltyPerPet); 
+  let tb = 0; 
+  eq.forEach(p => { if (p.bonus.type === type || p.bonus.type === 'global') tb += (p.bonus.val - 1) * inf; }); 
+  
+  // Синергия
+  let rarities = { rare: 0, epic: 0, legendary: 0, exclusive: 0 };
+  eq.forEach(p => rarities[p.rarity]++);
+  let synergy = 0;
+  if (rarities.rare >= 3) synergy += 0.15;
+  if (rarities.epic >= 3) synergy += 0.25;
+  if (rarities.legendary >= 3) synergy += 0.40;
+  if (rarities.exclusive >= 2) synergy += 0.50;
+  
+  return 1 + tb + synergy; 
+};
 const getPetClickMultiplier = () => getPetsMultiplier('click');
 const getPetIncomeMultiplier = () => getPetsMultiplier('income');
 const getDroneMultiplier = () => state.hasDrone ? 5 : 1;
 const getPrestigeMultiplier = () => 1 + ((state.prestigePoints || 0) * 0.1);
-const getClickCost = () => { let lvl = state.clickLevel; return (lvl < 5) ? Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, lvl - 1)) : Math.floor(1000 * Math.pow(CFG.costGrowth, lvl - 5)); };
-const getAuraCost = () => { let lvl = state.auraLevel; return (lvl < 5) ? Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, lvl)) : Math.floor(1000 * Math.pow(CFG.costGrowth, lvl - 5)); };
+
+// === МАССОВАЯ ПОКУПКА ===
+function setBuyAmount(amount) {
+    state.buyAmount = amount;
+    document.querySelectorAll('.buy-toggle').forEach(b => b.classList.remove('active'));
+    document.getElementById('buy' + amount).classList.add('active');
+    updateUI();
+}
+
+function getUpgradeCost(type, amount) {
+    let total = 0;
+    let lvl = type === 'click' ? state.clickLevel : state.auraLevel;
+    for (let i = 0; i < amount; i++) {
+        let currentLvl = lvl + i;
+        if (type === 'click') {
+            total += (currentLvl < 5) ? Math.floor(CFG.clickBaseCost * Math.pow(CFG.costGrowth, currentLvl - 1)) : Math.floor(1000 * Math.pow(CFG.costGrowth, currentLvl - 5));
+        } else {
+            total += (currentLvl < 5) ? Math.floor(CFG.auraBaseCost * Math.pow(CFG.costGrowth, currentLvl)) : Math.floor(1000 * Math.pow(CFG.costGrowth, currentLvl - 5));
+        }
+    }
+    return total;
+}
+
+const getClickCost = () => getUpgradeCost('click', state.buyAmount);
+const getAuraCost = () => getUpgradeCost('aura', state.buyAmount);
 const getBoosterCost = () => Math.floor(CFG.boosterCost * Math.pow(CFG.boosterGrowth, state.boosterLevel));
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
 const getClickPower = () => { let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5)); let talentBonus = 1 + (state.talents.heavyHand * 0.01); let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier(); if (Date.now() < goldRushEnd) multiplier *= 5; return base * talentBonus * multiplier; };
 const getAuraIncome = () => { let base = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)); let talentBonus = 1 + (state.talents.goldenVein * 0.01); return base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier(); };
 
+// === ЕЖЕДНЕВНЫЙ БОНУС ===
+function checkDaily() {
+    const now = Date.now();
+    const diff = now - (state.lastDaily || 0);
+    if (diff > 24 * 60 * 60 * 1000) {
+        if (diff > 48 * 60 * 60 * 1000) state.dailyStreak = 0; // Сброс если пропустил день
+        state.dailyStreak = Math.min(7, (state.dailyStreak || 0) + 1);
+        showDailyModal();
+    }
+}
+
+function showDailyModal() {
+    el.dailyModal.classList.add('show');
+    el.dailyGrid.innerHTML = '';
+    const rewards = [
+        { d: 1, icon: '💧', txt: '100к' },
+        { d: 2, icon: '💎', txt: '5' },
+        { d: 3, icon: '💧', txt: '250к' },
+        { d: 4, icon: '💎', txt: '10' },
+        { d: 5, icon: '📦', txt: 'Кейс' },
+        { d: 6, icon: '💧', txt: '500к' },
+        { d: 7, icon: '🔥', txt: 'Феникс' }
+    ];
+    rewards.forEach((r, i) => {
+        let activeClass = (i + 1 === state.dailyStreak) ? 'active' : '';
+        el.dailyGrid.innerHTML += `<div class="daily-item ${activeClass}"><div class="daily-icon">${r.icon}</div>День ${r.d}</div>`;
+    });
+}
+
+function claimDaily() {
+    el.dailyModal.classList.remove('show');
+    state.lastDaily = Date.now();
+    let streak = state.dailyStreak;
+    
+    if (streak === 1) { state.aura += 100000; showToast('День 1: +100 000 💧', 'gold'); }
+    if (streak === 2) { state.crystals += 5; showToast('День 2: +5 💎', 'crystal'); }
+    if (streak === 3) { state.aura += 250000; showToast('День 3: +250 000 💧', 'gold'); }
+    if (streak === 4) { state.crystals += 10; showToast('День 4: +10 💎', 'crystal'); }
+    if (streak === 5) { state.freeCases += 1; showToast('День 5: +1 Кейс 📦', 'gold'); }
+    if (streak === 6) { state.aura += 500000; showToast('День 6: +500 000 💧', 'gold'); }
+    if (streak === 7) { 
+        if (!state.pets.includes('p16')) { state.pets.push('p16'); if(state.activePets.length<5) state.activePets.push('p16'); showToast('День 7: Феникс!', 'crystal'); } 
+        else { state.crystals += 100; showToast('День 7: +100 💎 (Феникс уже есть)', 'crystal'); }
+    }
+    updateUI(); saveGame();
+}
+
+// === ОСТАЛЬНЫЕ ФУНКЦИИ ===
 function checkStage() { 
   if (state.secretStage) { 
     const target = state.secretStage.target; 
@@ -465,24 +639,17 @@ function checkStage() {
 
 function renderCharacter() { 
     if (state.secretStage) { 
-        el.charImg.src = 'fizruk.png'; 
-        el.charImg.style.display = 'block'; 
-        el.charEmoji.style.display = 'none'; 
-        el.stageName.textContent = 'Секретная стадия: Физрук'; 
+        el.charImg.src = 'fizruk.png'; el.charImg.style.display = 'block'; el.charEmoji.style.display = 'none'; el.stageName.textContent = 'Секретная стадия: Физрук'; 
         el.charImg.onerror = function() { el.charImg.style.display = 'none'; el.charEmoji.style.display = 'block'; el.charEmoji.textContent = '🕺'; };
         return; 
     } 
     const sid = CFG.order[state.stage]; 
     const src = IMAGES[sid]; 
     if (src && src.length > 5) { 
-        el.charImg.src = src; 
-        el.charImg.style.display = 'block'; 
-        el.charEmoji.style.display = 'none'; 
+        el.charImg.src = src; el.charImg.style.display = 'block'; el.charEmoji.style.display = 'none'; 
         el.charImg.onerror = function() { el.charImg.style.display = 'none'; el.charEmoji.style.display = 'block'; el.charEmoji.textContent = CFG.emoji[sid]; };
     } else { 
-        el.charImg.style.display = 'none'; 
-        el.charEmoji.style.display = 'block'; 
-        el.charEmoji.textContent = CFG.emoji[sid]; 
+        el.charImg.style.display = 'none'; el.charEmoji.style.display = 'block'; el.charEmoji.textContent = CFG.emoji[sid]; 
     } 
     el.stageName.textContent = CFG.names[sid]; 
 }
@@ -506,7 +673,7 @@ function renderPetsOnScreen() {
         const pd = document.createElement('div'); pd.className = 'active-pet-display'; pd.style.animationDelay = `${i * 0.3}s`; 
         
         if (p.img) {
-            pd.innerHTML = `<img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'; this.parentNode.textContent='${p.emoji}';">`;
+            pd.innerHTML = `<img src="${p.img}?v=1" alt="${p.name}" onerror="this.style.display='none'; this.parentNode.textContent='${p.emoji}';">`;
         } else {
             pd.textContent = p.emoji;
         }
@@ -518,11 +685,16 @@ function renderPetsOnScreen() {
 }
 
 function updateUI() { 
-  el.auraVal.textContent = fmt(state.aura); el.crystalVal.textContent = fmt(state.crystals); el.caseVal.textContent = fmt(state.freeCases); 
+  el.auraVal.textContent = fmt(state.aura); 
+  el.crystalVal.textContent = fmt(state.crystals); 
+  el.shardVal.textContent = fmt(state.shards);
+  el.caseVal.textContent = fmt(state.freeCases); 
   el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
   el.pauseBtn.textContent = state.isPaused ? '▶️' : '⏸️'; el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
-  el.costClick.textContent = short(getClickCost()); el.btnClick.classList.toggle('disabled', state.aura < getClickCost()); 
-  el.costAura.textContent = short(getAuraCost()) + ' · есть: ' + state.auraLevel; el.btnAura.classList.toggle('disabled', state.aura < getAuraCost()); 
+  
+  let cCost = getClickCost(); let aCost = getAuraCost();
+  el.costClick.textContent = short(cCost); el.btnClick.classList.toggle('disabled', state.aura < cCost); 
+  el.costAura.textContent = short(aCost) + ' · есть: ' + state.auraLevel; el.btnAura.classList.toggle('disabled', state.aura < aCost); 
   el.costBooster.textContent = isBoosterActive() ? 'Активен!' : short(getBoosterCost()); el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < getBoosterCost()); 
   
   if (state.secretStage) { 
@@ -547,8 +719,8 @@ function doClick(e) {
   checkAch(); updateUI(); 
 }
 
-function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aura -= c; state.clickLevel++; updateUI(); checkAch(); saveGame(); } }
-function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; state.auraLevel++; checkStage(); updateUI(); checkAch(); saveGame(); } }
+function buyClick() { const c = getClickCost(); if (state.aura >= c) { state.aura -= c; state.clickLevel += state.buyAmount; updateUI(); checkAch(); saveGame(); } }
+function buyAura() { const c = getAuraCost(); if (state.aura >= c) { state.aura -= c; state.auraLevel += state.buyAmount; checkStage(); updateUI(); checkAch(); saveGame(); } }
 function buyBooster() { if (isBoosterActive()) return; const cost = getBoosterCost(); if (state.aura >= cost) { state.aura -= cost; state.boosterLevel++; state.boosterEnd = Date.now() + CFG.boosterDuration; showToast('🚀 Бустер x2 активирован!'); updateUI(); saveGame(); } }
 function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Math.floor(Math.sqrt(state.totalAura / 1000000))); const nm = (state.prestigePoints + pts) * 10; if (confirm(`Сбросить прогресс и получить ${pts} очков престижа?\n\nТвой бонус к доходу станет: +${nm}%`)) { state.aura = 0; state.totalAura = 0; state.clickLevel = 1; state.auraLevel = 0; state.stage = 0; state.boosterEnd = 0; state.boosterLevel = 0; state.isBoosterPermanent = false; state.prestigePoints += pts; state.pets = []; state.activePets = []; state.secretStage = null; renderPetsOnScreen(); renderCharacter(); updateUI(); saveGame(); showToast(`🔄 Престиж: +${pts} очков!`, 'gold'); el.btnPrestige.classList.add('hidden'); } }
 function hardReset() { if (confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите полностью удалить ВСЕ данные? Это действие нельзя отменить!')) { localStorage.clear(); sessionStorage.clear(); window.location.reload(); } }
@@ -556,24 +728,206 @@ function hardReset() { if (confirm('⚠️ ВНИМАНИЕ! Вы уверены
 let bonusTimeout, crystalTimeout;
 function spawnFloatingBonus() { if (document.querySelector('.floating-bonus')) return; const b = document.createElement('div'); b.className = 'floating-bonus'; b.textContent = '🌟'; b.style.top = Math.floor(Math.random() * 60 + 10) + '%'; b.style.left = Math.floor(Math.random() * 80 + 10) + '%'; b.onclick = (e) => { e.stopPropagation(); if (Math.random() < 0.5) { const r = getAuraIncome() * 300; state.aura += r; state.totalAura += r; showToast(`🌟 Звезда: +${fmt(r)} капелек!`, 'gold'); } else { state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); } b.remove(); updateUI(); saveGame(); scheduleNextBonus(); }; el.clickZone.appendChild(b); bonusTimeout = setTimeout(() => { if (b.parentNode) b.remove(); scheduleNextBonus(); }, 8000); }
 function scheduleNextBonus() { clearTimeout(bonusTimeout); bonusTimeout = setTimeout(spawnFloatingBonus, Math.floor(Math.random() * 150000) + 90000); }
-function spawnFloatingCrystal() { if (document.querySelector('.floating-crystal')) return; const c = document.createElement('div'); c.className = 'floating-crystal'; c.textContent = '💎'; c.style.top = Math.floor(Math.random() * 60 + 10) + '%'; c.style.left = Math.floor(Math.random() * 80 + 10) + '%'; c.onclick = (e) => { e.stopPropagation(); const a = Math.floor(Math.random() * 3) + 1; state.crystals += a; showToast(`💎 Кристалл: +${a} шт!`, 'crystal'); c.remove(); updateUI(); saveGame(); scheduleNextCrystal(); }; el.clickZone.appendChild(c); crystalTimeout = setTimeout(() => { if (c.parentNode) c.remove(); scheduleNextCrystal(); }, 8000); }
+
+function spawnFloatingCrystal() { 
+  if (document.querySelector('.floating-crystal')) return; 
+  const c = document.createElement('div'); c.className = 'floating-crystal'; c.textContent = '💎'; 
+  c.style.top = Math.floor(Math.random() * 60 + 10) + '%'; c.style.left = Math.floor(Math.random() * 80 + 10) + '%'; 
+  c.onclick = (e) => { 
+    e.stopPropagation(); 
+    const a = Math.floor(Math.random() * 7) + 1; // От 1 до 7
+    state.crystals += a; 
+    showToast(`💎 Кристалл: +${a} шт!`, 'crystal'); 
+    c.remove(); updateUI(); saveGame(); scheduleNextCrystal(); 
+  }; 
+  el.clickZone.appendChild(c); 
+  crystalTimeout = setTimeout(() => { if (c.parentNode) c.remove(); scheduleNextCrystal(); }, 8000); 
+}
 function scheduleNextCrystal() { clearTimeout(crystalTimeout); crystalTimeout = setTimeout(spawnFloatingCrystal, Math.floor(Math.random() * 180000) + 120000); }
 
 function buyPet(petId) { const p = PETS.find(x => x.id === petId); if (!p || state.pets.includes(petId) || state.aura < p.cost) return; state.aura -= p.cost; state.pets.push(petId); if (state.activePets.length < 5) state.activePets.push(petId); showToast(`Вы купили ${p.name}!`, 'gold'); renderPetsOnScreen(); updateUI(); checkAch(); saveGame(); renderMenu(true); }
 function togglePet(petId) { if (!state.pets.includes(petId)) return; if (state.activePets.includes(petId)) { state.activePets = state.activePets.filter(id => id !== petId); showToast(`Снят: ${PETS.find(p=>p.id===petId).name}`); } else { if (state.activePets.length >= 5) return showToast('Максимум 5 питомцев!', 'err'); state.activePets.push(petId); showToast(`Экипирован: ${PETS.find(p=>p.id===petId).name}`); } renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); }
-function sellPet(petId) { if (!state.pets.includes(petId)) return; const p = PETS.find(x => x.id === petId); let pr = CFG.sellRare; if (p.rarity === 'epic') pr = CFG.sellEpic; if (p.rarity === 'legendary') pr = CFG.sellLegendary; if (p.rarity === 'exclusive') pr = CFG.sellExclusive; if (confirm(`Продать ${p.name} за ${pr} 💎?`)) { state.crystals += pr; state.pets = state.pets.filter(id => id !== petId); state.activePets = state.activePets.filter(id => id !== petId); showToast(`Продано: ${p.name} (+${pr} 💎)`, 'crystal'); renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); } }
 
+function sellPet(petId) { 
+    if (!state.pets.includes(petId)) return; 
+    const p = PETS.find(x => x.id === petId); 
+    let pr = CFG.sellRare; 
+    if (p.rarity === 'epic') pr = CFG.sellEpic; 
+    if (p.rarity === 'legendary') pr = CFG.sellLegendary; 
+    if (p.rarity === 'exclusive') pr = CFG.sellExclusive; 
+    
+    if (confirm(`Продать ${p.name} за ${pr} 🔹 осколков?`)) { 
+        state.shards += pr; 
+        state.pets = state.pets.filter(id => id !== petId); 
+        state.activePets = state.activePets.filter(id => id !== petId); 
+        state.totalPetsSold++;
+        showToast(`Продано: ${p.name} (+${pr} 🔹)`, 'crystal'); 
+        renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); 
+    } 
+}
+
+/* === КЕЙС CS:GO === */
 let isCaseAnimating = false;
-function openCase(isFree = false) { if (isCaseAnimating) return; if (isFree && state.freeCases > 0) { state.freeCases--; } else if (!isFree && state.crystals >= CFG.caseCost) { state.crystals -= CFG.caseCost; } else { return; } isCaseAnimating = true; const rand = Math.random() * 100; let dp = null; if (rand < 5) dp = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]; else if (rand < 30) dp = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)]; else dp = PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)]; let dup = state.pets.includes(dp.id); if (dup) { state.crystals += 5; } else { state.pets.push(dp.id); if (state.activePets.length < 5) state.activePets.push(dp.id); } saveGame(); renderPetsOnScreen(); updateUI(); renderMenu(true); el.caseModal.classList.add('show'); el.caseAnimBox.style.display = 'block'; el.caseResult.style.display = 'none'; el.caseCloseBtn.style.display = 'none'; el.closeCaseX.style.display = 'block'; setTimeout(() => { el.caseAnimBox.style.display = 'none'; el.caseResult.style.display = 'flex'; 
-  if (dp.img) {
-      el.caseResultIcon.innerHTML = `<img src="${dp.img}" alt="${dp.name}" onerror="this.style.display='none'; this.parentNode.textContent='${dp.emoji}';">`;
-  } else {
-      el.caseResultIcon.textContent = dp.emoji;
+function openCase(isFree = false) { 
+  if (isCaseAnimating) return; 
+  if (isFree && state.freeCases > 0) { state.freeCases--; } 
+  else if (!isFree && state.crystals >= CFG.caseCost) { state.crystals -= CFG.caseCost; } 
+  else { return; } 
+  
+  isCaseAnimating = true; 
+  state.totalCasesOpened++;
+  saveGame(); renderMenu(true); el.caseModal.classList.add('show'); 
+  el.caseResult.style.display = 'none';
+  
+  let rollItems = [];
+  const rand = Math.random() * 100; 
+  let winItem = null; 
+  if (rand < 5) winItem = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]; 
+  else if (rand < 30) winItem = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)]; 
+  else winItem = PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)]; 
+
+  let dup = state.pets.includes(winItem.id); 
+  if (!dup) { state.pets.push(winItem.id); if (state.activePets.length < 5) state.activePets.push(winItem.id); }
+  else { state.shards += 10; } // Если дубль - даем осколки
+
+  for (let i = 0; i < 50; i++) {
+    if (i === 40) rollItems.push(winItem);
+    else {
+        let r = Math.random() * 100;
+        if (r < 5) rollItems.push(PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]);
+        else if (r < 30) rollItems.push(PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)]);
+        else rollItems.push(PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)]);
+    }
   }
-  el.caseResultName.textContent = dp.name; el.caseResultName.className = `pet-rarity-${dp.rarity}`; if (dup) { el.caseResultTitle.textContent = 'Уже есть!'; el.caseResultTitle.style.color = '#fbbf24'; el.caseResultIcon.innerHTML += `<br><span style="font-size:24px; color:#60a5fa; font-weight:bold; margin-top:10px; display:inline-block;">+5 💎</span>`; } else { el.caseResultTitle.textContent = 'Поздравляем!'; el.caseResultTitle.style.color = '#fff'; } el.caseCloseBtn.style.display = 'inline-block'; isCaseAnimating = false; checkAch(); }, 2000); }
+
+  let trackHTML = '';
+  rollItems.forEach(p => {
+    let imgHTML = p.img ? `<img src="${p.img}?v=1" onerror="this.style.display='none'; this.parentNode.textContent='${p.emoji}';">` : `<span>${p.emoji}</span>`;
+    trackHTML += `<div class="roulette-item ${p.rarity}">${imgHTML}</div>`;
+  });
+  el.rouletteTrack.innerHTML = trackHTML;
+
+  el.rouletteTrack.style.transition = 'none';
+  el.rouletteTrack.style.transform = `translateX(0px)`;
+  
+  setTimeout(() => {
+    el.rouletteTrack.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
+    const randomOffset = (Math.random() - 0.5) * 60; 
+    el.rouletteTrack.style.transform = `translateX(${-(40 * 100) + (window.innerWidth / 2) - 50 + randomOffset}px)`;
+  }, 50);
+
+  setTimeout(() => {
+    renderPetsOnScreen(); updateUI(); checkAch();
+    el.caseResult.style.display = 'flex'; 
+    if (winItem.img) el.caseResultIcon.innerHTML = `<img src="${winItem.img}?v=1" alt="${winItem.name}" onerror="this.style.display='none'; this.parentNode.textContent='${winItem.emoji}';">`;
+    else el.caseResultIcon.textContent = winItem.emoji;
+    el.caseResultName.textContent = winItem.name; 
+    el.caseResultName.className = `pet-rarity-${winItem.rarity}`; 
+    document.getElementById('caseResultTitle').textContent = dup ? 'Уже есть! +10 🔹' : 'Поздравляем!'; 
+    document.getElementById('caseResultTitle').style.color = dup ? '#fbbf24' : '#fff'; 
+    isCaseAnimating = false; 
+  }, 4200);
+}
 function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = false; renderMenu(true); }
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
+/* === БОСС === */
+function startBoss() { 
+  if (state.crystals < 20) return showToast('Нужно 20 💎!', 'err'); 
+  state.crystals -= 20; 
+  bossMaxHp = Math.max(50000, Math.floor(getClickPower() * 20), Math.floor(getAuraIncome() * 1000)); 
+  bossHp = bossMaxHp;
+  bossTimeLeft = 30;
+  
+  el.bossModal.classList.add('show');
+  el.bossHpFill.style.width = '100%';
+  el.bossEmoji.textContent = '👾';
+  el.bossEmoji.style.pointerEvents = 'auto';
+  el.bossEmoji.style.opacity = '1';
+  el.bossRewardText.style.display = 'none';
+  el.bossTimer.textContent = `${bossTimeLeft} сек`;
+  el.bossTimer.style.color = '#fff';
+  
+  if (bossTimerId) clearInterval(bossTimerId);
+  bossTimerId = setInterval(() => {
+    bossTimeLeft--;
+    el.bossTimer.textContent = `${bossTimeLeft} сек`;
+    if (bossTimeLeft <= 5) el.bossTimer.style.color = '#ef4444';
+    if (bossTimeLeft <= 0) {
+      clearInterval(bossTimerId);
+      if (bossHp > 0) {
+        el.bossEmoji.textContent = '💀';
+        el.bossEmoji.style.pointerEvents = 'none';
+        el.bossEmoji.style.opacity = '0.5';
+        el.bossRewardText.style.display = 'block';
+        el.bossRewardText.textContent = 'Босс сбежал! Попробуй еще раз.';
+        el.bossRewardText.style.color = '#ef4444';
+      }
+    }
+  }, 1000);
+  
+  updateUI(); renderMenu(true); 
+}
+
+function spawnBossDamage(x, y, dmg) {
+    const d = document.createElement('div');
+    d.className = 'float-text';
+    d.style.color = '#ef4444';
+    d.style.textShadow = '0 0 10px #ef4444';
+    d.style.fontSize = '24px';
+    d.textContent = '-' + short(dmg);
+    d.style.left = x + 'px';
+    d.style.top = y + 'px';
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 800);
+}
+
+function hitBoss(e) { 
+  if (bossHp <= 0 || bossTimeLeft <= 0) return; 
+  let dmg = getClickPower();
+  bossHp -= dmg; 
+  
+  let clickX = window.innerWidth / 2;
+  let clickY = window.innerHeight / 2;
+  if (e) {
+      if (e.clientX) { clickX = e.clientX; clickY = e.clientY; }
+      else if (e.touches && e.touches[0]) { clickX = e.touches[0].clientX; clickY = e.touches[0].clientY; }
+      else if (e.changedTouches && e.changedTouches[0]) { clickX = e.changedTouches[0].clientX; clickY = e.changedTouches[0].clientY; }
+  }
+  
+  spawnBossDamage(clickX, clickY, dmg);
+
+  let pct = Math.max(0, (bossHp / bossMaxHp) * 100);
+  el.bossHpFill.style.width = pct + '%';
+  
+  el.bossEmoji.classList.add('boss-hit-anim');
+  setTimeout(() => el.bossEmoji.classList.remove('boss-hit-anim'), 100);
+  
+  if (bossHp <= 0) { 
+    clearInterval(bossTimerId);
+    let rewardAura = getAuraIncome() * 600; 
+    state.aura += rewardAura; state.crystals += 50; 
+    state.totalBossKills++;
+    el.bossEmoji.textContent = '💥';
+    el.bossEmoji.style.pointerEvents = 'none';
+    el.bossRewardText.style.display = 'block';
+    el.bossRewardText.textContent = `Победа! +${short(rewardAura)} 💧, +50 💎`;
+    el.bossRewardText.style.color = '#5eead4';
+    saveGame(); 
+  } 
+  updateUI(); 
+}
+
+function closeBoss() {
+  if (bossHp > 0 && bossTimeLeft > 0) {
+     if(!confirm('Вы уверены? Вы потеряете потраченные 20💎 и босс убежит.')) return;
+  }
+  clearInterval(bossTimerId);
+  el.bossModal.classList.remove('show');
+  renderMenu(true);
+}
+
+/* === МИНИ-ИГРЫ === */
 let isSpinning = false; let currentRotation = 0;
 const WHEEL_PRIZES = [
   { text: '100💎', color: '#3b82f6', action: () => { state.crystals += 100; } }, 
@@ -590,10 +944,10 @@ function renderCasino() { const deg = 360 / WHEEL_PRIZES.length; let gs = WHEEL_
 function spinWheel() { if (isSpinning || state.crystals < 10) return; isSpinning = true; state.crystals -= 10; updateUI(); const w = document.getElementById('fortuneWheel'); const b = document.querySelector('.spin-btn'); if (b) b.disabled = true; const pi = Math.floor(Math.random() * WHEEL_PRIZES.length); const dps = 360 / WHEEL_PRIZES.length; const cos = (pi * dps) + (dps / 2); const tba = -cos; let cam = currentRotation % 360; if (cam < 0) cam += 360; let ad = (tba - cam + 360) % 360; currentRotation += 1800 + ad; w.style.transform = `rotate(${currentRotation}deg)`; setTimeout(() => { WHEEL_PRIZES[pi].action(); if (WHEEL_PRIZES[pi].text.includes('Кейс')) { showToast('🎁 Вы выиграли КЕЙС!', 'gold'); } else { showToast(`🎰 Вы выиграли: ${WHEEL_PRIZES[pi].text}!`, 'gold'); } isSpinning = false; updateUI(); saveGame(); renderMenu(true); }, 4200); }
 
 function startGoldRush() { if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); state.crystals -= 10; goldRushEnd = Date.now() + 10000; updateUI(); renderMenu(true); showToast('⛏️ Лихорадка началась! (10 сек)'); setTimeout(() => { if (activeTab === 'minigames' && activeMinigame === 'gold') renderMenu(true); }, 10000); }
-function startBoss() { if (state.crystals < 20) return showToast('Нужно 20 💎!', 'err'); state.crystals -= 20; bossHp = Math.max(50000, Math.floor(getClickPower() * 20), Math.floor(getAuraIncome() * 1000)); updateUI(); renderMenu(true); }
-function hitBoss() { if (bossHp <= 0) return; bossHp -= getClickPower(); if (bossHp <= 0) { let rewardAura = getAuraIncome() * 600; state.aura += rewardAura; state.crystals += 50; showToast(`☣️ Босс побежден! +${short(rewardAura)} капелек, +50 💎`, 'gold'); bossHp = 0; saveGame(); } updateUI(); renderMenu(true); }
+
 function labyrinthGuess() { if (state.crystals < 5) return showToast('Нужно 5 💎!', 'err'); state.crystals -= 5; if (Math.random() > 0.35) { state.crystals += 15; showToast('🌀 Удача! +15 💎', 'gold'); } else { showToast('🌀 Не повезло...', 'err'); } updateUI(); renderMenu(true); }
 
+/* === КОДЫ И АДМИНКА === */
 function useCode() { const r = el.codeInput.value.trim().toUpperCase(); el.codeInput.value = ''; el.codeInput.blur(); if (!r) return; applyCode(r); }
 function simpleHash(str) { let hash = 0; for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; } return Math.abs(hash).toString(36).toUpperCase().padStart(6, '0'); }
 function generateUserID() { if (TG_USER) return 'TG-' + TG_USER.id; if (currentUser === 'guest') return 'GUEST'; return 'ID-' + simpleHash(currentUser).substring(0, 6); }
@@ -621,6 +975,8 @@ function applyCode(raw) {
     state.clickLevel = startLvl; 
     renderCharacter(); updateUI(); saveGame(); showToast('🚨 СЕКРЕТНАЯ СТАДИЯ АКТИВИРОВАНА!', 'gold'); return; 
   }
+  
+  if (raw === 'BOSS') { startBoss(); return; }
   
   if (!(raw in CODES)) return showToast('❌ Неверный код', 'err'); 
   if (state.usedCodes.includes(raw)) return showToast('Код уже использован', 'err'); 
@@ -653,18 +1009,31 @@ function renderMenu(keepScroll = false) {
   if (activeTab === 'ach') { ACHIEVEMENTS.forEach(a => { const on = state.achievements.includes(a.id); html += `<div class="ach-item ${on?'unlocked':''}"><div class="ach-icon">${on?a.icon:'🔒'}</div><div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div></div>`; }); CFG.order.forEach((id, i) => { if (i === 0) return; const un = state.stage >= i; if (un) { html += `<div class="ach-item unlocked"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]}</div><div class="ach-desc">Эволюция достигнута</div></div></div>`; } else { html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">Секретное достижение</div><div class="ach-desc">Продолжай качать ауру...</div></div></div>`; } }); } 
   else if (activeTab === 'evo') { CFG.order.forEach((id, i) => { const cur = state.stage === i, done = state.stage > i; if (done || cur) { html += `<div class="ach-item ${done||cur?'unlocked':''}" style="${cur?'border-color:#ffd700':''}"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]} ${cur?'(Текущая)':''}</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; } else { html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">???</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; } }); } 
   else if (activeTab === 'pets') { 
-    let cb = ''; if (state.freeCases > 0) cb = `<button class="case-btn free-case" onclick="openCase(true)" ${isCaseAnimating?'disabled':''}>Открыть (${state.freeCases} шт)</button>`; else cb = `<button class="case-btn" onclick="openCase(false)" ${state.crystals < CFG.caseCost || isCaseAnimating ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`; html += `<div class="case-box"><div class="case-title">🎁 Таинственный кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>${cb}</div>`; 
+    let cb = ''; if (state.freeCases > 0) cb = `<button class="case-btn free-case" onclick="openCase(true)" ${isCaseAnimating?'disabled':''}>Открыть (${state.freeCases} шт)</button>`; else cb = `<button class="case-btn" onclick="openCase(false)" ${state.crystals < CFG.caseCost || isCaseAnimating ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`; 
+    html += `<div class="case-box"><div class="case-title">🎁 Таинственный кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>${cb}</div>`; 
+    
+    // Синергия
+    let eq = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean);
+    let rarities = { rare: 0, epic: 0, legendary: 0, exclusive: 0 };
+    eq.forEach(p => rarities[p.rarity]++);
+    let synergyText = [];
+    if (rarities.rare >= 3) synergyText.push('3 Редких (+15%)');
+    if (rarities.epic >= 3) synergyText.push('3 Эпика (+25%)');
+    if (rarities.legendary >= 3) synergyText.push('3 Легенды (+40%)');
+    if (rarities.exclusive >= 2) synergyText.push('2 Эксклюзива (+50%)');
+    if (synergyText.length > 0) html += `<div style="font-size:11px; text-align:center; color:#5eead4; margin-bottom:8px; font-weight:bold;">✨ Синергия: ${synergyText.join(', ')}</div>`;
+
     let totalPets = state.activePets.length + (state.hasDrone ? 1 : 0); if (totalPets > 1) { let penaltyPerPet = 0.15 - (state.talents.teamSpirit * 0.01); const e = Math.round(Math.max(0.2, 1 - (totalPets - 1) * penaltyPerPet) * 100); html += `<div style="font-size:11px; text-align:center; color:#fbbf24; margin-bottom:8px;">Надето ${state.activePets.length} пит. ${state.hasDrone ? '+ НЛО' : ''}. Эффективность: ${e}%</div>`; } 
     PETS.forEach(p => { 
       if (p.rarity === 'exclusive' && !state.pets.includes(p.id)) return; 
       const o = state.pets.includes(p.id); const a = state.activePets.includes(p.id); 
       let b = a ? `<button class="pet-btn equipped" onclick="togglePet('${p.id}')">Снять</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>` : o ? `<button class="pet-btn equip" onclick="togglePet('${p.id}')">Надеть</button><button class="pet-btn sell" onclick="sellPet('${p.id}')">Продать</button>` : `<button class="pet-btn buy" onclick="buyPet('${p.id}')">Купить<br><span style="font-size:10px;">${short(p.cost)}💧</span></button>`; 
-      let iconHtml = p.img ? `<img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'; this.parentNode.textContent='${p.emoji}';">` : p.emoji;
+      let iconHtml = p.img ? `<img src="${p.img}?v=1" alt="${p.name}" onerror="this.style.display='none'; this.parentNode.textContent='${p.emoji}';">` : p.emoji;
       html += `<div class="pet-card ${o?'owned':''} ${a?'active-pet':''}"><div class="pet-icon">${iconHtml}</div><div class="pet-info"><div class="pet-title pet-rarity-${p.rarity}">${p.name}</div><div class="pet-bonus">${p.desc}</div></div><div class="pet-actions">${b}</div></div>`; 
     }); 
   } 
   else if (activeTab === 'talents') { const maxLvls = { heavyHand: 5, goldenVein: 3, eternalCrit: 5, teamSpirit: 5 }; const baseCosts = { heavyHand: 15000, goldenVein: 20000, eternalCrit: 25000, teamSpirit: 30000 }; const tInfo = [ { id: 'heavyHand', title: 'Тяжелая рука', desc: '+1% к силе клика (макс 5%)' }, { id: 'goldenVein', title: 'Золотая жила', desc: '+1% к пассивному доходу (макс 3%)' }, { id: 'eternalCrit', title: 'Вечный крит', desc: '+4% к шансу крита (макс 20%)' }, { id: 'teamSpirit', title: 'Дружная команда', desc: 'Уменьшает штраф питомцев на 1% (макс 5%)' } ]; html += `<div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center;">Таланты покупаются за капельки!</div>`; html += `<div style="font-size:12px; margin-bottom:10px; text-align:center; color:#5eead4;">Ваш текущий доход: ${fmt(getAuraIncome())} 💧/сек</div>`; tInfo.forEach(t => { let lvl = state.talents[t.id]; let max = maxLvls[t.id]; let cost = baseCosts[t.id] * Math.pow(2, lvl); let canBuy = lvl < max && state.aura >= cost; html += `<div class="talent-card"><div class="talent-info"><div class="talent-title">${t.title} (Ур. ${lvl}/${max})</div><div class="talent-desc">${t.desc}</div></div><button class="talent-btn" onclick="buyTalent('${t.id}')" ${!canBuy ? 'disabled' : ''}>${lvl >= max ? 'MAX' : 'Улучшить'}<br><span style="font-size:9px; font-weight:normal;">${lvl >= max ? '' : fmt(cost) + ' 💧'}</span></button></div>`; }); }
-  else if (activeTab === 'minigames') { const mgs = [ { id: 'gold', title: 'Золотая лихорадка', desc: 'Клик-испытание (10 сек x5).', stageReq: 10, icon: '⛏️' }, { id: 'fortune', title: 'Фонтан удачи', desc: 'Рулетка на кристаллы.', stageReq: 19, icon: '🎰' }, { id: 'boss', title: 'Бактериальный шторм', desc: 'Босс-файт. Награда за победу!', stageReq: 23, icon: '☣️' }, { id: 'labyrinth', title: 'Лабиринт вкусов', desc: 'Испытай удачу за 5💎.', stageReq: 24, icon: '🌀' } ]; if (activeMinigame === null) { mgs.forEach(mg => { let unlocked = state.stage >= mg.stageReq; html += `<div class="minigame-card ${!unlocked ? 'locked' : ''}"><div class="mg-icon">${mg.icon}</div><div class="mg-info"><div class="mg-title">${mg.title}</div><div class="mg-desc">${mg.desc}</div></div>${unlocked ? `<button class="mg-btn" onclick="activeMinigame='${mg.id}'; renderMenu();">Играть</button>` : `<div style="font-size:10px; color:#ef4444;">Закрыто</div>`}</div>`; }); } else { html += `<button class="case-btn" style="background:#4a4a5a; margin-bottom:10px;" onclick="activeMinigame=null; renderMenu();">← Назад</button>`; if (activeMinigame === 'fortune') { html += renderCasino(); } else if (activeMinigame === 'gold') { if (Date.now() < goldRushEnd) { let timeLeft = Math.ceil((goldRushEnd - Date.now())/1000); html += `<div style="text-align:center; color:#fbbf24; font-size:20px; font-weight:bold; margin-bottom:10px;">Осталось: ${timeLeft} сек</div>`; html += `<div style="text-align:center; color:#aaa; font-size:12px;">(Закройте меню и кликайте по мылу!)</div>`; } else { html += `<div style="text-align:center; margin-bottom:10px;">Активируйте режим x5 клик на 10 секунд!</div>`; html += `<button class="case-btn" onclick="startGoldRush()">Начать (10 💎)</button>`; } } else if (activeMinigame === 'boss') { if (bossHp > 0) { html += `<div style="text-align:center; margin-bottom:10px;">Бактерия (HP: ${Math.max(0, Math.floor(bossHp))})</div>`; html += `<div class="progress-bar" style="height:20px; margin-bottom:10px;"><div class="progress-fill" style="width:${Math.max(0, (bossHp/(Math.max(50000, Math.floor(getClickPower() * 20), Math.floor(getAuraIncome() * 1000))))*100)}%; background:red;"></div></div>`; html += `<button class="case-btn" style="background:#ef4444;" onclick="hitBoss()">Атаковать</button>`; } else { html += `<div style="text-align:center; margin-bottom:10px;">Победите бактерию и получите награду!</div>`; html += `<button class="case-btn" onclick="startBoss()">Начать бой (20 💎)</button>`; } } else if (activeMinigame === 'labyrinth') { html += `<div style="text-align:center; margin-bottom:10px;">Испытайте удачу: 65% шанс получить 15 💎.</div>`; html += `<button class="case-btn" onclick="labyrinthGuess()">Войти (5 💎)</button>`; } } }
+  else if (activeTab === 'minigames') { const mgs = [ { id: 'gold', title: 'Золотая лихорадка', desc: 'Клик-испытание (10 сек x5).', stageReq: 10, icon: '⛏️' }, { id: 'fortune', title: 'Фонтан удачи', desc: 'Рулетка на кристаллы.', stageReq: 19, icon: '🎰' }, { id: 'boss', title: 'Бактериальный шторм', desc: 'Босс-файт. Награда за победу!', stageReq: 23, icon: '☣️' }, { id: 'labyrinth', title: 'Лабиринт вкусов', desc: 'Испытай удачу за 5💎.', stageReq: 24, icon: '🌀' } ]; if (activeMinigame === null) { mgs.forEach(mg => { let unlocked = state.stage >= mg.stageReq; html += `<div class="minigame-card ${!unlocked ? 'locked' : ''}"><div class="mg-icon">${mg.icon}</div><div class="mg-info"><div class="mg-title">${mg.title}</div><div class="mg-desc">${mg.desc}</div></div>${unlocked ? `<button class="mg-btn" onclick="activeMinigame='${mg.id}'; renderMenu();">Играть</button>` : `<div style="font-size:10px; color:#ef4444;">Закрыто</div>`}</div>`; }); } else { html += `<button class="case-btn" style="background:#4a4a5a; margin-bottom:10px;" onclick="activeMinigame=null; renderMenu();">← Назад</button>`; if (activeMinigame === 'fortune') { html += renderCasino(); } else if (activeMinigame === 'gold') { if (Date.now() < goldRushEnd) { let timeLeft = Math.ceil((goldRushEnd - Date.now())/1000); html += `<div style="text-align:center; color:#fbbf24; font-size:20px; font-weight:bold; margin-bottom:10px;">Осталось: ${timeLeft} сек</div>`; html += `<div style="text-align:center; color:#aaa; font-size:12px;">(Закройте меню и кликайте по мылу!)</div>`; } else { html += `<div style="text-align:center; margin-bottom:10px;">Активируйте режим x5 клик на 10 секунд!</div>`; html += `<button class="case-btn" onclick="startGoldRush()">Начать (10 💎)</button>`; } } else if (activeMinigame === 'boss') { html += `<div style="text-align:center; margin-bottom:10px;">Бактерия (HP: ${Math.max(0, Math.floor(bossMaxHp))})</div>`; html += `<div style="text-align:center; margin-bottom:10px; font-size:12px; color:#aaa;">Успей убить за 30 секунд!</div>`; html += `<button class="case-btn" onclick="startBoss()">Начать бой (20 💎)</button>`; } else if (activeMinigame === 'labyrinth') { html += `<div style="text-align:center; margin-bottom:10px;">Испытайте удачу: 65% шанс получить 15 💎.</div>`; html += `<button class="case-btn" onclick="labyrinthGuess()">Войти (5 💎)</button>`; } } }
   else if (activeTab === 'shop') { 
     html = `<div style="font-weight:bold; color:#fbbf24; margin-bottom:10px; text-align:center; font-size:15px;">💎 ОБМЕННИК</div>
     <div class="donate-card" style="border-color:#60a5fa;">
@@ -697,8 +1066,21 @@ function renderMenu(keepScroll = false) {
   else if (activeTab === 'account') { 
     html = `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">${TG_USER ? 'Аккаунт: ' + (TG_USER.username || TG_USER.first_name) : (currentUser === 'guest' ? 'Гостевой режим' : 'Аккаунт: ' + currentUser)}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div>`; 
     if (!TG_USER && currentUser === 'guest') { html += `<input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль"><div style="display:flex; gap:8px; margin-top:10px;"><button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button><button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button></div>`; } 
+    
     const m = Math.floor((Date.now() - state.startedAt) / 60000); 
-    html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; text-align:left;"><div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">📊 Статистика</div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Всего капелек:</span> <b>${fmt(state.totalAura)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Питомцев:</span> <b>${state.pets.length} / 16</b></div><div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>В игре:</span> <b>${m} мин</b></div></div>`; 
+    html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; text-align:left;">
+      <div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">📊 Детальная Статистика</div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Всего капелек:</span> <b>${fmt(state.totalAura)}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Кликов:</span> <b>${fmt(state.clicks)}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Критов:</span> <b>${fmt(state.crits)}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Престиж:</span> <b>${state.prestigePoints}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Питомцев (всего):</span> <b>${state.pets.length} / 16</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Открыто кейсов:</span> <b>${state.totalCasesOpened || 0}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Убито боссов:</span> <b>${state.totalBossKills || 0}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>Продано питомцев:</span> <b>${state.totalPetsSold || 0}</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;"><span>В игре:</span> <b>${m} мин</b></div>
+    </div>`; 
+    
     html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;"><div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">🎨 Внешний вид</div><div style="display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;"><button class="theme-btn" style="background:#6a4cff;" onclick="setTheme('cosmos')" title="Космос"></button><button class="theme-btn" style="background:#ff4c4c;" onclick="setTheme('blood')" title="Кровь"></button><button class="theme-btn" style="background:#4cff4c;" onclick="setTheme('toxic')" title="Токсик"></button><button class="theme-btn" style="background:#ffb74c;" onclick="setTheme('gold')" title="Золото"></button><button class="theme-btn" style="background:#aaaaaa;" onclick="setTheme('mono')" title="Монохром"></button></div><div style="text-align:center; margin-bottom:10px; font-size:11px; color:#aaa;">Свой цвет:</div><div style="display:flex; justify-content:center; gap:8px; margin-bottom:10px;"><button class="pet-btn" style="background:#333;" onclick="customColor('bg')">Фон</button><button class="pet-btn" style="background:#333;" onclick="customColor('btn')">Кнопки</button></div></div>`; 
     html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;"><div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">💾 Данные</div><button class="case-btn" style="background:linear-gradient(135deg, #3b82f6, #2563eb); margin-bottom:8px;" onclick="exportSave()">📤 Экспорт (скопировать)</button><button class="case-btn" style="background:linear-gradient(135deg, #10b981, #059669); margin-bottom:8px;" onclick="importSave()">📥 Импорт (вставить)</button></div>`; 
     if (!TG_USER && currentUser !== 'guest') { html += `<button class="case-btn" style="background:#ef4444; margin-top:15px;" onclick="logoutAccount()">Выйти из аккаунта</button>`; } 
@@ -748,7 +1130,10 @@ document.querySelectorAll('.tab').forEach(t => { t.addEventListener('click', (e)
 
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { saveGame(); } else if (document.visibilityState === 'visible') { const saved = localStorage.getItem(currentSaveKey); if (saved) { try { const p = JSON.parse(saved); const ds = Math.floor((Date.now() - (p.lastSaved || Date.now())) / 1000); if (ds > 10 && p.auraLevel > 0) { loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); saveGame(); } } catch(e) {} } } });
 
-loadGame(); renderCharacter(); renderPetsOnScreen(); updateUI(); requestAnimationFrame(gameLoop); setInterval(checkAch, 1000); scheduleNextBonus(); scheduleNextCrystal();
+loadGame(); 
+if (state.buyAmount === 10) setBuyAmount(10); else if (state.buyAmount === 100) setBuyAmount(100); else setBuyAmount(1);
+renderCharacter(); renderPetsOnScreen(); updateUI(); requestAnimationFrame(gameLoop); setInterval(checkAch, 1000); scheduleNextBonus(); scheduleNextCrystal();
+checkDaily(); // Проверка на дейлик
 </script>
 </body>
 </html>
