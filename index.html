@@ -48,10 +48,9 @@
   
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
   
-  /* ИСПРАВЛЕНА ПОДСВЕТКА НЛО (убран темный квадрат) */
   .ufo-active { 
       font-size: 45px; 
-      filter: drop-shadow(0 0 10px #00ffff); 
+      filter: drop-shadow(0 0 8px #00ffff); 
       animation: ufoHover 2s infinite alternate ease-in-out; 
       background: transparent;
   }
@@ -88,7 +87,6 @@
 
   .tab-content { padding: 12px; overflow-y: auto; flex: 1; min-height: 0; color: #ccc; font-size: 13px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   
-  /* Сетка главного меню */
   .main-menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 5px; }
   .main-menu-btn { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
   .main-menu-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
@@ -98,7 +96,6 @@
   
   .back-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 5px; }
 
-  /* ОСТАЛЬНОЙ ДИЗАЙН */
   .ach-item { display: flex; gap: 8px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; opacity: 0.5; }
   .ach-item.unlocked { opacity: 1; background: rgba(94,234,212,0.1); border: 1px solid rgba(94,234,212,0.3); }
   .ach-item.hidden-ach { opacity: 0.3; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.1); }
@@ -130,7 +127,6 @@
   .case-btn:disabled { opacity: 0.4; pointer-events: none; box-shadow: none; }
   .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; box-shadow: 0 4px 12px rgba(245,158,11,0.4);}
   
-  /* КЕЙС CS:GO */
   .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;}
   .case-modal.show { display: flex; }
   .roulette-wrap { position: relative; width: 100%; height: 120px; background: #05050a; border-top: 2px solid #2a2a3a; border-bottom: 2px solid #2a2a3a; overflow: hidden; display: flex; align-items: center; }
@@ -150,7 +146,6 @@
   .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   .close-case-x:active { background: rgba(255,255,255,0.2); }
 
-  /* БОСС */
   .boss-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 250; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
   .boss-modal.show { display: flex; }
   .boss-name { font-size: 24px; font-weight: bold; color: #ef4444; margin-bottom: 10px; text-shadow: 0 0 10px #ef4444; }
@@ -163,7 +158,6 @@
   .boss-hit-anim { animation: shake 0.2s; }
   @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
 
-  /* Ежедневный бонус */
   .daily-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.9); backdrop-filter: blur(8px); z-index: 300; display: none; align-items: center; justify-content: center; padding: 15px;}
   .daily-modal.show { display: flex; }
   .daily-grid { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;}
@@ -171,7 +165,6 @@
   .daily-item.active { border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); color: #fff; box-shadow: 0 0 10px rgba(251,191,36,0.3);}
   .daily-icon { font-size: 18px; margin-bottom: 2px; }
   
-  /* ОСТАЛЬНОЕ */
   .floating-bonus { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 10px #fbbf24); }
   .floating-crystal { position: absolute; font-size: 30px; cursor: pointer; z-index: 50; touch-action: manipulation; animation: pulse 1s infinite alternate; filter: drop-shadow(0 0 15px #60a5fa); }
   #toasts { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; pointer-events: none; }
@@ -280,7 +273,6 @@
   </div>
 </div>
 
-<!-- НОВОЕ МЕНЮ -->
 <div class="overlay" id="menuOverlay">
   <div class="menu">
     <div class="menu-header">
@@ -292,7 +284,6 @@
   </div>
 </div>
 
-<!-- ДОНАТ -->
 <div class="overlay" id="donateModal">
   <div class="menu" style="height: auto; max-height: 80vh;">
     <div class="menu-header">
@@ -315,7 +306,6 @@
   </div>
 </div>
 
-<!-- КЕЙС -->
 <div class="case-modal" id="caseModal">
   <button class="close-case-x" id="closeCaseX">✕</button>
   <div id="rouletteContainer" style="width:100%;">
@@ -332,7 +322,6 @@
   </div>
 </div>
 
-<!-- БОСС -->
 <div class="boss-modal" id="bossModal">
   <button class="close-case-x" onclick="closeBoss()">✕</button>
   <div class="boss-name" id="bossName">Космический Мутант</div>
@@ -342,7 +331,6 @@
   <div id="bossRewardText" style="margin-top:20px; font-size:20px; font-weight:bold; color:#5eead4; display:none; text-align:center;">Награда: +50 💎</div>
 </div>
 
-<!-- ЕЖЕДНЕВНЫЙ БОНУС -->
 <div class="daily-modal" id="dailyModal">
   <div class="menu" style="height: auto; padding: 20px; text-align: center; max-width: 350px;">
     <h2 style="color: #fbbf24; margin-bottom: 10px;">Ежедневный бонус!</h2>
@@ -352,7 +340,6 @@
   </div>
 </div>
 
-<!-- АДМИНКА -->
 <div class="overlay" id="cheatOverlay">
   <div class="cheat-panel">
     <h3 style="margin-bottom:8px;">ADMIN MENU</h3>
@@ -466,6 +453,7 @@ const $ = id => document.getElementById(id);
 const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), shardVal: $('shardVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), pauseBtn: $('pauseBtn'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charContainer: $('charContainer'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), mainMenuGrid: $('mainMenuGrid'), menuTitle: $('menuTitle'), toasts: $('toasts'), caseModal: $('caseModal'), rouletteTrack: $('rouletteTrack'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText'), bossModal: $('bossModal'), bossTimer: $('bossTimer'), bossHpFill: $('bossHpFill'), bossEmoji: $('bossEmoji'), bossRewardText: $('bossRewardText'), dailyModal: $('dailyModal'), dailyGrid: $('dailyGrid') };
 
 function saveGame() { state.lastSaved = Date.now(); try { localStorage.setItem(currentSaveKey, JSON.stringify(state)); } catch (e) {} }
+
 function loadGame() {
   Object.assign(state, JSON.parse(JSON.stringify(defaultState)));
   const saved = localStorage.getItem(currentSaveKey);
@@ -473,17 +461,27 @@ function loadGame() {
     try {
       const parsed = JSON.parse(saved);
       Object.assign(state, parsed);
+      // Жесткая защита от NaN (вылетов интерфейса)
       if (!Array.isArray(state.pets)) state.pets = [];
       if (!Array.isArray(state.activePets)) state.activePets = [];
       if (!Array.isArray(state.usedCodes)) state.usedCodes = [];
       if (!Array.isArray(state.achievements)) state.achievements = [];
       if (!state.talents || typeof state.talents !== 'object') state.talents = { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 };
       if (isNaN(state.aura)) state.aura = 0;
+      if (isNaN(state.totalAura)) state.totalAura = 0;
       if (isNaN(state.crystals)) state.crystals = 0;
       if (isNaN(state.shards)) state.shards = 0;
       if (isNaN(state.freeCases)) state.freeCases = 0;
+      if (isNaN(state.clickLevel) || state.clickLevel < 1) state.clickLevel = 1;
+      if (isNaN(state.auraLevel) || state.auraLevel < 0) state.auraLevel = 0;
+      if (isNaN(state.stage)) state.stage = 0;
+      if (isNaN(state.clicks)) state.clicks = 0;
+      if (isNaN(state.crits)) state.crits = 0;
+      if (isNaN(state.prestigePoints)) state.prestigePoints = 0;
+      if (isNaN(state.buyAmount)) state.buyAmount = 1;
+      
       if (state.isPaused === undefined) state.isPaused = false;
-      if (state.buyAmount === undefined) state.buyAmount = 1;
+      
       applyTheme(state.theme);
       const diffSec = Math.floor((Date.now() - (state.lastSaved || Date.now())) / 1000);
       if (diffSec > 10 && state.auraLevel > 0) {
@@ -545,7 +543,8 @@ const getPrestigeMultiplier = () => 1 + ((state.prestigePoints || 0) * 0.1);
 function setBuyAmount(amount) {
     state.buyAmount = amount;
     document.querySelectorAll('.buy-toggle').forEach(b => b.classList.remove('active'));
-    document.getElementById('buy' + amount).classList.add('active');
+    const btn = document.getElementById('buy' + amount);
+    if (btn) btn.classList.add('active');
     updateUI();
 }
 
@@ -568,8 +567,23 @@ const getAuraCost = () => getUpgradeCost('aura', state.buyAmount);
 const getBoosterCost = () => Math.floor(CFG.boosterCost * Math.pow(CFG.boosterGrowth, state.boosterLevel));
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 const getMultiplier = () => isBoosterActive() ? 2 : 1;
-const getClickPower = () => { let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5)); let talentBonus = 1 + (state.talents.heavyHand * 0.01); let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier(); if (Date.now() < goldRushEnd) multiplier *= 5; return base * talentBonus * multiplier; };
-const getAuraIncome = () => { let base = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)); let talentBonus = 1 + (state.talents.goldenVein * 0.01); return base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier(); };
+
+// Защита от NaN в кликах
+const getClickPower = () => { 
+    let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5)); 
+    let talentBonus = 1 + (state.talents.heavyHand * 0.01); 
+    let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier(); 
+    if (Date.now() < goldRushEnd) multiplier *= 5; 
+    let res = base * talentBonus * multiplier;
+    return isNaN(res) ? 1 : res;
+};
+// Защита от NaN в доходе
+const getAuraIncome = () => { 
+    let base = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)); 
+    let talentBonus = 1 + (state.talents.goldenVein * 0.01); 
+    let res = base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier(); 
+    return isNaN(res) ? 0 : res;
+};
 
 function checkDaily() {
     const now = Date.now();
@@ -602,7 +616,7 @@ function showDailyModal() {
 function claimDaily() {
     el.dailyModal.classList.remove('show');
     state.lastDaily = Date.now();
-    let streak = state.dailyStreak;
+    let streak = state.dailyStreak || 1;
     
     if (streak === 1) { state.aura += 100000; showToast('День 1: +100 000 💧', 'gold'); }
     if (streak === 2) { state.crystals += 5; showToast('День 2: +5 💎', 'crystal'); }
@@ -682,26 +696,30 @@ function renderPetsOnScreen() {
 }
 
 function updateUI() { 
-  el.auraVal.textContent = fmt(state.aura); 
-  el.crystalVal.textContent = fmt(state.crystals); 
-  el.shardVal.textContent = fmt(state.shards);
-  el.caseVal.textContent = fmt(state.freeCases); 
-  el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
-  el.pauseBtn.textContent = state.isPaused ? '▶️' : '⏸️'; el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
-  
-  let cCost = getClickCost(); let aCost = getAuraCost();
-  el.costClick.textContent = short(cCost); el.btnClick.classList.toggle('disabled', state.aura < cCost); 
-  el.costAura.textContent = short(aCost) + ' · есть: ' + state.auraLevel; el.btnAura.classList.toggle('disabled', state.aura < aCost); 
-  el.costBooster.textContent = isBoosterActive() ? 'Активен!' : short(getBoosterCost()); el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < getBoosterCost()); 
-  
-  if (state.secretStage) { 
-    el.finalBox.classList.add('show'); const cr = state.secretStage.target - 10; const nr = state.secretStage.target; const pr = Math.max(0, state.auraLevel - cr); const tn = nr - cr; 
-    el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; el.finalText.textContent = `Секретная цель: ${state.auraLevel} / ${nr} ур. ауры`; 
-  } else if (state.stage < CFG.order.length - 1) { 
-    el.finalBox.classList.add('show'); const cr = CFG.stageReq[state.stage], nr = CFG.stageReq[state.stage + 1], pr = Math.max(0, state.auraLevel - cr), tn = nr - cr; 
-    el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; el.finalText.textContent = `До след. формы: ${state.auraLevel} / ${nr} ур. ауры`; 
-  } else { el.finalBox.classList.remove('show'); } 
-  if (state.stage >= 3 || state.secretStage) { el.btnPrestige.classList.remove('hidden'); } 
+  try {
+      el.auraVal.textContent = fmt(state.aura); 
+      el.crystalVal.textContent = fmt(state.crystals); 
+      el.shardVal.textContent = fmt(state.shards);
+      el.caseVal.textContent = fmt(state.freeCases); 
+      el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
+      el.pauseBtn.textContent = state.isPaused ? '▶️' : '⏸️'; el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
+      
+      let cCost = getClickCost(); let aCost = getAuraCost();
+      el.costClick.textContent = short(cCost); el.btnClick.classList.toggle('disabled', state.aura < cCost); 
+      el.costAura.textContent = short(aCost) + ' · есть: ' + state.auraLevel; el.btnAura.classList.toggle('disabled', state.aura < aCost); 
+      el.costBooster.textContent = isBoosterActive() ? 'Активен!' : short(getBoosterCost()); el.btnBooster.classList.toggle('disabled', isBoosterActive() || state.aura < getBoosterCost()); 
+      
+      if (state.secretStage) { 
+        el.finalBox.classList.add('show'); const cr = state.secretStage.target - 10; const nr = state.secretStage.target; const pr = Math.max(0, state.auraLevel - cr); const tn = nr - cr; 
+        el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; el.finalText.textContent = `Секретная цель: ${state.auraLevel} / ${nr} ур. ауры`; 
+      } else if (state.stage < CFG.order.length - 1) { 
+        el.finalBox.classList.add('show'); const cr = CFG.stageReq[state.stage], nr = CFG.stageReq[state.stage + 1], pr = Math.max(0, state.auraLevel - cr), tn = nr - cr; 
+        el.finalFill.style.width = Math.min(100, (pr / tn) * 100) + '%'; el.finalText.textContent = `До след. формы: ${state.auraLevel} / ${nr} ур. ауры`; 
+      } else { el.finalBox.classList.remove('show'); } 
+      if (state.stage >= 3 || state.secretStage) { el.btnPrestige.classList.remove('hidden'); } 
+  } catch (error) {
+      console.warn("Ошибка обновления интерфейса:", error);
+  }
 }
 
 function doClick(e) { 
@@ -828,9 +846,10 @@ function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = 
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
 function startBoss() { 
-  if (state.crystals < 20) return showToast('Нужно 20 💎!', 'err'); 
-  state.crystals -= 20; 
-  bossMaxHp = Math.max(50000, Math.floor(getClickPower() * 20), Math.floor(getAuraIncome() * 1000)); 
+  if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); 
+  state.crystals -= 10; 
+  // ЖЕСТКО СБАЛАНСИРОВАННЫЙ БОСС (зависит только от клика, 25 кликов)
+  bossMaxHp = Math.max(10000, Math.floor(getClickPower() * 25)); 
   bossHp = bossMaxHp;
   bossTimeLeft = 30;
   
@@ -880,6 +899,7 @@ function spawnBossDamage(x, y, dmg) {
 function hitBoss(e) { 
   if (bossHp <= 0 || bossTimeLeft <= 0) return; 
   let dmg = getClickPower();
+  if (isNaN(dmg)) dmg = 1; // Защита
   bossHp -= dmg; 
   
   let clickX = window.innerWidth / 2;
@@ -915,7 +935,7 @@ function hitBoss(e) {
 
 function closeBoss() {
   if (bossHp > 0 && bossTimeLeft > 0) {
-     if(!confirm('Вы уверены? Вы потеряете потраченные 20💎 и босс убежит.')) return;
+     if(!confirm('Вы уверены? Вы потеряете потраченные 10💎 и босс убежит.')) return;
   }
   clearInterval(bossTimerId);
   el.bossModal.classList.remove('show');
@@ -980,10 +1000,13 @@ function giveDonateReward(tier) { if (tier === 15) { state.crystals += 500; } if
 
 let lastTick = performance.now(), autoSaveTimer = 0;
 function gameLoop(now) { 
-    const dt = Math.min((now - lastTick) / 1000, 1); lastTick = now; 
-    if (state.auraLevel > 0 && !state.isPaused) { const g = getAuraIncome() * dt; state.aura += g; state.totalAura += g; } 
-    if (state.boosterEnd > 0 && Date.now() > state.boosterEnd && !state.isBoosterPermanent) state.boosterEnd = 0; 
-    updateUI(); autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); } requestAnimationFrame(gameLoop); 
+    try {
+        const dt = Math.min((now - lastTick) / 1000, 1); lastTick = now; 
+        if (state.auraLevel > 0 && !state.isPaused) { const g = getAuraIncome() * dt; state.aura += g; state.totalAura += g; } 
+        if (state.boosterEnd > 0 && Date.now() > state.boosterEnd && !state.isBoosterPermanent) state.boosterEnd = 0; 
+        updateUI(); autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); } 
+    } catch(e) { console.warn("Ошибка в GameLoop:", e); }
+    requestAnimationFrame(gameLoop); 
 }
 
 function renderMenu(keepScroll = false) { 
@@ -1038,7 +1061,6 @@ function renderMenu(keepScroll = false) {
           let cb = ''; if (state.freeCases > 0) cb = `<button class="case-btn free-case" onclick="openCase(true)" ${isCaseAnimating?'disabled':''}>Открыть (${state.freeCases} шт)</button>`; else cb = `<button class="case-btn" onclick="openCase(false)" ${state.crystals < CFG.caseCost || isCaseAnimating ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`; 
           html += `<div class="case-box"><div class="case-title">🎁 Таинственный кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>${cb}</div>`; 
           
-          // Отображение НЛО в списке питомцев (СЕКРЕТНОЕ)
           if (state.hasDrone) {
               html += `<div class="pet-card active-pet" style="border-color: #00ffff; background: rgba(0,255,255,0.1);">
                   <div class="pet-icon" style="font-size:30px; filter: drop-shadow(0 0 5px #00ffff);">🛸</div>
@@ -1095,7 +1117,7 @@ function renderMenu(keepScroll = false) {
               else if (activeMinigame === 'boss') { 
                   html += `<div style="text-align:center; margin-bottom:10px;">Бактерия (HP: ${Math.max(0, Math.floor(bossMaxHp))})</div>`; 
                   html += `<div style="text-align:center; margin-bottom:10px; font-size:12px; color:#aaa;">Успей убить за 30 секунд!</div>`; 
-                  html += `<button class="case-btn" onclick="startBoss()">Начать бой (20 💎)</button>`; 
+                  html += `<button class="case-btn" onclick="startBoss()">Начать бой (10 💎)</button>`; 
               } 
               else if (activeMinigame === 'labyrinth') { 
                   html += `<div style="text-align:center; margin-bottom:10px;">Испытайте удачу: 65% шанс получить 15 💎.</div>`; 
