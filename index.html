@@ -47,13 +47,7 @@
   .active-pet-display img { width: 100%; height: 100%; object-fit: contain; }
   
   @keyframes floatPet { 0% { transform: translateY(0) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
-  
-  .ufo-active { 
-      font-size: 45px; 
-      filter: drop-shadow(0 0 8px #00ffff); 
-      animation: ufoHover 2s infinite alternate ease-in-out; 
-      background: transparent;
-  }
+  .ufo-active { font-size: 45px; filter: drop-shadow(0 0 8px #00ffff); animation: ufoHover 2s infinite alternate ease-in-out; background: transparent; }
   @keyframes ufoHover { 0% { transform: translateY(0) scale(1) rotate(-5deg); } 100% { transform: translateY(-15px) scale(1.1) rotate(5deg); } }
   
   .bottom-panel { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
@@ -146,6 +140,16 @@
   .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   .close-case-x:active { background: rgba(255,255,255,0.2); }
 
+  /* ИСПРАВЛЕНО: Жесткий размер колеса и контейнера, чтобы не ломалось в APK */
+  .casino-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; width: 100%; overflow: hidden; }
+  .wheel-container { position: relative; width: 240px; height: 240px; min-width: 240px; min-height: 240px; margin-bottom: 15px; flex-shrink: 0; }
+  .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+  .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #1b1c3e; box-shadow: 0 0 20px rgba(106,76,255,0.4); position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+  .wheel-label-container { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+  .wheel-label { position: absolute; left: -45px; top: -10px; width: 90px; text-align: center; font-size: 11px; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); pointer-events: none; display: flex; justify-content: center; align-items: center;}
+  .spin-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(239,68,68,0.4); flex-shrink: 0; }
+  .spin-btn:disabled { opacity: 0.5; pointer-events: none; }
+
   .boss-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.95); backdrop-filter: blur(10px); z-index: 250; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
   .boss-modal.show { display: flex; }
   .boss-name { font-size: 24px; font-weight: bold; color: #ef4444; margin-bottom: 10px; text-shadow: 0 0 10px #ef4444; }
@@ -205,11 +209,11 @@
   const tg = window.Telegram?.WebApp;
   let TG_USER = null;
   if (tg) {
-    tg.ready(); tg.expand(); tg.disableVerticalSwipes?.();
-    TG_USER = tg.initDataUnsafe?.user || null;
+    try {
+      tg.ready(); tg.expand(); tg.disableVerticalSwipes?.();
+      TG_USER = tg.initDataUnsafe?.user || null;
+    } catch(e) {}
   }
-  const TG_BOT_LINK = "https://t.me/narzan_game_bot"; 
-  const TG_OWNER = "https://t.me/TheHa1ght"; 
 </script>
 
 <div class="app">
@@ -297,7 +301,7 @@
         1. Скопируйте ваш ID:<br>
         <b id="donateIdText" style="color:#5eead4; font-size: 18px; display: block; margin-top: 5px; margin-bottom: 15px; text-align:center; background:rgba(94,234,212,0.1); padding:5px; border-radius:5px; border:1px dashed #5eead4;"></b>
         2. Переведите нужное количество ⭐ (Звезд) на аккаунт <b>@TheHa1ght</b>.<br><br>
-        3. Напишите в Telegram <b><a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></b> ваш ID и скриншот оплаты.<br><br>
+        3. Напишите в Telegram <b>@TheHa1ght</b> ваш ID и скриншот оплаты.<br><br>
         4. Мы пришлем вам <b>Бонус-код</b>!
       </div>
       <button class="case-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; margin-bottom: 10px;" onclick="openDonateLink()">Написать в Telegram</button>
@@ -446,7 +450,7 @@ let bossHp = 0;
 let bossMaxHp = 0;
 let bossTimerId = null;
 let bossTimeLeft = 0;
-let lastBossHitTime = 0; // Переменная для кулдауна
+let lastBossHitTime = 0; 
 let hasShownStorageError = false;
 let activeTab = 'main'; 
 
@@ -843,15 +847,14 @@ function openCase(isFree = false) {
 function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = false; renderMenu(true); }
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
-/* === БОСС (С КУЛДАУНОМ) === */
+/* === БОСС === */
 function startBoss() { 
   if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); 
   state.crystals -= 10; 
-  // ЖЕСТКО СБАЛАНСИРОВАННЫЙ БОСС (40 кликов)
   bossMaxHp = Math.max(10000, Math.floor(getClickPower() * 40)); 
   bossHp = bossMaxHp;
   bossTimeLeft = 30;
-  lastBossHitTime = 0; // Сброс кулдауна
+  lastBossHitTime = 0; 
   
   el.bossModal.classList.add('show');
   el.bossHpFill.style.width = '100%';
@@ -899,7 +902,6 @@ function spawnBossDamage(x, y, dmg) {
 function hitBoss(e) { 
   if (bossHp <= 0 || bossTimeLeft <= 0) return; 
   
-  // ЗАЩИТА ОТ МУЛЬТИТАЧА (кулдаун 150 мс)
   const now = Date.now();
   if (now - lastBossHitTime < 150) return;
   lastBossHitTime = now;
@@ -1150,7 +1152,7 @@ function renderMenu(keepScroll = false) {
             html += `<div class="donate-card" style="border-color:#ef4444; background:rgba(239,68,68,0.1);">
               <h3 style="color:#ef4444;">Внимание!</h3>
               <p>Донат доступен <b>только внутри Telegram</b>. Пожалуйста, запустите игру через нашего бота, чтобы пополнить баланс Звёздами.</p>
-              <button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="window.open(TG_BOT_LINK, '_blank')">Открыть в Telegram</button>
+              <button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateLink()">Открыть в Telegram</button>
             </div>`;
           } else {
             html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">Оплата в Telegram Stars. После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div></div>
@@ -1202,11 +1204,17 @@ function exchangeMax() {
     if (amount > 0) { state.aura -= amount * 1000000000; state.crystals += amount; showToast(`💎 Обмен успешен: -${amount} млрд капелек, +${amount} кристаллов!`, 'crystal'); updateUI(); saveGame(); renderMenu(true); } else { showToast('Недостаточно капелек!', 'err'); }
 }
 
-function openDonateModal() { 
-  if (!tg) { showToast('Донат доступен только в Telegram!', 'err'); window.open(TG_BOT_LINK, '_blank'); return; }
-  el.donateIdText.textContent = generateUserID(); el.donateModal.classList.add('show'); 
+function openDonateLink() {
+    if (tg) {
+        tg.openTelegramLink("https://t.me/TheHa1ght");
+    } else {
+        window.open("https://t.me/TheHa1ght", "_blank");
+    }
 }
-function openDonateLink() { if (tg) { tg.openTelegramLink(TG_OWNER); } else { window.open(TG_OWNER, '_blank'); } }
+function openDonateModal() { 
+    el.donateIdText.textContent = generateUserID(); 
+    el.donateModal.classList.add('show'); 
+}
 
 function exportSave() { const saveStr = btoa(unescape(encodeURIComponent(JSON.stringify(state)))); prompt("Скопируйте этот код и сохраните его:", saveStr); }
 function importSave() { const code = prompt("Вставьте код сохранения:"); if (!code) return; try { const decoded = decodeURIComponent(escape(atob(code))); const parsed = JSON.parse(decoded); Object.assign(state, parsed); saveGame(); applyTheme(state.theme); renderCharacter(); renderPetsOnScreen(); updateUI(); renderMenu(); showToast('Прогресс успешно перенесен!', 'gold'); } catch(e) { showToast('Неверный код сохранения!', 'err'); } }
