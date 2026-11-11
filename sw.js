@@ -1,5 +1,5 @@
 // sw.js - Кэширование игры для оффлайн-режима
-const CACHE_NAME = 'narzan-cache-v17';
+const CACHE_NAME = 'narzan-cache-v18';
 const urlsToCache = [
   './',
   './index.html'
