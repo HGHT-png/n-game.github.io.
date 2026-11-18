@@ -139,7 +139,6 @@
   .case-btn.gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; }
   .case-btn.mythic { background: linear-gradient(135deg, #ef4444, #991b1b); color: #fff; box-shadow: 0 0 15px rgba(239,68,68,0.6); }
 
-  /* КЕЙС CS:GO */
   .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;}
   .case-modal.show { display: flex; }
   .roulette-wrap { position: relative; width: 100%; height: 120px; background: #05050a; border-top: 2px solid #2a2a3a; border-bottom: 2px solid #2a2a3a; overflow: hidden; display: flex; align-items: center; }
@@ -203,6 +202,23 @@
   .cheat-btn { background: #0f0; color: #000; padding: 6px; margin: 4px 0; width: 100%; font-weight: bold; cursor: pointer; border-radius: 4px; text-align:left; touch-action: manipulation; font-size: 12px;}
   .auth-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; outline: none; text-align: center; }
   .theme-btn { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; }
+
+  /* --- ФИКС: СТИЛИ ДЛЯ МИНИ-ИГР --- */
+  .minigame-card { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .minigame-card.locked { opacity: 0.6; }
+  .mg-icon { font-size: 24px; flex-shrink: 0; }
+  .mg-info { flex: 1; min-width: 0; text-align: left; }
+  .mg-title { font-weight: bold; color: #fff; font-size: 14px; }
+  .mg-desc { font-size: 11px; color: #8a9bbd; margin-top: 2px; }
+  .mg-btn { background: linear-gradient(135deg, var(--btn-grad-start), var(--btn-grad-end)); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; flex-shrink: 0; }
+  .mg-btn:active { transform: scale(0.95); }
+
+  /* --- ФИКС: СТИЛИ ДЛЯ МАГАЗИНА --- */
+  .donate-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin-bottom: 10px; text-align: center; }
+  .donate-card h3 { font-size: 15px; margin-bottom: 5px; color: #fff; }
+  .donate-card p { font-size: 12px; color: #8a9bbd; margin-bottom: 10px; }
+  .donate-btn { width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; border: none; transition: 0.2s; display: block; }
+  .donate-btn:active { transform: scale(0.97); }
 </style>
 </head>
 <body>
@@ -404,15 +420,12 @@ const PETS = [
 ];
 
 const TALENTS = [
-  // Клик ветка
   { id: 'click_1', branch: 'click', tier: 1, name: 'Острые когти', desc: 'Сила клика +50%', max: 1, cost: 50, icon: '👆' },
   { id: 'click_2', branch: 'click', tier: 2, name: 'Точный удар', desc: 'Шанс крита +5%', max: 1, cost: 150, icon: '🎯' },
   { id: 'click_3', branch: 'click', tier: 3, name: 'Ярость', desc: 'Урон крита x2', max: 1, cost: 500, icon: '💥' },
-  // Доход ветка
   { id: 'inc_1', branch: 'inc', tier: 1, name: 'Золотая жила', desc: 'Доход +50%', max: 1, cost: 50, icon: '💰' },
   { id: 'inc_2', branch: 'inc', tier: 2, name: 'Оффлайн', desc: 'Оффлайн-доход +50%', max: 1, cost: 150, icon: '⏳' },
   { id: 'inc_3', branch: 'inc', tier: 3, name: 'Магнат', desc: 'Бустеры длятся x2', max: 1, cost: 500, icon: '👑' },
-  // Питомцы ветка
   { id: 'pet_1', branch: 'pet', tier: 1, name: 'Дружба', desc: 'Штраф питомцев -5%', max: 1, cost: 50, icon: '🐾' },
   { id: 'pet_2', branch: 'pet', tier: 2, name: 'Синергия', desc: 'Синергия дает +10%', max: 1, cost: 150, icon: '✨' },
   { id: 'pet_3', branch: 'pet', tier: 3, name: 'Зоомагнат', desc: 'Дубли дают +50% осколков', max: 1, cost: 500, icon: '🦁' }
@@ -448,7 +461,10 @@ const defaultState = {
   secretStage: null, preSecretStage: 0, theme: 'default', isPaused: false,
   buyAmount: 1,
   lastDaily: 0, dailyStreak: 0,
-  totalBossKills: 0, totalCasesOpened: 0, totalPetsSold: 0
+  totalBossKills: 0, totalCasesOpened: 0, totalPetsSold: 0,
+  /* ФИКС: Добавлены недостающие поля */
+  freeCases: 0, megaBoosterEnd: 0, isAdmin: false,
+  customBg: '#1b1c3e', customBtn: '#6a4cff'
 };
 
 TALENTS.forEach(t => defaultState.talents[t.id] = 0);
@@ -477,7 +493,7 @@ let hasShownStorageError = false;
 let activeTab = 'main'; 
 
 const $ = id => document.getElementById(id);
-const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), shardVal: $('shardVal'), caseVal: $('caseVal'), incomeVal: $('incomeVal'), pauseBtn: $('pauseBtn'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charContainer: $('charContainer'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), mainMenuGrid: $('mainMenuGrid'), menuTitle: $('menuTitle'), toasts: $('toasts'), caseModal: $('caseModal'), rouletteTrack: $('rouletteTrack'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText'), bossModal: $('bossModal'), bossTimer: $('bossTimer'), bossHpFill: $('bossHpFill'), bossEmoji: $('bossEmoji'), bossRewardText: $('bossRewardText'), dailyModal: $('dailyModal'), dailyGrid: $('dailyGrid') };
+const el = { auraVal: $('auraVal'), crystalVal: $('crystalVal'), shardVal: $('shardVal'), incomeVal: $('incomeVal'), pauseBtn: $('pauseBtn'), stageName: $('stageName'), prestigeVal: $('prestigeVal'), clickZone: $('clickZone'), charContainer: $('charContainer'), charImg: $('charImg'), charEmoji: $('charEmoji'), petsContainer: $('petsContainer'), btnClick: $('btnClick'), costClick: $('costClick'), btnAura: $('btnAura'), costAura: $('costAura'), btnBooster: $('btnBooster'), costBooster: $('costBooster'), btnPrestige: $('btnPrestige'), finalBox: $('finalBox'), finalText: $('finalText'), finalFill: $('finalFill'), codeInput: $('codeInput'), codeBtn: $('codeBtn'), menuBtn: $('menuBtn'), menuOverlay: $('menuOverlay'), closeMenu: $('closeMenu'), cheatOverlay: $('cheatOverlay'), tabContent: $('tabContent'), mainMenuGrid: $('mainMenuGrid'), menuTitle: $('menuTitle'), toasts: $('toasts'), caseModal: $('caseModal'), rouletteTrack: $('rouletteTrack'), caseResult: $('caseResult'), caseResultIcon: $('caseResultIcon'), caseResultName: $('caseResultName'), caseCloseBtn: $('caseCloseBtn'), closeCaseX: $('closeCaseX'), donateModal: $('donateModal'), donateIdText: $('donateIdText'), bossModal: $('bossModal'), bossTimer: $('bossTimer'), bossHpFill: $('bossHpFill'), bossEmoji: $('bossEmoji'), bossRewardText: $('bossRewardText'), dailyModal: $('dailyModal'), dailyGrid: $('dailyGrid') };
 
 function saveGame() { state.lastSaved = Date.now(); try { localStorage.setItem(currentSaveKey, JSON.stringify(state)); } catch (e) {} }
 
@@ -510,6 +526,10 @@ function loadGame() {
       if (isNaN(state.crits)) state.crits = 0;
       if (isNaN(state.prestigePoints)) state.prestigePoints = 0;
       if (isNaN(state.buyAmount)) state.buyAmount = 1;
+      
+      /* ФИКС: Защита от NaN для новых полей */
+      if (isNaN(state.freeCases)) state.freeCases = 0;
+      if (isNaN(state.megaBoosterEnd)) state.megaBoosterEnd = 0;
       
       if (state.isPaused === undefined) state.isPaused = false;
       
@@ -552,7 +572,6 @@ const getPetsMultiplier = (type) => {
   let count = eq.length; if (state.hasDrone) count++; 
   if (count === 0) return 1; 
   
-  // Талант на уменьшение штрафа
   let penaltyReduction = state.talents['pet_1'] ? 0.05 : 0;
   let penaltyPerPet = Math.max(0.05, 0.15 - penaltyReduction); 
   
@@ -563,7 +582,7 @@ const getPetsMultiplier = (type) => {
   let rarities = { rare: 0, epic: 0, legendary: 0, exclusive: 0 };
   eq.forEach(p => rarities[p.rarity]++);
   let synergy = 0;
-  let synergyBonus = state.talents['pet_2'] ? 0.10 : 0; // Талант на синергию
+  let synergyBonus = state.talents['pet_2'] ? 0.10 : 0;
   
   if (rarities.rare >= 3) synergy += 0.15 + synergyBonus;
   if (rarities.epic >= 3) synergy += 0.25 + synergyBonus;
@@ -603,14 +622,17 @@ const getClickCost = () => getUpgradeCost('click', state.buyAmount);
 const getAuraCost = () => getUpgradeCost('aura', state.buyAmount);
 const getBoosterCost = () => Math.floor(CFG.boosterCost * Math.pow(CFG.boosterGrowth, state.boosterLevel));
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
-const getMultiplier = () => isBoosterActive() ? 2 : 1;
+
+/* ФИКС: Честный множитель x10 для мега-бустера */
+const getMultiplier = () => { 
+    if (state.megaBoosterEnd && Date.now() < state.megaBoosterEnd) return 10;
+    return isBoosterActive() ? 2 : 1; 
+};
 
 const getClickPower = () => { 
     let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5)); 
-    
     let clickBonus = state.talents['click_1'] ? 1.5 : 1;
     let res = base * clickBonus * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier(); 
-    
     if (Date.now() < goldRushEnd) res *= 5; 
     return isNaN(res) ? 1 : res;
 };
@@ -736,8 +758,9 @@ function updateUI() {
       el.auraVal.textContent = fmt(state.aura); 
       el.crystalVal.textContent = fmt(state.crystals); 
       el.shardVal.textContent = fmt(state.shards);
-      el.caseVal.textContent = fmt(state.freeCases); 
-      el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : ''); 
+      /* ФИКС: Удалена строка el.caseVal.textContent = fmt(state.freeCases); */
+      
+      el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : (state.megaBoosterEnd > Date.now() ? ' (x10!)' : '')); 
       el.pauseBtn.textContent = state.isPaused ? '▶️' : '⏸️'; el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
       
       let cCost = getClickCost(); let aCost = getAuraCost();
@@ -759,6 +782,9 @@ function updateUI() {
 }
 
 function doClick(e) { 
+  /* ФИКС: Защита от двойного клика по падающим бонусам */
+  if (e && e.target && (e.target.closest('.floating-bonus') || e.target.closest('.floating-crystal'))) return;
+  
   let g = getClickPower(); let c = false; 
   let totalCritChance = state.critChance === 1.0 ? 1.0 : Math.min(0.2, state.critChance + (state.talents['click_2'] ? 0.05 : 0));
   if (Math.random() < totalCritChance) { 
@@ -780,7 +806,11 @@ function doPrestige() { if (state.stage < 3) return; const pts = Math.max(1, Mat
 function hardReset() { if (confirm('⚠️ ВНИМАНИЕ! Вы уверены, что хотите полностью удалить ВСЕ данные? Это действие нельзя отменить!')) { localStorage.clear(); sessionStorage.clear(); window.location.reload(); } }
 
 let bonusTimeout, crystalTimeout;
-function spawnFloatingBonus() { if (document.querySelector('.floating-bonus')) return; const b = document.createElement('div'); b.className = 'floating-bonus'; b.textContent = '🌟'; b.style.top = Math.floor(Math.random() * 60 + 10) + '%'; b.style.left = Math.floor(Math.random() * 80 + 10) + '%'; b.onclick = (e) => { e.stopPropagation(); if (Math.random() < 0.5) { const r = getAuraIncome() * 300; state.aura += r; state.totalAura += r; showToast(`🌟 Звезда: +${fmt(r)} капелек!`, 'gold'); } else { state.boosterEnd = Date.now() + 30000; showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); } b.remove(); updateUI(); saveGame(); scheduleNextBonus(); }; el.clickZone.appendChild(b); bonusTimeout = setTimeout(() => { if (b.parentNode) b.remove(); scheduleNextBonus(); }, 8000); }
+function spawnFloatingBonus() { if (document.querySelector('.floating-bonus')) return; const b = document.createElement('div'); b.className = 'floating-bonus'; b.textContent = '🌟'; b.style.top = Math.floor(Math.random() * 60 + 10) + '%'; b.style.left = Math.floor(Math.random() * 80 + 10) + '%'; b.onclick = (e) => { e.stopPropagation(); if (Math.random() < 0.5) { const r = getAuraIncome() * 300; state.aura += r; state.totalAura += r; showToast(`🌟 Звезда: +${fmt(r)} капелек!`, 'gold'); } else { 
+    /* ФИКС: Теперь честный бустер x10 */
+    state.megaBoosterEnd = Date.now() + 30000; 
+    showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); 
+} b.remove(); updateUI(); saveGame(); scheduleNextBonus(); }; el.clickZone.appendChild(b); bonusTimeout = setTimeout(() => { if (b.parentNode) b.remove(); scheduleNextBonus(); }, 8000); }
 function scheduleNextBonus() { clearTimeout(bonusTimeout); bonusTimeout = setTimeout(spawnFloatingBonus, Math.floor(Math.random() * 150000) + 90000); }
 
 function spawnFloatingCrystal() { 
@@ -821,6 +851,8 @@ function sellPet(petId) {
 }
 
 let isCaseAnimating = false;
+let caseAnimTimer = null; /* ФИКС: Переменная для очистки таймера анимации */
+
 function openCase(type = 'normal') { 
   if (isCaseAnimating) return; 
   
@@ -870,7 +902,6 @@ function openCase(type = 'normal') {
       state.pets.push(winItem.id); 
       if (state.activePets.length < 5) state.activePets.push(winItem.id); 
   } else { 
-      // НОВАЯ ЛОГИКА ОСКОЛКОВ ЗА ДУБЛИ
       if (winItem.rarity === 'rare') shardsReward = 10;
       else if (winItem.rarity === 'epic') shardsReward = 30;
       else if (winItem.rarity === 'legendary') shardsReward = 100;
@@ -904,13 +935,16 @@ function openCase(type = 'normal') {
   el.rouletteTrack.style.transition = 'none';
   el.rouletteTrack.style.transform = `translateX(0px)`;
   
-  setTimeout(() => {
+  /* ФИКС: Очистка предыдущего таймера */
+  if (caseAnimTimer) clearTimeout(caseAnimTimer);
+
+  caseAnimTimer = setTimeout(() => {
     el.rouletteTrack.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
     const randomOffset = (Math.random() - 0.5) * 60; 
     el.rouletteTrack.style.transform = `translateX(${-(40 * 100) + (window.innerWidth / 2) - 50 + randomOffset}px)`;
   }, 50);
 
-  setTimeout(() => {
+  caseAnimTimer = setTimeout(() => {
     renderPetsOnScreen(); updateUI(); checkAch();
     el.caseResult.style.display = 'flex'; 
     if (winItem.img) el.caseResultIcon.innerHTML = `<img src="${winItem.img}?v=1" alt="${winItem.name}" onerror="this.style.display='none'; this.parentNode.textContent='${winItem.emoji}';">`;
@@ -926,12 +960,22 @@ function openCase(type = 'normal') {
         document.getElementById('caseResultTitle').style.color = '#fff'; 
     }
     isCaseAnimating = false; 
+    caseAnimTimer = null;
   }, 4200);
 }
-function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = false; renderMenu(true); }
+function closeCase() { 
+    /* ФИКС: Очистка таймера при закрытии */
+    if (caseAnimTimer) { clearTimeout(caseAnimTimer); caseAnimTimer = null; }
+    el.caseModal.classList.remove('show'); 
+    isCaseAnimating = false; 
+    renderMenu(true); 
+}
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
 function startBoss() { 
+  /* ФИКС: Защита от двойного запуска */
+  if (el.bossModal.classList.contains('show')) return;
+  
   if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); 
   state.crystals -= 10; 
   bossMaxHp = Math.max(10000, Math.floor(getClickPower() * 40)); 
@@ -1059,8 +1103,22 @@ function generateDonateCodeForPlayer(playerId, tier) { const secret = "NARZAN_SU
 function genCode(tier) { let pid = document.getElementById('genIdInput').value.trim().toUpperCase(); if (!pid) return alert('Введите ID игрока!'); if (!pid.startsWith('ID-') && !pid.startsWith('TG-')) pid = 'TG-' + pid; const code = generateDonateCodeForPlayer(pid, tier); const resDiv = document.getElementById('genResult'); resDiv.style.display = 'block'; resDiv.innerHTML = `Код для <b>${pid}</b> на <b>${tier}₽ (⭐)</b>:<br><br><span style="color:#0f0; font-size:14px; user-select:all;">${code}</span><br><br><i>(Нажмите, чтобы скопировать)</i>`; resDiv.onclick = () => { navigator.clipboard.writeText(code); showToast('Код скопирован!', 'gold'); }; }
 
 function applyCode(raw) { 
+  /* ФИКС: Защита админ-кодов от обычных игроков */
+  const adminCodes = ['SILVER', 'GOLD', 'MYTHIC', 'DRONE', 'CRIT100', 'BOOSTME', 'CASEMAX', 'GEMSMAX', 'MAXSCORE559', 'ФИЗРУК', 'BOSS'];
+  if (adminCodes.includes(raw) && !state.isAdmin) {
+      return showToast('❌ Неверный код', 'err');
+  }
+
   if (raw.startsWith('N-DON-')) { const parts = raw.split('-'); if (parts.length === 4) { const tier = parseInt(parts[2]); const hash = parts[3]; const myId = generateUserID(); const expectedHash = simpleHash(myId + tier + "NARZAN_SUPER_SECRET_2024"); if (hash === expectedHash) { if (state.usedCodes.includes(raw)) return showToast('Этот код уже использован!', 'err'); state.usedCodes.push(raw); giveDonateReward(tier); showToast(`✅ Активирован донат на ${tier}₽!`, 'gold'); return; } else { return showToast('❌ Код не подходит для вашего ID!', 'err'); } } }
-  if (raw === 'HGHACK') { el.cheatOverlay.classList.add('show'); showToast('🚀 АДМИН МЕНЮ!'); return; } 
+  
+  if (raw === 'HGHACK') { 
+      state.isAdmin = true; 
+      saveGame();
+      el.cheatOverlay.classList.add('show'); 
+      showToast('🚀 АДМИН МЕНЮ АКТИВИРОВАНО!'); 
+      return; 
+  } 
+  
   if (raw === 'MAXSCORE559') { state.aura += 1000000; state.totalAura += 1000000; state.auraLevel = Math.max(state.auraLevel, 50); checkStage(); updateUI(); saveGame(); showToast('+1 000 000 капелек!'); return; } 
   if (raw === 'DRONE') { state.hasDrone = true; showToast('🛸 НЛО активирован! (x5)', 'gold'); renderPetsOnScreen(); updateUI(); saveGame(); renderMenu(true); return; } 
   if (raw === 'CRIT100') { state.critChance = 1.0; showToast('⚡ Крит 100%!'); saveGame(); return; } 
@@ -1117,7 +1175,6 @@ function buyTalent(id) {
     let currentLvl = state.talents[id] || 0;
     if (currentLvl >= t.max) return;
     
-    // Проверка предыдущего таланта в ветке
     if (t.tier > 1) {
         let prevId = t.branch + '_' + (t.tier - 1);
         if ((state.talents[prevId] || 0) === 0) return showToast('Сначала изучите предыдущий талант!', 'err');
@@ -1137,7 +1194,6 @@ function renderTalentTree() {
     let html = `<div style="text-align:center; font-size:12px; color:#5eead4; margin-bottom:15px;">Осколков: <b>${fmt(state.shards)} 🔹</b></div>`;
     html += `<div class="talent-tree-wrap">`;
     
-    // 3 ветки
     const branches = [
         { id: 'click', title: 'Ветка Клика' },
         { id: 'inc', title: 'Ветка Дохода' },
@@ -1320,10 +1376,10 @@ function renderMenu(keepScroll = false) {
             </div>`;
           } else {
             html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">Оплата в Telegram Stars. После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div></div>
-            <div class="donate-card"><h3>15 рублей (⭐)</h3><p>500 💎 + Серебряный кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-            <div class="donate-card"><h3>30 рублей (⭐)</h3><p>1500 💎, 100к 💧 + 2 Серебряных кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-            <div class="donate-card"><h3>50 рублей (⭐)</h3><p>3000 💎, 500к 💧 + Золотой кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-            <div class="donate-card"><h3>100 рублей (⭐)</h3><p>10 000 💎, 5 млн 💧 + 3 Золотых кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+            <div class="donate-card"><h3>15 рублей (⭐)</h3><p>500 💎 + Серебряный кейс.</p><button class="donate-btn" onclick="openDonateModal()" style="background:var(--btn-grad-start); color:#fff;">Поддержать</button></div>
+            <div class="donate-card"><h3>30 рублей (⭐)</h3><p>1500 💎, 100к 💧 + 2 Серебряных кейса.</p><button class="donate-btn" onclick="openDonateModal()" style="background:var(--btn-grad-start); color:#fff;">Поддержать</button></div>
+            <div class="donate-card"><h3>50 рублей (⭐)</h3><p>3000 💎, 500к 💧 + Золотой кейс.</p><button class="donate-btn" onclick="openDonateModal()" style="background:var(--btn-grad-start); color:#fff;">Поддержать</button></div>
+            <div class="donate-card"><h3>100 рублей (⭐)</h3><p>10 000 💎, 5 млн 💧 + 3 Золотых кейса.</p><button class="donate-btn" onclick="openDonateModal()" style="background:var(--btn-grad-start); color:#fff;">Поддержать</button></div>
             <div class="donate-card" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.1);"><h3 style="color:#ef4444;">1000 рублей (⭐)</h3><p>100 000 💎, 100 млн 💧 + Мифический кейс и <b>Феникс</b>!</p><button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateModal()">Поддержать</button></div>`; 
           }
       }
@@ -1331,7 +1387,6 @@ function renderMenu(keepScroll = false) {
           el.menuTitle.textContent = '👤 Профиль';
           html += `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">${TG_USER ? 'Аккаунт: ' + (TG_USER.username || TG_USER.first_name) : (currentUser === 'guest' ? 'Гостевой режим' : 'Аккаунт: ' + currentUser)}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div>`; 
           
-          // Вставляем Ачивки и Эволюцию сюда
           html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
             <button class="case-btn" style="background:linear-gradient(135deg, #6a4cff, #8a6cff); margin-bottom:8px;" onclick="switchTab('ach_inner')">🏆 Ачивки</button>
             <button class="case-btn" style="background:linear-gradient(135deg, #6a4cff, #8a6cff); margin-bottom:8px;" onclick="switchTab('evo_inner')">🧬 Эволюция</button>
