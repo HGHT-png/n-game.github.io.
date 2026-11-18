@@ -82,13 +82,27 @@
   .tab-content { padding: 12px; overflow-y: auto; flex: 1; min-height: 0; color: #ccc; font-size: 13px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   
   .main-menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 5px; }
-  .main-menu-btn { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  .main-menu-btn { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
   .main-menu-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
-  .main-menu-icon { font-size: 32px; margin-bottom: 8px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+  .main-menu-icon { font-size: 36px; margin-bottom: 8px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
   .main-menu-title { font-size: 14px; font-weight: bold; color: #fff; }
   .main-menu-desc { font-size: 10px; color: #8a9bbd; margin-top: 2px; }
   
   .back-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 5px; }
+
+  /* ДЕРЕВО ТАЛАНТОВ */
+  .talent-tree-wrap { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 10px 0; }
+  .talent-branch { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; width: 100%; }
+  .talent-column { display: flex; flex-direction: column; align-items: center; position: relative; width: 90px; }
+  .talent-line { width: 2px; height: 20px; background: rgba(255,255,255,0.2); margin: 4px 0; }
+  .talent-line.active { background: #5eead4; box-shadow: 0 0 5px #5eead4; }
+  .talent-node { width: 60px; height: 60px; border-radius: 50%; background: var(--panel); border: 3px solid #444; display: flex; justify-content: center; align-items: center; flex-direction: column; position: relative; cursor: pointer; z-index: 2; transition: 0.2s; }
+  .talent-node.unlocked { border-color: #5eead4; box-shadow: 0 0 15px rgba(94,234,212,0.3); }
+  .talent-node.maxed { border-color: #fbbf24; box-shadow: 0 0 15px rgba(251,191,36,0.5); background: rgba(251,191,36,0.1); }
+  .talent-node.disabled { opacity: 0.5; filter: grayscale(1); }
+  .talent-node-icon { font-size: 24px; }
+  .talent-node-lvl { position: absolute; bottom: -5px; background: #333; color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 10px; border: 1px solid #555; font-weight: bold;}
+  .talent-title-branch { font-size: 11px; font-weight: bold; color: #8a9bbd; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;}
 
   .ach-item { display: flex; gap: 8px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; opacity: 0.5; }
   .ach-item.unlocked { opacity: 1; background: rgba(94,234,212,0.1); border: 1px solid rgba(94,234,212,0.3); }
@@ -114,13 +128,18 @@
   .pet-btn.equip { background: #fbbf24; color: black; }
   .pet-btn.equipped { background: #2a2a3a; color: #888; }
   .pet-btn.sell { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
+  
   .case-box { background: rgba(96,165,250,0.08); border: 1px solid #3b82f6; border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 12px; box-shadow: inset 0 0 20px rgba(59,130,246,0.15); }
   .case-title { font-weight: 800; color: #60a5fa; font-size: 15px; margin-bottom: 6px; }
   .case-btn { background: linear-gradient(135deg, var(--btn-grad-start), var(--btn-grad-end)); color: white; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 14px; margin-top: 8px; width: 100%; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
   .case-btn:active { transform: scale(0.97); }
   .case-btn:disabled { opacity: 0.4; pointer-events: none; box-shadow: none; }
   .case-btn.free-case { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; box-shadow: 0 4px 12px rgba(245,158,11,0.4);}
-  
+  .case-btn.silver { background: linear-gradient(135deg, #cbd5e1, #94a3b8); color: #000; }
+  .case-btn.gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; }
+  .case-btn.mythic { background: linear-gradient(135deg, #ef4444, #991b1b); color: #fff; box-shadow: 0 0 15px rgba(239,68,68,0.6); }
+
+  /* КЕЙС CS:GO */
   .case-modal { position: fixed; inset: 0; background: rgba(10, 11, 26, 0.98); backdrop-filter: blur(10px); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;}
   .case-modal.show { display: flex; }
   .roulette-wrap { position: relative; width: 100%; height: 120px; background: #05050a; border-top: 2px solid #2a2a3a; border-bottom: 2px solid #2a2a3a; overflow: hidden; display: flex; align-items: center; }
@@ -131,6 +150,7 @@
   .roulette-item.rare { border-bottom: 4px solid #60a5fa; }
   .roulette-item.epic { border-bottom: 4px solid #c084fc; }
   .roulette-item.legendary { border-bottom: 4px solid #fbbf24; box-shadow: inset 0 0 20px rgba(251,191,36,0.2); }
+  .roulette-item.exclusive { border-bottom: 4px solid #ef4444; box-shadow: inset 0 0 20px rgba(239,68,68,0.4); }
   .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #ef4444; z-index: 10; box-shadow: 0 0 10px #ef4444; transform: translateX(-50%); }
   .case-result { display: none; flex-direction: column; align-items: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; margin-top: 20px; }
   @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
@@ -140,7 +160,6 @@
   .close-case-x { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); color: #fff; font-size: 24px; cursor: pointer; z-index: 210; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   .close-case-x:active { background: rgba(255,255,255,0.2); }
 
-  /* ИСПРАВЛЕНО: Жесткий размер колеса и контейнера, чтобы не ломалось в APK */
   .casino-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; width: 100%; overflow: hidden; }
   .wheel-container { position: relative; width: 240px; height: 240px; min-width: 240px; min-height: 240px; margin-bottom: 15px; flex-shrink: 0; }
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #ef4444; z-index: 10; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
@@ -183,23 +202,6 @@
   .cheat-panel { background: #000; border: 1px solid #0f0; color: #0f0; padding: 12px; border-radius: 8px; font-family: monospace; width: 100%; max-width: 320px; max-height: 80vh; overflow-y: auto;}
   .cheat-btn { background: #0f0; color: #000; padding: 6px; margin: 4px 0; width: 100%; font-weight: bold; cursor: pointer; border-radius: 4px; text-align:left; touch-action: manipulation; font-size: 12px;}
   .auth-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; outline: none; text-align: center; }
-  .talent-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(106,76,255,0.3); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;}
-  .talent-info { flex: 1; }
-  .talent-title { font-weight: bold; color: #fff; font-size: 13px; }
-  .talent-desc { font-size: 10px; color: #8a9bbd; margin-top: 2px; }
-  .talent-btn { background: var(--btn-grad-start); color: #fff; padding: 6px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; touch-action: manipulation; display: flex; flex-direction: column; align-items: center; min-width: 70px; }
-  .talent-btn:disabled { opacity: 0.5; pointer-events: none; }
-  .minigame-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-  .minigame-card.locked { opacity: 0.5; filter: grayscale(1); }
-  .mg-icon { font-size: 24px; }
-  .mg-info { flex: 1; }
-  .mg-title { font-weight: bold; font-size: 13px; color: #fff; }
-  .mg-desc { font-size: 10px; color: #8a9bbd; }
-  .mg-btn { background: #fbbf24; color: #000; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
-  .donate-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: center; }
-  .donate-card h3 { color: #fbbf24; font-size: 16px; margin-bottom: 5px; }
-  .donate-card p { font-size: 11px; color: #ccc; margin-bottom: 10px; }
-  .donate-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; font-weight: bold; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 14px; }
   .theme-btn { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; }
 </style>
 </head>
@@ -223,8 +225,7 @@
     <div class="aura-display"><span class="aura-icon">💧</span> <span id="auraVal">0</span></div>
     <div class="crystal-display">
       <span class="crystal-icon">💎</span> <span id="crystalVal">0</span> | 
-      <span class="shard-icon">🔹</span> <span id="shardVal">0</span> | 
-      📦 <span id="caseVal">0</span>
+      <span class="shard-icon">🔹</span> <span id="shardVal">0</span>
     </div>
     <div class="stage-name" id="stageName">Мыло «Аура»</div>
     <div class="income-text">
@@ -370,6 +371,9 @@
     <button class="cheat-btn" onclick="applyCode('MAXSCORE559')">> MAXSCORE559</button>
     <button class="cheat-btn" onclick="applyCode('ФИЗРУК')">> Секретная стадия</button>
     <button class="cheat-btn" onclick="applyCode('BOSS')">> Тест Босса</button>
+    <button class="cheat-btn" onclick="applyCode('SILVER')">> Серебряный кейс</button>
+    <button class="cheat-btn" onclick="applyCode('GOLD')">> Золотой кейс</button>
+    <button class="cheat-btn" onclick="applyCode('MYTHIC')">> Мифический кейс</button>
     <button class="cheat-btn" style="background:#f00;color:#fff;margin-top:15px;" onclick="document.getElementById('cheatOverlay').classList.remove('show')">> ЗАКРЫТЬ</button>
   </div>
 </div>
@@ -399,6 +403,21 @@ const PETS = [
   { id: 'p16', name: 'Феникс', emoji: '🔥🦅', img: 'pet_phoenix.png', rarity: 'exclusive', cost: 999999999999, bonus: {type:'global', val:7.0}, desc: 'x7 ко всему' }
 ];
 
+const TALENTS = [
+  // Клик ветка
+  { id: 'click_1', branch: 'click', tier: 1, name: 'Острые когти', desc: 'Сила клика +50%', max: 1, cost: 50, icon: '👆' },
+  { id: 'click_2', branch: 'click', tier: 2, name: 'Точный удар', desc: 'Шанс крита +5%', max: 1, cost: 150, icon: '🎯' },
+  { id: 'click_3', branch: 'click', tier: 3, name: 'Ярость', desc: 'Урон крита x2', max: 1, cost: 500, icon: '💥' },
+  // Доход ветка
+  { id: 'inc_1', branch: 'inc', tier: 1, name: 'Золотая жила', desc: 'Доход +50%', max: 1, cost: 50, icon: '💰' },
+  { id: 'inc_2', branch: 'inc', tier: 2, name: 'Оффлайн', desc: 'Оффлайн-доход +50%', max: 1, cost: 150, icon: '⏳' },
+  { id: 'inc_3', branch: 'inc', tier: 3, name: 'Магнат', desc: 'Бустеры длятся x2', max: 1, cost: 500, icon: '👑' },
+  // Питомцы ветка
+  { id: 'pet_1', branch: 'pet', tier: 1, name: 'Дружба', desc: 'Штраф питомцев -5%', max: 1, cost: 50, icon: '🐾' },
+  { id: 'pet_2', branch: 'pet', tier: 2, name: 'Синергия', desc: 'Синергия дает +10%', max: 1, cost: 150, icon: '✨' },
+  { id: 'pet_3', branch: 'pet', tier: 3, name: 'Зоомагнат', desc: 'Дубли дают +50% осколков', max: 1, cost: 500, icon: '🦁' }
+];
+
 const CFG = {
   emoji: { soap:'🧼', liquid_soap:'🧴', solid_soap:'🧼', water:'💧', mineral_water:'💧', sparkling_water:'💧', brush:'🪥', electric_brush:'🪥', sonic_brush:'🪥', narzan:'🥤', kvass:'🥤', juice:'🥤', mors:'🥤', compote:'🥤', lemonade:'🥤', tea:'🥤', coffee:'🥤', cocoa:'🥤', energy:'🥤', beer:'🍺', wine:'🍷', champagne:'🍾', cognac:'🥃', chekushka:'🍾', cosmic:'🌌' },
   names: { soap:'Мыло «Аура»', liquid_soap:'Жидкое мыло', solid_soap:'Твёрдое мыло', water:'Бутылка воды', mineral_water:'Минеральная вода', sparkling_water:'Газированная вода', brush:'Чёрная зубная щётка', electric_brush:'Электрическая щётка', sonic_brush:'Ультразвуковая щётка', narzan:'Нарзан', kvass:'Квас', juice:'Сок', mors:'Морс', compote:'Компот', lemonade:'Лимонад', tea:'Чай', coffee:'Кофе', cocoa:'Какао', energy:'Энергетик', beer:'Пиво', wine:'Вино', champagne:'Шампанское', cognac:'Коньяк', chekushka:'Чекушка', cosmic:'Космический Нарзан' },
@@ -421,16 +440,19 @@ const ACHIEVEMENTS = [
 
 const defaultState = { 
   aura: 0, totalAura: 0, clicks: 0, crits: 0, clickLevel: 1, auraLevel: 0, stage: 0, 
-  crystals: 0, shards: 0, freeCases: 0, 
+  crystals: 0, shards: 0, silverCases: 0, goldCases: 0, mythicCases: 0,
   pets: [], activePets: [], codeUses: {}, hasDrone: false, usedCodes: [], achievements: [], 
   boosterEnd: 0, boosterLevel: 0, startedAt: Date.now(), lastSaved: Date.now(), 
   critChance: 0.05, prestigePoints: 0, isBoosterPermanent: false, 
-  talents: { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 }, 
+  talents: {}, 
   secretStage: null, preSecretStage: 0, theme: 'default', isPaused: false,
   buyAmount: 1,
   lastDaily: 0, dailyStreak: 0,
   totalBossKills: 0, totalCasesOpened: 0, totalPetsSold: 0
 };
+
+TALENTS.forEach(t => defaultState.talents[t.id] = 0);
+
 let state = JSON.parse(JSON.stringify(defaultState));
 
 let currentUser, currentSaveKey;
@@ -470,12 +492,17 @@ function loadGame() {
       if (!Array.isArray(state.activePets)) state.activePets = [];
       if (!Array.isArray(state.usedCodes)) state.usedCodes = [];
       if (!Array.isArray(state.achievements)) state.achievements = [];
-      if (!state.talents || typeof state.talents !== 'object') state.talents = { heavyHand: 0, goldenVein: 0, eternalCrit: 0, teamSpirit: 0 };
+      
+      if (!state.talents || typeof state.talents !== 'object') state.talents = {};
+      TALENTS.forEach(t => { if (isNaN(state.talents[t.id])) state.talents[t.id] = 0; });
+
       if (isNaN(state.aura)) state.aura = 0;
       if (isNaN(state.totalAura)) state.totalAura = 0;
       if (isNaN(state.crystals)) state.crystals = 0;
       if (isNaN(state.shards)) state.shards = 0;
-      if (isNaN(state.freeCases)) state.freeCases = 0;
+      if (isNaN(state.silverCases)) state.silverCases = 0;
+      if (isNaN(state.goldCases)) state.goldCases = 0;
+      if (isNaN(state.mythicCases)) state.mythicCases = 0;
       if (isNaN(state.clickLevel) || state.clickLevel < 1) state.clickLevel = 1;
       if (isNaN(state.auraLevel) || state.auraLevel < 0) state.auraLevel = 0;
       if (isNaN(state.stage)) state.stage = 0;
@@ -524,7 +551,11 @@ const getPetsMultiplier = (type) => {
   let eq = state.activePets.map(id => PETS.find(p => p.id === id)).filter(Boolean); 
   let count = eq.length; if (state.hasDrone) count++; 
   if (count === 0) return 1; 
-  let penaltyPerPet = 0.15 - (state.talents.teamSpirit * 0.01); 
+  
+  // Талант на уменьшение штрафа
+  let penaltyReduction = state.talents['pet_1'] ? 0.05 : 0;
+  let penaltyPerPet = Math.max(0.05, 0.15 - penaltyReduction); 
+  
   let inf = Math.max(0.2, 1 - (count - 1) * penaltyPerPet); 
   let tb = 0; 
   eq.forEach(p => { if (p.bonus.type === type || p.bonus.type === 'global') tb += (p.bonus.val - 1) * inf; }); 
@@ -532,10 +563,12 @@ const getPetsMultiplier = (type) => {
   let rarities = { rare: 0, epic: 0, legendary: 0, exclusive: 0 };
   eq.forEach(p => rarities[p.rarity]++);
   let synergy = 0;
-  if (rarities.rare >= 3) synergy += 0.15;
-  if (rarities.epic >= 3) synergy += 0.25;
-  if (rarities.legendary >= 3) synergy += 0.40;
-  if (rarities.exclusive >= 2) synergy += 0.50;
+  let synergyBonus = state.talents['pet_2'] ? 0.10 : 0; // Талант на синергию
+  
+  if (rarities.rare >= 3) synergy += 0.15 + synergyBonus;
+  if (rarities.epic >= 3) synergy += 0.25 + synergyBonus;
+  if (rarities.legendary >= 3) synergy += 0.40 + synergyBonus;
+  if (rarities.exclusive >= 2) synergy += 0.50 + synergyBonus;
   
   return 1 + tb + synergy; 
 };
@@ -574,16 +607,17 @@ const getMultiplier = () => isBoosterActive() ? 2 : 1;
 
 const getClickPower = () => { 
     let base = state.clickLevel * (1 + Math.floor(state.clickLevel / 5)); 
-    let talentBonus = 1 + (state.talents.heavyHand * 0.01); 
-    let multiplier = getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier(); 
-    if (Date.now() < goldRushEnd) multiplier *= 5; 
-    let res = base * talentBonus * multiplier;
+    
+    let clickBonus = state.talents['click_1'] ? 1.5 : 1;
+    let res = base * clickBonus * getMultiplier() * getPrestigeMultiplier() * getPetClickMultiplier() * getDroneMultiplier(); 
+    
+    if (Date.now() < goldRushEnd) res *= 5; 
     return isNaN(res) ? 1 : res;
 };
 const getAuraIncome = () => { 
     let base = state.auraLevel * (1 + Math.floor(state.auraLevel / 5)); 
-    let talentBonus = 1 + (state.talents.goldenVein * 0.01); 
-    let res = base * talentBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier(); 
+    let incBonus = state.talents['inc_1'] ? 1.5 : 1;
+    let res = base * incBonus * getMultiplier() * getPrestigeMultiplier() * getPetIncomeMultiplier() * getDroneMultiplier(); 
     return isNaN(res) ? 0 : res;
 };
 
@@ -726,8 +760,11 @@ function updateUI() {
 
 function doClick(e) { 
   let g = getClickPower(); let c = false; 
-  let totalCritChance = state.critChance === 1.0 ? 1.0 : Math.min(0.2, state.critChance + (state.talents.eternalCrit * 0.04));
-  if (Math.random() < totalCritChance) { g *= 5; state.crits++; c = true; } 
+  let totalCritChance = state.critChance === 1.0 ? 1.0 : Math.min(0.2, state.critChance + (state.talents['click_2'] ? 0.05 : 0));
+  if (Math.random() < totalCritChance) { 
+      let critMult = state.talents['click_3'] ? 10 : 5;
+      g *= critMult; state.crits++; c = true; 
+  } 
   state.aura += g; state.totalAura += g; state.clicks++; 
   el.clickZone.classList.add('pop'); setTimeout(() => el.clickZone.classList.remove('pop'), 100); 
   let x = window.innerWidth / 2, y = window.innerHeight / 2; 
@@ -784,11 +821,24 @@ function sellPet(petId) {
 }
 
 let isCaseAnimating = false;
-function openCase(isFree = false) { 
+function openCase(type = 'normal') { 
   if (isCaseAnimating) return; 
-  if (isFree && state.freeCases > 0) { state.freeCases--; } 
-  else if (!isFree && state.crystals >= CFG.caseCost) { state.crystals -= CFG.caseCost; } 
-  else { return; } 
+  
+  let isFree = false;
+  if (type === 'normal') {
+      if (state.freeCases > 0) { state.freeCases--; isFree = true; }
+      else if (state.crystals >= CFG.caseCost) { state.crystals -= CFG.caseCost; }
+      else { return; }
+  } else if (type === 'silver') {
+      if (state.silverCases <= 0) return;
+      state.silverCases--;
+  } else if (type === 'gold') {
+      if (state.goldCases <= 0) return;
+      state.goldCases--;
+  } else if (type === 'mythic') {
+      if (state.mythicCases <= 0) return;
+      state.mythicCases--;
+  }
   
   isCaseAnimating = true; 
   state.totalCasesOpened++;
@@ -796,23 +846,51 @@ function openCase(isFree = false) {
   el.caseResult.style.display = 'none';
   
   let rollItems = [];
-  const rand = Math.random() * 100; 
   let winItem = null; 
-  if (rand < 5) winItem = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]; 
-  else if (rand < 30) winItem = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)]; 
-  else winItem = PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)]; 
+  
+  if (type === 'normal') {
+      const rand = Math.random() * 100; 
+      if (rand < 5) winItem = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]; 
+      else if (rand < 30) winItem = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)]; 
+      else winItem = PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)]; 
+  } else if (type === 'silver') {
+      const rand = Math.random() * 100;
+      if (rand < 20) winItem = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)];
+      else winItem = PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)];
+  } else if (type === 'gold') {
+      winItem = PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)];
+  } else if (type === 'mythic') {
+      winItem = PETS.filter(p => p.rarity === 'exclusive')[0];
+  }
 
   let dup = state.pets.includes(winItem.id); 
-  if (!dup) { state.pets.push(winItem.id); if (state.activePets.length < 5) state.activePets.push(winItem.id); }
-  else { state.shards += 10; } 
+  let shardsReward = 0;
+  
+  if (!dup) { 
+      state.pets.push(winItem.id); 
+      if (state.activePets.length < 5) state.activePets.push(winItem.id); 
+  } else { 
+      // НОВАЯ ЛОГИКА ОСКОЛКОВ ЗА ДУБЛИ
+      if (winItem.rarity === 'rare') shardsReward = 10;
+      else if (winItem.rarity === 'epic') shardsReward = 30;
+      else if (winItem.rarity === 'legendary') shardsReward = 100;
+      else if (winItem.rarity === 'exclusive') shardsReward = 300;
+      
+      if (state.talents['pet_3']) shardsReward = Math.floor(shardsReward * 1.5);
+      state.shards += shardsReward; 
+  } 
 
   for (let i = 0; i < 50; i++) {
     if (i === 40) rollItems.push(winItem);
     else {
         let r = Math.random() * 100;
-        if (r < 5) rollItems.push(PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]);
-        else if (r < 30) rollItems.push(PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)]);
-        else rollItems.push(PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)]);
+        if (type === 'mythic') { rollItems.push(PETS.filter(p => p.rarity === 'exclusive')[0]); }
+        else if (type === 'gold') { rollItems.push(PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]); }
+        else {
+            if (r < 5) rollItems.push(PETS.filter(p => p.rarity === 'legendary')[Math.floor(Math.random() * 5)]);
+            else if (r < 30) rollItems.push(PETS.filter(p => p.rarity === 'epic')[Math.floor(Math.random() * 5)]);
+            else rollItems.push(PETS.filter(p => p.rarity === 'rare')[Math.floor(Math.random() * 5)]);
+        }
     }
   }
 
@@ -839,15 +917,20 @@ function openCase(isFree = false) {
     else el.caseResultIcon.textContent = winItem.emoji;
     el.caseResultName.textContent = winItem.name; 
     el.caseResultName.className = `pet-rarity-${winItem.rarity}`; 
-    document.getElementById('caseResultTitle').textContent = dup ? 'Уже есть! +10 🔹' : 'Поздравляем!'; 
-    document.getElementById('caseResultTitle').style.color = dup ? '#fbbf24' : '#fff'; 
+    
+    if (dup) {
+        document.getElementById('caseResultTitle').textContent = `Уже есть! +${shardsReward} 🔹`; 
+        document.getElementById('caseResultTitle').style.color = '#5eead4'; 
+    } else {
+        document.getElementById('caseResultTitle').textContent = 'Поздравляем!'; 
+        document.getElementById('caseResultTitle').style.color = '#fff'; 
+    }
     isCaseAnimating = false; 
   }, 4200);
 }
 function closeCase() { el.caseModal.classList.remove('show'); isCaseAnimating = false; renderMenu(true); }
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
-/* === БОСС === */
 function startBoss() { 
   if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); 
   state.crystals -= 10; 
@@ -929,12 +1012,12 @@ function hitBoss(e) {
   if (bossHp <= 0) { 
     clearInterval(bossTimerId);
     let rewardAura = getAuraIncome() * 600; 
-    state.aura += rewardAura; state.crystals += 50; 
+    state.aura += rewardAura; state.crystals += 50; state.shards += 20;
     state.totalBossKills++;
     el.bossEmoji.textContent = '💥';
     el.bossEmoji.style.pointerEvents = 'none';
     el.bossRewardText.style.display = 'block';
-    el.bossRewardText.textContent = `Победа! +${short(rewardAura)} 💧, +50 💎`;
+    el.bossRewardText.textContent = `Победа! +${short(rewardAura)} 💧, +50 💎, +20 🔹`;
     el.bossRewardText.style.color = '#5eead4';
     saveGame(); 
   } 
@@ -987,6 +1070,10 @@ function applyCode(raw) {
   if (raw === 'GEMS2') { if ((state.codeUses['GEMS2'] || 0) >= 2) return showToast('Лимит этого кода исчерпан (2/2)', 'err'); state.codeUses['GEMS2'] = (state.codeUses['GEMS2'] || 0) + 1; state.crystals += 50; showToast(`💎 +50 Кристаллов! (Использовано: ${state.codeUses['GEMS2']}/2)`, 'crystal'); updateUI(); saveGame(); return; } 
   if (raw === 'GEMSMAX') { state.crystals += 50; showToast('💎 +50 Кристаллов!', 'crystal'); updateUI(); saveGame(); return; } 
   
+  if (raw === 'SILVER') { state.silverCases++; showToast('🥈 Серебряный кейс!', 'gold'); updateUI(); saveGame(); return; }
+  if (raw === 'GOLD') { state.goldCases++; showToast('🥇 Золотой кейс!', 'gold'); updateUI(); saveGame(); return; }
+  if (raw === 'MYTHIC') { state.mythicCases++; showToast('👑 Мифический кейс!', 'gold'); updateUI(); saveGame(); return; }
+
   if (raw === 'ФИЗРУК') { 
     if (state.secretStage) return showToast('Секретная стадия уже активна!', 'err'); 
     state.preSecretStage = state.stage; 
@@ -1004,7 +1091,14 @@ function applyCode(raw) {
   const bonus = CODES[raw]; state.usedCodes.push(raw); state.aura += bonus; state.totalAura += bonus; showToast('✅ Код активирован: +' + fmt(bonus)); checkAch(); updateUI(); saveGame(); 
 }
 
-function giveDonateReward(tier) { if (tier === 15) { state.crystals += 500; } if (tier === 30) { state.crystals += 1500; state.aura += 100000; state.freeCases += 1; } if (tier === 50) { state.crystals += 3000; state.aura += 500000; state.freeCases += 3; } if (tier === 100) { state.crystals += 10000; state.aura += 5000000; state.freeCases += 10; } if (tier === 1000) { state.crystals += 100000; state.aura += 100000000; state.freeCases += 25; if (!state.pets.includes('p16')) { state.pets.push('p16'); if (state.activePets.length < 5) state.activePets.push('p16'); } } updateUI(); saveGame(); renderMenu(true); renderPetsOnScreen(); }
+function giveDonateReward(tier) { 
+    if (tier === 15) { state.crystals += 500; state.silverCases += 1; } 
+    if (tier === 30) { state.crystals += 1500; state.aura += 100000; state.silverCases += 2; } 
+    if (tier === 50) { state.crystals += 3000; state.aura += 500000; state.goldCases += 1; } 
+    if (tier === 100) { state.crystals += 10000; state.aura += 5000000; state.goldCases += 3; } 
+    if (tier === 1000) { state.crystals += 100000; state.aura += 100000000; state.mythicCases += 1; if (!state.pets.includes('p16')) { state.pets.push('p16'); if (state.activePets.length < 5) state.activePets.push('p16'); } } 
+    updateUI(); saveGame(); renderMenu(true); renderPetsOnScreen(); 
+}
 
 let lastTick = performance.now(), autoSaveTimer = 0;
 function gameLoop(now) { 
@@ -1015,6 +1109,83 @@ function gameLoop(now) {
         updateUI(); autoSaveTimer += dt; if (autoSaveTimer > 5) { autoSaveTimer = 0; saveGame(); } 
     } catch(e) { console.warn("Ошибка в GameLoop:", e); }
     requestAnimationFrame(gameLoop); 
+}
+
+function buyTalent(id) {
+    const t = TALENTS.find(x => x.id === id);
+    if (!t) return;
+    let currentLvl = state.talents[id] || 0;
+    if (currentLvl >= t.max) return;
+    
+    // Проверка предыдущего таланта в ветке
+    if (t.tier > 1) {
+        let prevId = t.branch + '_' + (t.tier - 1);
+        if ((state.talents[prevId] || 0) === 0) return showToast('Сначала изучите предыдущий талант!', 'err');
+    }
+
+    if (state.shards >= t.cost) {
+        state.shards -= t.cost;
+        state.talents[id]++;
+        showToast(`Талант "${t.name}" изучен!`, 'gold');
+        saveGame(); renderMenu(true); updateUI();
+    } else {
+        showToast('Недостаточно осколков 🔹!', 'err');
+    }
+}
+
+function renderTalentTree() {
+    let html = `<div style="text-align:center; font-size:12px; color:#5eead4; margin-bottom:15px;">Осколков: <b>${fmt(state.shards)} 🔹</b></div>`;
+    html += `<div class="talent-tree-wrap">`;
+    
+    // 3 ветки
+    const branches = [
+        { id: 'click', title: 'Ветка Клика' },
+        { id: 'inc', title: 'Ветка Дохода' },
+        { id: 'pet', title: 'Ветка Питомцев' }
+    ];
+
+    html += `<div class="talent-branch">`;
+    branches.forEach(b => {
+        html += `<div class="talent-column">`;
+        html += `<div class="talent-title-branch">${b.title}</div>`;
+        
+        let t1 = TALENTS.find(x => x.branch === b.id && x.tier === 1);
+        let t2 = TALENTS.find(x => x.branch === b.id && x.tier === 2);
+        let t3 = TALENTS.find(x => x.branch === b.id && x.tier === 3);
+
+        [t1, t2, t3].forEach((t, index) => {
+            if (!t) return;
+            let lvl = state.talents[t.id] || 0;
+            let isUnlocked = lvl > 0;
+            let isMax = lvl >= t.max;
+            let canBuy = false;
+            
+            if (index === 0) canBuy = true;
+            else {
+                let prev = TALENTS.find(x => x.branch === b.id && x.tier === t.tier - 1);
+                canBuy = (state.talents[prev.id] || 0) > 0;
+            }
+
+            let cls = isMax ? 'maxed' : (isUnlocked ? 'unlocked' : (canBuy ? '' : 'disabled'));
+            
+            html += `<div class="talent-node ${cls}" onclick="buyTalent('${t.id}')" title="${t.desc}">
+                <div class="talent-node-icon">${t.icon}</div>
+                <div class="talent-node-lvl">${lvl}/${t.max}</div>
+            </div>`;
+            
+            if (index < 2) {
+                let nextUnlocked = (state.talents[t.id] || 0) > 0;
+                html += `<div class="talent-line ${nextUnlocked ? 'active' : ''}"></div>`;
+            }
+        });
+        html += `</div>`;
+    });
+    html += `</div>`;
+    
+    html += `</div>`;
+    html += `<div style="font-size:11px; color:#8a9bbd; text-align:center; margin-top:20px;">Нажми на узел, чтобы изучить. Стоимость указана при наведении.</div>`;
+    
+    return html;
 }
 
 function renderMenu(keepScroll = false) { 
@@ -1029,10 +1200,8 @@ function renderMenu(keepScroll = false) {
       let html = '<div class="main-menu-grid">';
       
       const menuItems = [
-          { id: 'ach', icon: '🏆', title: 'Ачивки', desc: 'Достижения и награды' },
-          { id: 'evo', icon: '🧬', title: 'Эволюция', desc: 'Стадии развития' },
-          { id: 'pets', icon: '🐾', title: 'Питомцы', desc: 'Кейсы и коллекция' },
-          { id: 'talents', icon: '🌳', title: 'Таланты', desc: 'Улучшения за капли' },
+          { id: 'pets_tab', icon: '🐾', title: 'Питомцы', desc: 'Кейсы и коллекция' },
+          { id: 'talents', icon: '🌳', title: 'Древо Талантов', desc: 'Прокачка за осколки' },
           { id: 'minigames', icon: '🎲', title: 'Мини-игры', desc: 'Рулетка и Босс' },
           { id: 'shop', icon: '💎', title: 'Магазин', desc: 'Обмен и Донат' },
           { id: 'account', icon: '👤', title: 'Профиль', desc: 'Статистика и Настройки' }
@@ -1055,20 +1224,24 @@ function renderMenu(keepScroll = false) {
       
       let html = `<button class="back-btn" onclick="switchTab('main')">← Назад</button>`;
       
-      if (activeTab === 'ach') { 
-          el.menuTitle.textContent = '🏆 Ачивки';
-          ACHIEVEMENTS.forEach(a => { const on = state.achievements.includes(a.id); html += `<div class="ach-item ${on?'unlocked':''}"><div class="ach-icon">${on?a.icon:'🔒'}</div><div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div></div>`; }); 
-          CFG.order.forEach((id, i) => { if (i === 0) return; const un = state.stage >= i; if (un) { html += `<div class="ach-item unlocked"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]}</div><div class="ach-desc">Эволюция достигнута</div></div></div>`; } else { html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">Секретное достижение</div><div class="ach-desc">Продолжай качать ауру...</div></div></div>`; } }); 
-      } 
-      else if (activeTab === 'evo') { 
-          el.menuTitle.textContent = '🧬 Эволюция';
-          CFG.order.forEach((id, i) => { const cur = state.stage === i, done = state.stage > i; if (done || cur) { html += `<div class="ach-item ${done||cur?'unlocked':''}" style="${cur?'border-color:#ffd700':''}"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]} ${cur?'(Текущая)':''}</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; } else { html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">???</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; } }); 
-      } 
-      else if (activeTab === 'pets') { 
+      if (activeTab === 'talents') {
+          el.menuTitle.textContent = '🌳 Древо Талантов';
+          html += renderTalentTree();
+      }
+      else if (activeTab === 'pets_tab') { 
           el.menuTitle.textContent = '🐾 Питомцы';
-          let cb = ''; if (state.freeCases > 0) cb = `<button class="case-btn free-case" onclick="openCase(true)" ${isCaseAnimating?'disabled':''}>Открыть (${state.freeCases} шт)</button>`; else cb = `<button class="case-btn" onclick="openCase(false)" ${state.crystals < CFG.caseCost || isCaseAnimating ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`; 
-          html += `<div class="case-box"><div class="case-title">🎁 Таинственный кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>${cb}</div>`; 
           
+          html += `<div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
+              <div class="case-box" style="margin-bottom:0;">
+                  <div class="case-title">🎁 Обычный кейс</div>
+                  <div style="font-size:11px; margin-bottom:5px; color:#aaa;">Шансы: 70% Редкий, 25% Эпик, 5% Легенда</div>
+                  ${state.freeCases > 0 ? `<button class="case-btn free-case" onclick="openCase('normal')" ${isCaseAnimating?'disabled':''}>Открыть (${state.freeCases} шт)</button>` : `<button class="case-btn" onclick="openCase('normal')" ${state.crystals < CFG.caseCost || isCaseAnimating ? 'disabled' : ''}>Открыть за ${CFG.caseCost} 💎</button>`}
+              </div>
+              ${state.silverCases > 0 ? `<div class="case-box" style="border-color:#94a3b8;"><div class="case-title" style="color:#94a3b8;">🥈 Серебряный кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">Только Эпик и Легенда!</div><button class="case-btn silver" onclick="openCase('silver')" ${isCaseAnimating?'disabled':''}>Открыть (${state.silverCases} шт)</button></div>` : ''}
+              ${state.goldCases > 0 ? `<div class="case-box" style="border-color:#fbbf24;"><div class="case-title" style="color:#fbbf24;">🥇 Золотой кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">100% Легендарный питомец!</div><button class="case-btn gold" onclick="openCase('gold')" ${isCaseAnimating?'disabled':''}>Открыть (${state.goldCases} шт)</button></div>` : ''}
+              ${state.mythicCases > 0 ? `<div class="case-box" style="border-color:#ef4444;"><div class="case-title" style="color:#ef4444;">👑 Мифический кейс</div><div style="font-size:11px; margin-bottom:5px; color:#aaa;">100% Эксклюзивный (Феникс)!</div><button class="case-btn mythic" onclick="openCase('mythic')" ${isCaseAnimating?'disabled':''}>Открыть (${state.mythicCases} шт)</button></div>` : ''}
+          </div>`;
+
           if (state.hasDrone) {
               html += `<div class="pet-card active-pet" style="border-color: #00ffff; background: rgba(0,255,255,0.1);">
                   <div class="pet-icon" style="font-size:30px; filter: drop-shadow(0 0 5px #00ffff);">🛸</div>
@@ -1086,13 +1259,13 @@ function renderMenu(keepScroll = false) {
           let rarities = { rare: 0, epic: 0, legendary: 0, exclusive: 0 };
           eq.forEach(p => rarities[p.rarity]++);
           let synergyText = [];
-          if (rarities.rare >= 3) synergyText.push('3 Редких (+15%)');
-          if (rarities.epic >= 3) synergyText.push('3 Эпика (+25%)');
-          if (rarities.legendary >= 3) synergyText.push('3 Легенды (+40%)');
-          if (rarities.exclusive >= 2) synergyText.push('2 Эксклюзива (+50%)');
+          if (rarities.rare >= 3) synergyText.push('3 Редких');
+          if (rarities.epic >= 3) synergyText.push('3 Эпика');
+          if (rarities.legendary >= 3) synergyText.push('3 Легенды');
+          if (rarities.exclusive >= 2) synergyText.push('2 Эксклюзива');
           if (synergyText.length > 0) html += `<div style="font-size:11px; text-align:center; color:#5eead4; margin-bottom:8px; font-weight:bold;">✨ Синергия: ${synergyText.join(', ')}</div>`;
 
-          let totalPets = state.activePets.length + (state.hasDrone ? 1 : 0); if (totalPets > 1) { let penaltyPerPet = 0.15 - (state.talents.teamSpirit * 0.01); const e = Math.round(Math.max(0.2, 1 - (totalPets - 1) * penaltyPerPet) * 100); html += `<div style="font-size:11px; text-align:center; color:#fbbf24; margin-bottom:8px;">Надето ${state.activePets.length} пит. ${state.hasDrone ? '+ НЛО' : ''}. Эффективность: ${e}%</div>`; } 
+          let totalPets = state.activePets.length + (state.hasDrone ? 1 : 0); if (totalPets > 1) { let penaltyPerPet = 0.15 - (state.talents['pet_1'] ? 0.05 : 0); const e = Math.round(Math.max(0.2, 1 - (totalPets - 1) * penaltyPerPet) * 100); html += `<div style="font-size:11px; text-align:center; color:#fbbf24; margin-bottom:8px;">Надето ${state.activePets.length} пит. ${state.hasDrone ? '+ НЛО' : ''}. Эффективность: ${e}%</div>`; } 
           PETS.forEach(p => { 
             if (p.rarity === 'exclusive' && !state.pets.includes(p.id)) return; 
             const o = state.pets.includes(p.id); const a = state.activePets.includes(p.id); 
@@ -1101,15 +1274,6 @@ function renderMenu(keepScroll = false) {
             html += `<div class="pet-card ${o?'owned':''} ${a?'active-pet':''}"><div class="pet-icon">${iconHtml}</div><div class="pet-info"><div class="pet-title pet-rarity-${p.rarity}">${p.name}</div><div class="pet-bonus">${p.desc}</div></div><div class="pet-actions">${b}</div></div>`; 
           }); 
       } 
-      else if (activeTab === 'talents') { 
-          el.menuTitle.textContent = '🌳 Таланты';
-          const maxLvls = { heavyHand: 5, goldenVein: 3, eternalCrit: 5, teamSpirit: 5 }; 
-          const baseCosts = { heavyHand: 15000, goldenVein: 20000, eternalCrit: 25000, teamSpirit: 30000 }; 
-          const tInfo = [ { id: 'heavyHand', title: 'Тяжелая рука', desc: '+1% к силе клика (макс 5%)' }, { id: 'goldenVein', title: 'Золотая жила', desc: '+1% к пассивному доходу (макс 3%)' }, { id: 'eternalCrit', title: 'Вечный крит', desc: '+4% к шансу крита (макс 20%)' }, { id: 'teamSpirit', title: 'Дружная команда', desc: 'Уменьшает штраф питомцев на 1% (макс 5%)' } ]; 
-          html += `<div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center;">Таланты покупаются за капельки!</div>`; 
-          html += `<div style="font-size:12px; margin-bottom:10px; text-align:center; color:#5eead4;">Ваш текущий доход: ${fmt(getAuraIncome())} 💧/сек</div>`; 
-          tInfo.forEach(t => { let lvl = state.talents[t.id]; let max = maxLvls[t.id]; let cost = baseCosts[t.id] * Math.pow(2, lvl); let canBuy = lvl < max && state.aura >= cost; html += `<div class="talent-card"><div class="talent-info"><div class="talent-title">${t.title} (Ур. ${lvl}/${max})</div><div class="talent-desc">${t.desc}</div></div><button class="talent-btn" onclick="buyTalent('${t.id}')" ${!canBuy ? 'disabled' : ''}>${lvl >= max ? 'MAX' : 'Улучшить'}<br><span style="font-size:9px; font-weight:normal;">${lvl >= max ? '' : fmt(cost) + ' 💧'}</span></button></div>`; }); 
-      }
       else if (activeTab === 'minigames') { 
           el.menuTitle.textContent = '🎲 Мини-игры';
           const mgs = [ { id: 'gold', title: 'Золотая лихорадка', desc: 'Клик-испытание (10 сек x5).', stageReq: 10, icon: '⛏️' }, { id: 'fortune', title: 'Фонтан удачи', desc: 'Рулетка на кристаллы.', stageReq: 19, icon: '🎰' }, { id: 'boss', title: 'Бактериальный шторм', desc: 'Босс-файт. Награда за победу!', stageReq: 23, icon: '☣️' }, { id: 'labyrinth', title: 'Лабиринт вкусов', desc: 'Испытай удачу за 5💎.', stageReq: 24, icon: '🌀' } ]; 
@@ -1156,18 +1320,23 @@ function renderMenu(keepScroll = false) {
             </div>`;
           } else {
             html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">Оплата в Telegram Stars. После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div></div>
-            <div class="donate-card"><h3>15 рублей (⭐)</h3><p>500 кристаллов для отличного старта.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-            <div class="donate-card"><h3>30 рублей (⭐)</h3><p>1500 кристаллов, 100 000 капелек и 1 кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-            <div class="donate-card"><h3>50 рублей (⭐)</h3><p>3000 кристаллов, 500 000 капелек и 3 кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-            <div class="donate-card"><h3>100 рублей (⭐)</h3><p>10 000 кристаллов, 5 000 000 капелек и 10 кейсов.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
-            <div class="donate-card" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.1);"><h3 style="color:#ef4444;">1000 рублей (⭐)</h3><p>100 000 кристаллов, 100 000 000 капелек, 25 кейсов и <b>Феникс (x7 ко всему)</b>!</p><button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateModal()">Поддержать</button></div>`; 
+            <div class="donate-card"><h3>15 рублей (⭐)</h3><p>500 💎 + Серебряный кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+            <div class="donate-card"><h3>30 рублей (⭐)</h3><p>1500 💎, 100к 💧 + 2 Серебряных кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+            <div class="donate-card"><h3>50 рублей (⭐)</h3><p>3000 💎, 500к 💧 + Золотой кейс.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+            <div class="donate-card"><h3>100 рублей (⭐)</h3><p>10 000 💎, 5 млн 💧 + 3 Золотых кейса.</p><button class="donate-btn" onclick="openDonateModal()">Поддержать</button></div>
+            <div class="donate-card" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.1);"><h3 style="color:#ef4444;">1000 рублей (⭐)</h3><p>100 000 💎, 100 млн 💧 + Мифический кейс и <b>Феникс</b>!</p><button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateModal()">Поддержать</button></div>`; 
           }
       }
       else if (activeTab === 'account') { 
           el.menuTitle.textContent = '👤 Профиль';
           html += `<div style="text-align:center; padding: 10px 0;"><div style="font-size: 40px; margin-bottom: 10px;">👤</div><div style="font-weight: bold; margin-bottom: 5px; color: #fff;">${TG_USER ? 'Аккаунт: ' + (TG_USER.username || TG_USER.first_name) : (currentUser === 'guest' ? 'Гостевой режим' : 'Аккаунт: ' + currentUser)}</div><div style="font-size: 11px; color: #5eead4; margin-bottom: 15px;">Ваш ID: ${generateUserID()}</div>`; 
-          if (!TG_USER && currentUser === 'guest') { html += `<input type="text" id="authUser" class="auth-input" placeholder="Придумай Логин"><input type="password" id="authPass" class="auth-input" placeholder="Придумай Пароль"><div style="display:flex; gap:8px; margin-top:10px;"><button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #3b82f6, #2563eb);" onclick="loginUser()">Войти</button><button class="case-btn" style="margin-top:0; background:linear-gradient(135deg, #6a4cff, #8a6cff);" onclick="registerUser()">Создать</button></div>`; } 
           
+          // Вставляем Ачивки и Эволюцию сюда
+          html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+            <button class="case-btn" style="background:linear-gradient(135deg, #6a4cff, #8a6cff); margin-bottom:8px;" onclick="switchTab('ach_inner')">🏆 Ачивки</button>
+            <button class="case-btn" style="background:linear-gradient(135deg, #6a4cff, #8a6cff); margin-bottom:8px;" onclick="switchTab('evo_inner')">🧬 Эволюция</button>
+          </div>`;
+
           const m = Math.floor((Date.now() - state.startedAt) / 60000); 
           html += `<div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; text-align:left;">
             <div style="font-size:11px; color:#fbbf24; margin-bottom:10px; text-align:center; font-weight:bold;">📊 Детальная Статистика</div>
@@ -1188,6 +1357,17 @@ function renderMenu(keepScroll = false) {
           if (state.hasDrone) { html += `<button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="removeDrone()">🛸 Убрать НЛО (потерять бонус x5)</button>`; } 
           html += `<button class="case-btn" style="background:#4a4a5a; margin-top:10px;" onclick="hardReset()">💥 Полный сброс</button>`; 
       } 
+      else if (activeTab === 'ach_inner') {
+          el.menuTitle.textContent = '🏆 Ачивки';
+          html = `<button class="back-btn" onclick="switchTab('account')">← Назад в профиль</button>`;
+          ACHIEVEMENTS.forEach(a => { const on = state.achievements.includes(a.id); html += `<div class="ach-item ${on?'unlocked':''}"><div class="ach-icon">${on?a.icon:'🔒'}</div><div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div></div>`; }); 
+          CFG.order.forEach((id, i) => { if (i === 0) return; const un = state.stage >= i; if (un) { html += `<div class="ach-item unlocked"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]}</div><div class="ach-desc">Эволюция достигнута</div></div></div>`; } else { html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">Секретное достижение</div><div class="ach-desc">Продолжай качать ауру...</div></div></div>`; } }); 
+      }
+      else if (activeTab === 'evo_inner') {
+          el.menuTitle.textContent = '🧬 Эволюция';
+          html = `<button class="back-btn" onclick="switchTab('account')">← Назад в профиль</button>`;
+          CFG.order.forEach((id, i) => { const cur = state.stage === i, done = state.stage > i; if (done || cur) { html += `<div class="ach-item ${done||cur?'unlocked':''}" style="${cur?'border-color:#ffd700':''}"><div class="ach-icon">${CFG.emoji[id]}</div><div><div class="ach-name">${CFG.names[id]} ${cur?'(Текущая)':''}</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; } else { html += `<div class="ach-item hidden-ach"><div class="ach-icon">❓</div><div><div class="ach-name">???</div><div class="ach-desc">Требуется ауры: ${CFG.stageReq[i]}</div></div></div>`; } }); 
+      }
       
       el.tabContent.innerHTML = html; 
       if (keepScroll) el.tabContent.scrollTop = sp; 
