@@ -203,7 +203,7 @@
   .auth-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; outline: none; text-align: center; }
   .theme-btn { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; }
 
-  /* --- ФИКС: СТИЛИ ДЛЯ МИНИ-ИГР --- */
+  /* --- СТИЛИ ДЛЯ МИНИ-ИГР --- */
   .minigame-card { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
   .minigame-card.locked { opacity: 0.6; }
   .mg-icon { font-size: 24px; flex-shrink: 0; }
@@ -213,7 +213,7 @@
   .mg-btn { background: linear-gradient(135deg, var(--btn-grad-start), var(--btn-grad-end)); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; flex-shrink: 0; }
   .mg-btn:active { transform: scale(0.95); }
 
-  /* --- ФИКС: СТИЛИ ДЛЯ МАГАЗИНА --- */
+  /* --- СТИЛИ ДЛЯ МАГАЗИНА --- */
   .donate-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin-bottom: 10px; text-align: center; }
   .donate-card h3 { font-size: 15px; margin-bottom: 5px; color: #fff; }
   .donate-card p { font-size: 12px; color: #8a9bbd; margin-bottom: 10px; }
@@ -317,11 +317,11 @@
       <div style="font-size: 13px; color: #ccc; margin-bottom: 15px; line-height: 1.5;">
         1. Скопируйте ваш ID:<br>
         <b id="donateIdText" style="color:#5eead4; font-size: 18px; display: block; margin-top: 5px; margin-bottom: 15px; text-align:center; background:rgba(94,234,212,0.1); padding:5px; border-radius:5px; border:1px dashed #5eead4;"></b>
-        2. Переведите нужное количество ⭐ (Звезд) на аккаунт <b>@TheHa1ght</b>.<br><br>
-        3. Напишите в Telegram <b>@TheHa1ght</b> ваш ID и скриншот оплаты.<br><br>
+        2. Переведите нужное количество ⭐ (Звезд) в нашего бота.<br><br>
+        3. Напишите в Telegram <b>@narzan_game_bot</b> ваш ID и скриншот оплаты.<br><br>
         4. Мы пришлем вам <b>Бонус-код</b>!
       </div>
-      <button class="case-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; margin-bottom: 10px;" onclick="openDonateLink()">Написать в Telegram</button>
+      <button class="case-btn" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; margin-bottom: 10px;" onclick="openDonateLink()">Перейти в бота</button>
       <button class="case-btn" style="background: #4a4a5a;" onclick="document.getElementById('donateModal').classList.remove('show')">Закрыть</button>
     </div>
   </div>
@@ -462,7 +462,6 @@ const defaultState = {
   buyAmount: 1,
   lastDaily: 0, dailyStreak: 0,
   totalBossKills: 0, totalCasesOpened: 0, totalPetsSold: 0,
-  /* ФИКС: Добавлены недостающие поля */
   freeCases: 0, megaBoosterEnd: 0, isAdmin: false,
   customBg: '#1b1c3e', customBtn: '#6a4cff'
 };
@@ -526,8 +525,6 @@ function loadGame() {
       if (isNaN(state.crits)) state.crits = 0;
       if (isNaN(state.prestigePoints)) state.prestigePoints = 0;
       if (isNaN(state.buyAmount)) state.buyAmount = 1;
-      
-      /* ФИКС: Защита от NaN для новых полей */
       if (isNaN(state.freeCases)) state.freeCases = 0;
       if (isNaN(state.megaBoosterEnd)) state.megaBoosterEnd = 0;
       
@@ -623,7 +620,6 @@ const getAuraCost = () => getUpgradeCost('aura', state.buyAmount);
 const getBoosterCost = () => Math.floor(CFG.boosterCost * Math.pow(CFG.boosterGrowth, state.boosterLevel));
 const isBoosterActive = () => Date.now() < state.boosterEnd || state.isBoosterPermanent;
 
-/* ФИКС: Честный множитель x10 для мега-бустера */
 const getMultiplier = () => { 
     if (state.megaBoosterEnd && Date.now() < state.megaBoosterEnd) return 10;
     return isBoosterActive() ? 2 : 1; 
@@ -758,7 +754,6 @@ function updateUI() {
       el.auraVal.textContent = fmt(state.aura); 
       el.crystalVal.textContent = fmt(state.crystals); 
       el.shardVal.textContent = fmt(state.shards);
-      /* ФИКС: Удалена строка el.caseVal.textContent = fmt(state.freeCases); */
       
       el.incomeVal.textContent = '+' + fmt(getAuraIncome()) + ' капелек/сек' + (isBoosterActive() ? ' (x2!)' : (state.megaBoosterEnd > Date.now() ? ' (x10!)' : '')); 
       el.pauseBtn.textContent = state.isPaused ? '▶️' : '⏸️'; el.prestigeVal.textContent = state.prestigePoints > 0 ? `Престиж: +${state.prestigePoints * 10}%` : ''; 
@@ -782,7 +777,6 @@ function updateUI() {
 }
 
 function doClick(e) { 
-  /* ФИКС: Защита от двойного клика по падающим бонусам */
   if (e && e.target && (e.target.closest('.floating-bonus') || e.target.closest('.floating-crystal'))) return;
   
   let g = getClickPower(); let c = false; 
@@ -807,7 +801,6 @@ function hardReset() { if (confirm('⚠️ ВНИМАНИЕ! Вы уверены
 
 let bonusTimeout, crystalTimeout;
 function spawnFloatingBonus() { if (document.querySelector('.floating-bonus')) return; const b = document.createElement('div'); b.className = 'floating-bonus'; b.textContent = '🌟'; b.style.top = Math.floor(Math.random() * 60 + 10) + '%'; b.style.left = Math.floor(Math.random() * 80 + 10) + '%'; b.onclick = (e) => { e.stopPropagation(); if (Math.random() < 0.5) { const r = getAuraIncome() * 300; state.aura += r; state.totalAura += r; showToast(`🌟 Звезда: +${fmt(r)} капелек!`, 'gold'); } else { 
-    /* ФИКС: Теперь честный бустер x10 */
     state.megaBoosterEnd = Date.now() + 30000; 
     showToast(`🌟 МЕГА-БУСТЕР x10!`, 'gold'); 
 } b.remove(); updateUI(); saveGame(); scheduleNextBonus(); }; el.clickZone.appendChild(b); bonusTimeout = setTimeout(() => { if (b.parentNode) b.remove(); scheduleNextBonus(); }, 8000); }
@@ -851,7 +844,7 @@ function sellPet(petId) {
 }
 
 let isCaseAnimating = false;
-let caseAnimTimer = null; /* ФИКС: Переменная для очистки таймера анимации */
+let caseAnimTimer = null;
 
 function openCase(type = 'normal') { 
   if (isCaseAnimating) return; 
@@ -935,7 +928,6 @@ function openCase(type = 'normal') {
   el.rouletteTrack.style.transition = 'none';
   el.rouletteTrack.style.transform = `translateX(0px)`;
   
-  /* ФИКС: Очистка предыдущего таймера */
   if (caseAnimTimer) clearTimeout(caseAnimTimer);
 
   caseAnimTimer = setTimeout(() => {
@@ -964,7 +956,6 @@ function openCase(type = 'normal') {
   }, 4200);
 }
 function closeCase() { 
-    /* ФИКС: Очистка таймера при закрытии */
     if (caseAnimTimer) { clearTimeout(caseAnimTimer); caseAnimTimer = null; }
     el.caseModal.classList.remove('show'); 
     isCaseAnimating = false; 
@@ -973,7 +964,6 @@ function closeCase() {
 el.caseCloseBtn.addEventListener('click', closeCase); el.closeCaseX.addEventListener('click', closeCase);
 
 function startBoss() { 
-  /* ФИКС: Защита от двойного запуска */
   if (el.bossModal.classList.contains('show')) return;
   
   if (state.crystals < 10) return showToast('Нужно 10 💎!', 'err'); 
@@ -1103,7 +1093,6 @@ function generateDonateCodeForPlayer(playerId, tier) { const secret = "NARZAN_SU
 function genCode(tier) { let pid = document.getElementById('genIdInput').value.trim().toUpperCase(); if (!pid) return alert('Введите ID игрока!'); if (!pid.startsWith('ID-') && !pid.startsWith('TG-')) pid = 'TG-' + pid; const code = generateDonateCodeForPlayer(pid, tier); const resDiv = document.getElementById('genResult'); resDiv.style.display = 'block'; resDiv.innerHTML = `Код для <b>${pid}</b> на <b>${tier}₽ (⭐)</b>:<br><br><span style="color:#0f0; font-size:14px; user-select:all;">${code}</span><br><br><i>(Нажмите, чтобы скопировать)</i>`; resDiv.onclick = () => { navigator.clipboard.writeText(code); showToast('Код скопирован!', 'gold'); }; }
 
 function applyCode(raw) { 
-  /* ФИКС: Защита админ-кодов от обычных игроков */
   const adminCodes = ['SILVER', 'GOLD', 'MYTHIC', 'DRONE', 'CRIT100', 'BOOSTME', 'CASEMAX', 'GEMSMAX', 'MAXSCORE559', 'ФИЗРУК', 'BOSS'];
   if (adminCodes.includes(raw) && !state.isAdmin) {
       return showToast('❌ Неверный код', 'err');
@@ -1372,10 +1361,10 @@ function renderMenu(keepScroll = false) {
             html += `<div class="donate-card" style="border-color:#ef4444; background:rgba(239,68,68,0.1);">
               <h3 style="color:#ef4444;">Внимание!</h3>
               <p>Донат доступен <b>только внутри Telegram</b>. Пожалуйста, запустите игру через нашего бота, чтобы пополнить баланс Звёздами.</p>
-              <button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateLink()">Открыть в Telegram</button>
+              <button class="donate-btn" style="background:#ef4444; color:#fff;" onclick="openDonateLink()">Перейти в бота</button>
             </div>`;
           } else {
-            html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">Оплата в Telegram Stars. После оплаты напишите: <a href="https://t.me/TheHa1ght" target="_blank" style="color:#60a5fa; text-decoration:none;">@TheHa1ght</a></div></div>
+            html += `<div style="text-align:center; margin-bottom:15px;"><div style="font-size:12px; color:#5eead4; margin-top:5px; font-weight:bold;">Оплата в Telegram Stars через бота <a href="https://t.me/narzan_game_bot" target="_blank" style="color:#60a5fa; text-decoration:none;">@narzan_game_bot</a></div></div>
             <div class="donate-card"><h3>15 рублей (⭐)</h3><p>500 💎 + Серебряный кейс.</p><button class="donate-btn" onclick="openDonateModal()" style="background:var(--btn-grad-start); color:#fff;">Поддержать</button></div>
             <div class="donate-card"><h3>30 рублей (⭐)</h3><p>1500 💎, 100к 💧 + 2 Серебряных кейса.</p><button class="donate-btn" onclick="openDonateModal()" style="background:var(--btn-grad-start); color:#fff;">Поддержать</button></div>
             <div class="donate-card"><h3>50 рублей (⭐)</h3><p>3000 💎, 500к 💧 + Золотой кейс.</p><button class="donate-btn" onclick="openDonateModal()" style="background:var(--btn-grad-start); color:#fff;">Поддержать</button></div>
@@ -1439,11 +1428,13 @@ function exchangeMax() {
     if (amount > 0) { state.aura -= amount * 1000000000; state.crystals += amount; showToast(`💎 Обмен успешен: -${amount} млрд капелек, +${amount} кристаллов!`, 'crystal'); updateUI(); saveGame(); renderMenu(true); } else { showToast('Недостаточно капелек!', 'err'); }
 }
 
+/* --- ССЫЛКИ НА БОТА: открывает @narzan_game_bot с параметром donate --- */
 function openDonateLink() {
+    const url = "https://t.me/narzan_game_bot?start=donate";
     if (tg) {
-        tg.openTelegramLink("https://t.me/TheHa1ght");
+        tg.openTelegramLink(url);
     } else {
-        window.open("https://t.me/TheHa1ght", "_blank");
+        window.open(url, "_blank");
     }
 }
 function openDonateModal() { 
